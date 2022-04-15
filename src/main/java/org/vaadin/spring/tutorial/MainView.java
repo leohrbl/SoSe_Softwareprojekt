@@ -36,6 +36,8 @@ public class MainView extends VerticalLayout implements LocaleChangeObserver {
 
     private RouterLink link;
 
+    
+
     public MainView(@Autowired Greeter greeter,
             @Autowired ExampleTemplate template) {
         H1 heading = new H1("Vaadin + Spring examples");
@@ -63,6 +65,11 @@ public class MainView extends VerticalLayout implements LocaleChangeObserver {
     public void localeChange(LocaleChangeEvent event) {
         link.setText(
                 getTranslation("root.navigate_to_component"));
+    }
+
+    public void test()
+    {
+          
     }
 
 }

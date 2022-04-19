@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Flow Spring examples
 ======================
 
@@ -20,3 +21,8 @@ Run `mvn clean install spring-boot:run` in the project root directory. After the
 ## Running the project from your IDE
 
 Navigate to the `org.vaadin.spring.tutorial.TutorialApplication` class and run it as a Java application.
+=======
+# SoSe_Softwareprojekt
+Softwareprojekt im Rahmen des praxisintegrierten Studiengangs Wirtschaftsinformatik an der FH-Bielefeld
+test
+>>>>>>> parent of 9749c87 (Update README.md)

@@ -1,4 +1,4 @@
-package com.example.application;
+package com.example.application.data;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -7,6 +7,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
+/**
+ * Konfiguration der Datenquelle angepasst auf das aktuelle Projektsetup.
+ * @author Léo Hérubel
+ */
 @Configuration(proxyBeanMethods = false)
 public class MyDataSourceConfiguration {
 

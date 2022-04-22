@@ -9,7 +9,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouterLink;
 
 /**
- * Diese Klasse erzeugt eine waagerechte Header Komponente, welche in jeder View Ansicht vorhanden ist. Die Header Komponente ist ein Design Element der Applikation ohne Funktionalität.
+ * Diese Klasse erzeugt eine waagerechte Header Komponente, welche in jeder View Ansicht vorhanden ist. Die Header Komponente kann mithilfe eines Toggle Button die Navigationsbar aktivieren und deaktivieren.
  * Zusätzlich erzeugt diese Klasse eine senkrechte "Navigationsbar", welche sich in der rechten Hälfte der Applikation befindet. Mit der Navigationsbar kann der User zwischen unterschiedlichen Views der Applikation navigieren.
  * @author Léo Hérubel
  * @see RezeptansichtView

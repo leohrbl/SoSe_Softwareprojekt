@@ -14,7 +14,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface EinheitenRepository extends JpaRepository<Einheit, Long> {
     /**
-     * Sucht nach einier Einheit, anhand des Namens
+     * Sucht nach einer Einheit, anhand des Namens
      * 
      * @param name
      * @return Einheit

@@ -70,17 +70,18 @@ public class DataGenerator {
      * @author Philipp Laupichler
      * @param service
      * @return
-     *         Die Methode erzeugt zwei Zutaten: Milch und Wasser
+     *         Die Methode erzeugt zwei Einheiten: ML und Wasser
      *         Diese werden mit dem Service in der Datenbank gespeichert
      */
     @Bean
     public CommandLineRunner createService(EinheitService service) {
         return args -> {
-            service.createEinheit(new Einheit("Milch"));
-            service.createEinheit(new Einheit("Wasser"));
+            service.createEinheit(new Einheit("ML"));
+            service.createEinheit(new Einheit("KG"));
             Logger logger = LoggerFactory.getLogger(getClass());
-            logger.info("Milch wurde durch Service Klasse erzeugt");
+            logger.info("Einheiten wurden durch Service Klasse erzeugt");
 
         };
     }
+
 }

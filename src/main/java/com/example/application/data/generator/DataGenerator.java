@@ -1,7 +1,9 @@
 package com.example.application.data.generator;
 
+import com.example.application.data.Service.EinheitService;
 import com.example.application.data.entity.Company;
 import com.example.application.data.entity.Contact;
+import com.example.application.data.entity.Einheit;
 import com.example.application.data.entity.Status;
 import com.example.application.data.repository.CompanyRepository;
 import com.example.application.data.repository.ContactRepository;
@@ -64,4 +66,21 @@ public class DataGenerator {
         };
     }
 
+    /**
+     * @author Philipp Laupichler
+     * @param service
+     * @return
+     *         Die Methode erzeugt zwei Zutaten: Milch und Wasser
+     *         Diese werden mit dem Service in der Datenbank gespeichert
+     */
+    @Bean
+    public CommandLineRunner createService(EinheitService service) {
+        return args -> {
+            service.createEinheit(new Einheit("Milch"));
+            service.createEinheit(new Einheit("Wasser"));
+            Logger logger = LoggerFactory.getLogger(getClass());
+            logger.info("Milch wurde durch Service Klasse erzeugt");
+
+        };
+    }
 }

@@ -1,10 +1,8 @@
 package com.example.application.data.generator;
 
-import com.example.application.data.Service.EinheitService;
-import com.example.application.data.entity.Company;
-import com.example.application.data.entity.Contact;
-import com.example.application.data.entity.Einheit;
-import com.example.application.data.entity.Status;
+import com.example.application.data.entity.*;
+import com.example.application.data.service.EinheitService;
+import com.example.application.data.service.ZutatService;
 import com.example.application.data.repository.CompanyRepository;
 import com.example.application.data.repository.ContactRepository;
 import com.example.application.data.repository.StatusRepository;
@@ -12,6 +10,7 @@ import com.vaadin.exampledata.DataType;
 import com.vaadin.exampledata.ExampleDataGenerator;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -84,4 +83,36 @@ public class DataGenerator {
         };
     }
 
+    /**
+     * Die Methode erzeugt Zutatenobjekte, ordnet diese Einheiten zu, welche in der vorherigen Methode erstellt wurden, und testet die Methoden der Service Klasse der Entität Zutat.
+     * @author Léo Hérubel
+     * @author Léo Hérubel
+     * @param zutatService
+     * @param einheitService
+     * @see ZutatService
+     * @see com.example.application.data.repository.ZutatRepository
+     * @return
+     */
+    @Bean
+    public CommandLineRunner loadZutaten(ZutatService zutatService, EinheitService einheitService){
+        return args -> {
+            String name1 = "Milch";
+            String name2 = "Wurst";
+            String name3 = "Käse";
+            List<Einheit> einheitList = new LinkedList<Einheit>(einheitService.getEinheiten());
+            String response1 = zutatService.saveZutat(name1, einheitList.get(0));
+            String response2 = zutatService.saveZutat(name2, einheitList.get(1));
+            String response3 = zutatService.saveZutat(name3, einheitList.get(1));
+            Logger logger = LoggerFactory.getLogger(getClass());
+            logger.info(String.valueOf(einheitList.size()));
+            logger.info(response1);
+            logger.info(response2);
+            List<Zutat> zutatList = new LinkedList<Zutat>(zutatService.getZutaten());
+            logger.info(String.valueOf(zutatList.size()));
+            logger.info(zutatService.deleteZutat(zutatList.get(1)));
+            List<Zutat> newZutatList = new LinkedList<Zutat>(zutatService.findZutatenByEinheitId((long) 2));
+            logger.info(String.valueOf(newZutatList.size()));
+            logger.info(newZutatList.get(0).getName());
+        };
+    }
 }

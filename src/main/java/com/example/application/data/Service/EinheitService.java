@@ -1,4 +1,4 @@
-package com.example.application.data.Service;
+package com.example.application.data.service;
 
 import java.util.List;
 

@@ -22,6 +22,14 @@ public interface EinheitenRepository extends JpaRepository<Einheit, Long> {
     Einheit findByEinheit(String name);
 
     /**
+     * Sucht nach einer Einheit, anhand der Id
+     * 
+     * @param id
+     * @return Einheit
+     */
+    Einheit findById(long id);
+
+    /**
      * Löscht eine Einheit, das Suchkriterium ist der Name
      * 
      * @param name

@@ -79,12 +79,17 @@ public class DataGenerator {
             service.createEinheit(new Einheit("KG"));
             Logger logger = LoggerFactory.getLogger(getClass());
             logger.info("Einheiten wurden durch Service Klasse erzeugt");
-
+            logger.info(service.findById(1l).getEinheit());
+            service.updateEinheit("L", 1l);
+            logger.info(service.findById(1l).getEinheit());
         };
     }
 
     /**
-     * Die Methode erzeugt Zutatenobjekte, ordnet diese Einheiten zu, welche in der vorherigen Methode erstellt wurden, und testet die Methoden der Service Klasse der Entität Zutat.
+     * Die Methode erzeugt Zutatenobjekte, ordnet diese Einheiten zu, welche in der
+     * vorherigen Methode erstellt wurden, und testet die Methoden der Service
+     * Klasse der Entität Zutat.
+     * 
      * @author Léo Hérubel
      * @author Léo Hérubel
      * @param zutatService
@@ -94,7 +99,7 @@ public class DataGenerator {
      * @return
      */
     @Bean
-    public CommandLineRunner loadZutaten(ZutatService zutatService, EinheitService einheitService){
+    public CommandLineRunner loadZutaten(ZutatService zutatService, EinheitService einheitService) {
         return args -> {
             String name1 = "Milch";
             String name2 = "Wurst";

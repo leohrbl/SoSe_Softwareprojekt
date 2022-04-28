@@ -48,7 +48,7 @@ public class EinheitService {
      * @param id
      */
     public void updateEinheit(String name, Long id) {
-        Einheit einheit = einheitenRepository.findByEinheit(name);
+        Einheit einheit = einheitenRepository.findById(id).get();
         einheit.setEinheit(name);
         einheitenRepository.save(einheit);
     }
@@ -58,8 +58,11 @@ public class EinheitService {
      *
      * @param name
      */
-    public void deleteEinheit(String name) {
-        einheitenRepository.deleteByEinheit(name);
+    public void deleteEinheit(long id) {
+        einheitenRepository.deleteById(id);
+    }
+
+    public Einheit findById(Long id) {
+        return einheitenRepository.findById(id).get();
     }
 }
-

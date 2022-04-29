@@ -32,7 +32,7 @@ public class MainLayout extends AppLayout {
         mainView.addClassNames("mx-m", "text-m");
         RouterLink einkaufsliste = new RouterLink("Einkaufsliste", RezeptansichtView.class);
         einkaufsliste.addClassNames("mx-m", "text-m");
-        RouterLink zutaten = new RouterLink("Zutaten", RezeptansichtView.class);
+        RouterLink zutaten = new RouterLink("Zutaten", ZutatenView.class);
         zutaten.addClassNames("mx-m", "text-m");
         RouterLink einstellungen = new RouterLink("Einstellungen", RezeptansichtView.class);
         einstellungen.addClassNames("mx-m", "text-m");

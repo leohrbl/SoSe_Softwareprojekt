@@ -1,10 +1,11 @@
-package com.example.application.views;
+package com.example.application.views.zutatenmanager;
 
 import com.example.application.data.entity.Einheit;
 import com.example.application.data.entity.Zutat;
 import com.example.application.data.repository.ZutatRepository;
 import com.example.application.data.service.EinheitService;
 import com.example.application.data.service.ZutatService;
+import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;

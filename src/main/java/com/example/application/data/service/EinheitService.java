@@ -42,15 +42,24 @@ public class EinheitService {
     }
 
     /**
-     * Noch nicht getestet
+     * Diese Methode ändert den Namen einer Einheit, falls die Id nicht in der
+     * Datenbank zufinden ist, wird ein String zurückgegeben. Wenn die Id existiert
+     * wird das Einheiten Objekt gesucht und der Name Mithilfe der Setter-Methode
+     * geändert und gespeichert. "Seccess" wird zurückgegeben.
      *
      * @param name
      * @param id
      */
-    public void updateEinheit(String name, Long id) {
+    public String updateEinheit(String name, Long id) {
+        if (!einheitenRepository.existsById(id)) {
+            return "Einheit konnte nicht geändert werden";
+        }
+
         Einheit einheit = einheitenRepository.findById(id).get();
         einheit.setEinheit(name);
         einheitenRepository.save(einheit);
+
+        return "success";
     }
 
     /**

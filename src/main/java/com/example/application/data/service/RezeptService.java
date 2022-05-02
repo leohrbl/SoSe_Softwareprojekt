@@ -51,4 +51,8 @@ public class RezeptService {
     public Rezept findByTitel(String titel) {
         return rezeptRepository.findByTitel(titel);
     }
+
+    public Rezept findById(long id) {
+        return rezeptRepository.findById(id);
+    }
 }

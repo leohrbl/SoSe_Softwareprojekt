@@ -2,17 +2,22 @@ package com.example.application.data.generator;
 
 import com.example.application.data.entity.*;
 import com.example.application.data.service.EinheitService;
+import com.example.application.data.service.RezeptService;
+import com.example.application.data.service.RezeptZutatenService;
 import com.example.application.data.service.ZutatService;
 import com.example.application.data.repository.CompanyRepository;
 import com.example.application.data.repository.ContactRepository;
 import com.example.application.data.repository.StatusRepository;
 import com.vaadin.exampledata.DataType;
 import com.vaadin.exampledata.ExampleDataGenerator;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
@@ -118,6 +123,43 @@ public class DataGenerator {
             List<Zutat> newZutatList = new LinkedList<Zutat>(zutatService.findZutatenByEinheitId((long) 2));
             logger.info(String.valueOf(newZutatList.size()));
             logger.info(newZutatList.get(0).getName());
+        };
+    }
+
+    /**
+     * Nur zum Testen!!!
+     * Erklärung folgt später
+     * 
+     * @param service
+     * @param zutatService
+     * @param rezeptZutatenService
+     * @return
+     */
+    @Bean
+    public CommandLineRunner loadRezept(RezeptService service, ZutatService zutatService,
+            RezeptZutatenService rezeptZutatenService) {
+        return args -> {
+            Rezept rezept = new Rezept(new Image(
+                    "https://media.gq-magazin.de/photos/5cf5323293d17014eb72ae59/1:1/w_1999,h_1999,c_limit/gesundheit-zuviel-essen.jpg",
+                    "Essen"), "Test", "zubereitung", 2);
+            service.createRezept(rezept);
+            for (Zutat string : zutatService.getZutaten()) {
+                rezeptZutatenService.createRezeptZutaten(rezept, string, 2);
+            }
+
+            Logger logger = LoggerFactory.getLogger(getClass());
+            logger.info("Einheiten wurden durch Service Klasse erzeugt");
+            logger.info(service.getAllRezepte().toString());
+            logger.info(rezeptZutatenService.findAllByRezept(rezept).toString());
+            for (Rezept_Zutat rezept_Zutat : rezeptZutatenService.findAllByRezept(rezept)) {
+                rezept.addZutat(rezept_Zutat);
+            }
+            logger.info(rezeptZutatenService.findAllZutatenByRezept(rezept).toString());
+            logger.info(rezeptZutatenService.findAllRezepteByZutat(zutatService.getZutaten().get(1)).toString());
+
+            logger.info(service.findByTitel("Test").toString());
+            logger.info("Test");
+            logger.info(service.findByTitel("Test").getZutatenFromZutat().toString());
         };
     }
 }

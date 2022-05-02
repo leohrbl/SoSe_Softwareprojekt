@@ -49,4 +49,9 @@ public class Einheit {
     public void setId(Long Id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return this.einheit;
+    }
 }

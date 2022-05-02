@@ -1,11 +1,11 @@
 package com.example.application.views.rezeptansicht;
 
-import com.example.application.data.service.ZutatService;
+import com.example.application.data.entity.Rezept;
+import com.example.application.data.service.RezeptService;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -15,6 +15,8 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+import java.util.List;
+
 @PageTitle("Rezeptbuch")
 @Route(value = "", layout = MainLayout.class)
 public class RezeptansichtView extends VerticalLayout {
@@ -23,19 +25,18 @@ public class RezeptansichtView extends VerticalLayout {
     private Button editKategorienBtn = new Button("Kategorien bearbeiten");
     private Button printDisplayedRezepteBtn = new Button(VaadinIcon.PRINT.create());
     private Button addRezeptBtn = new Button(VaadinIcon.PLUS.create());
+    private RezeptService rezeptService;
 
-    public RezeptansichtView() {
+    public RezeptansichtView(RezeptService rezeptService) {
+        this.rezeptService = rezeptService;
         configureSearchField();
         configureButtons();
-        Image image = new Image("/images/doener.png", "Doener");
-
-        RezeptCard card = new RezeptCard("Döner Kebab mit Cocktailsoße", "Fast-Food", 23, image);
-        add(createViewLayout(card));
+        add(createViewLayout(loadCards()));
 
     }
 
-    private VerticalLayout createViewLayout(RezeptCard card){
-        return new VerticalLayout(new HorizontalLayout(searchField, editKategorienBtn, printDisplayedRezepteBtn, addRezeptBtn), new HorizontalLayout(card));
+    private VerticalLayout createViewLayout(HorizontalLayout cardLayout){
+        return new VerticalLayout(new HorizontalLayout(searchField, editKategorienBtn, printDisplayedRezepteBtn, addRezeptBtn), cardLayout);
     }
 
     private void configureSearchField() {
@@ -69,25 +70,13 @@ public class RezeptansichtView extends VerticalLayout {
 
     }
 
-    // hier sollen die Liste (Rezept) die man aus dem Backend bekommt angezeigt werden
-
-    private void displayRezepte(){
-
+    private HorizontalLayout loadCards (){
+        List<Rezept> rezeptList = rezeptService.getAllRezepte();
+        HorizontalLayout cardLayout = new HorizontalLayout();
+        for(Rezept rezept : rezeptList){
+            RezeptCard card = new RezeptCard(rezept.getTitel(), "Indisch", rezept.getId(), rezept.getBild());
+            cardLayout.add(card);
+        }
+        return cardLayout;
     }
-
-
-    private Icon getIcon() {
-        Icon icon = VaadinIcon.CUTLERY.create();
-        icon.getStyle()
-                .set("width", "45px")
-                .set("height", "45px")
-                .set("color", "var(--lumo-primary-color)");
-        return icon;
-    }
-
-    private void handleCardClick(ComponentEvent e){
-        Notification.show("Card Clicked");
-    }
-
-
 }

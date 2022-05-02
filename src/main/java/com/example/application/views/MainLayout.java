@@ -1,6 +1,8 @@
 package com.example.application.views;
 
+import com.example.application.views.rezeptansicht.RezeptansichtView;
 import com.example.application.views.zutatenmanager.ZutatenView;
+import com.example.application.views.einkaufsliste.EinkaufslisteView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.html.H1;
@@ -31,7 +33,7 @@ public class MainLayout extends AppLayout {
     private void createDrawer() {
         RouterLink mainView = new RouterLink("Rezeptansicht", RezeptansichtView.class);
         mainView.addClassNames("mx-m", "text-m");
-        RouterLink einkaufsliste = new RouterLink("Einkaufsliste", RezeptansichtView.class);
+        RouterLink einkaufsliste = new RouterLink("Einkaufsliste", EinkaufslisteView.class);
         einkaufsliste.addClassNames("mx-m", "text-m");
         RouterLink zutaten = new RouterLink("Zutaten", ZutatenView.class);
         zutaten.addClassNames("mx-m", "text-m");

@@ -47,4 +47,13 @@ public class Zutat{
     public void setEinheit(Einheit einheit) {
         this.einheit = einheit;
     }
+
+    public long getId() {
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

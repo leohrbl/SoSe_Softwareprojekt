@@ -7,10 +7,9 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
-public class RezeptCard extends VerticalLayout{
+public class RezeptCard extends VerticalLayout {
 
     private H1 titel;
-    private String titel2;
     private H1 kategorie;
     private Image image;
     private long rezeptId;
@@ -22,7 +21,6 @@ public class RezeptCard extends VerticalLayout{
     public RezeptCard(String titel, String kategorie, long rezeptId, Image image) {
 
         this.titel = new H1(titel);
-        this.titel2 = titel;
         this.kategorie = new H1(new Span(kategorie));
         this.rezeptId = rezeptId;
         this.image = image;

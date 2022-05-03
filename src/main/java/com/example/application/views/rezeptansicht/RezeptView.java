@@ -48,10 +48,6 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
             Rezept rezept = rezeptService.findById(getRezeptID());
             createViewLayout(rezept);
 
-            if(rezeptId == 0){
-                event.rerouteTo("");
-            }
-
         }catch(Exception e){
             event.rerouteTo("");
         }

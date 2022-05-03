@@ -3,6 +3,7 @@ package com.example.application.data.service;
 import java.util.List;
 
 import com.example.application.data.entity.Einheit;
+import com.example.application.data.entity.Zutat;
 import com.example.application.data.repository.EinheitenRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +36,17 @@ public class EinheitService {
     /**
      * Diese Methode speichert eine Einheit in der Datenbank
      *
-     * @param einheit
+     * @param name
      */
-    public void createEinheit(Einheit einheit) {
-        einheitenRepository.save(einheit);
+    public String createEinheit(String name) {
+        try{
+            Einheit einheit = new Einheit();
+            einheit.setEinheit(name);
+            einheitenRepository.save(einheit);
+            return "success";
+        }catch (Exception e){
+            return e.getMessage();
+        }
     }
 
     /**
@@ -65,10 +73,15 @@ public class EinheitService {
     /**
      * Diese Methode löscht eine Einheit, ist allerdings noch nicht getestet!!!
      *
-     * @param name
+     * @param einheit
      */
-    public void deleteEinheit(long id) {
-        einheitenRepository.deleteById(id);
+    public String deleteEinheit(Einheit einheit) {
+        try {
+            einheitenRepository.delete(einheit);
+            return "success";
+        }catch(Exception e){
+            return e.getMessage();
+        }
     }
 
     public Einheit findById(Long id) {

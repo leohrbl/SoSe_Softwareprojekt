@@ -55,4 +55,13 @@ public class RezeptService {
     public Rezept findById(long id) {
         return rezeptRepository.findById(id);
     }
+
+    public List<Rezept> searchRezeptByFilterText(String filterText) {
+        if (filterText == null || filterText.isEmpty()) {
+            return null;
+        } else {
+            return rezeptRepository.findByTitelContains(filterText);
+        }
+    }
+
 }

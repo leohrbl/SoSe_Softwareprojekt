@@ -1,5 +1,6 @@
 package com.example.application.views;
 
+import com.example.application.views.einstellungenView.EinstellungenView;
 import com.example.application.views.rezeptansicht.RezeptansichtView;
 import com.example.application.views.zutatenmanager.ZutatenView;
 import com.example.application.views.einkaufsliste.EinkaufslisteView;
@@ -37,7 +38,7 @@ public class MainLayout extends AppLayout {
         einkaufsliste.addClassNames("mx-m", "text-m");
         RouterLink zutaten = new RouterLink("Zutaten", ZutatenView.class);
         zutaten.addClassNames("mx-m", "text-m");
-        RouterLink einstellungen = new RouterLink("Einstellungen", RezeptansichtView.class);
+        RouterLink einstellungen = new RouterLink("Einstellungen", EinstellungenView.class);
         einstellungen.addClassNames("mx-m", "text-m");
 
 

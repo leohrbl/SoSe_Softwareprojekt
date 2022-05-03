@@ -77,8 +77,8 @@ public class DataGenerator {
     @Bean
     public CommandLineRunner createService(EinheitService service) {
         return args -> {
-            service.createEinheit(new Einheit("ML"));
-            service.createEinheit(new Einheit("KG"));
+            service.createEinheit("ML");
+            service.createEinheit("KG");
             Logger logger = LoggerFactory.getLogger(getClass());
             logger.info("Einheiten wurden durch Service Klasse erzeugt");
             logger.info(service.findById(1l).getEinheit());

@@ -114,7 +114,7 @@ public class ZutatenView extends VerticalLayout {
         speichern.addClickListener(e ->{
 
             // Neue Zutat wird gespeichert.
-            if(bezeichnung.getValue() != null && einheitAuswahl.getValue() != null){
+            if(!bezeichnung.isEmpty() && !einheitAuswahl.isEmpty()){
                 if(zutatService.searchZutatenByFilterText(bezeichnung.getValue()).size() == 0){
                     dialog.close();
                     zutatService.saveZutat(bezeichnung.getValue(), einheitAuswahl.getValue());
@@ -162,7 +162,7 @@ public class ZutatenView extends VerticalLayout {
      * Zutat bestimmt und die Methode configureDeleteDialog(Zutat) aufgerufen.
      */
     private void removeZutaten(){
-        if(grid.getSelectionModel().getSelectedItems().isEmpty() == false){
+        if(!grid.getSelectionModel().getSelectedItems().isEmpty()){
             Zutat zutat = grid.getSelectionModel().getFirstSelectedItem().get();
             configureDeleteDialog(zutat);
         }else{

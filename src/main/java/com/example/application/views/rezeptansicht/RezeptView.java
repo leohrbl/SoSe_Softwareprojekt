@@ -2,10 +2,13 @@ package com.example.application.views.rezeptansicht;
 
 import com.example.application.data.entity.Rezept;
 import com.example.application.data.service.RezeptService;
+import com.example.application.data.service.RezeptZutatenService;
 import com.example.application.views.MainLayout;
 import com.example.application.views.ViewFrame;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Paragraph;
@@ -26,9 +29,16 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
 
     private static long rezeptId;
     private RezeptService rezeptService;
+    private Grid<Menge> zutatMengeGrid;
+    private MengeService mengeService;
+    private RezeptZutatenService rezeptZutatenService;
 
-    public RezeptView(RezeptService rezeptService) {
+    public RezeptView(RezeptService rezeptService, RezeptZutatenService rezeptZutatenService) {
         this.rezeptService = rezeptService;
+        this.mengeService = new MengeService();
+        this.zutatMengeGrid = new Grid<>(Menge.class, false);
+        this.rezeptZutatenService = rezeptZutatenService;
+        configureGrid();
     }
 
     @Override
@@ -64,7 +74,7 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
         Paragraph portionen2 = new Paragraph("Portionen");
         IntegerField portionenInput = new IntegerField();
         portionenInput.setMin(1);
-        portionenInput.setValue(1);
+        portionenInput.setValue(rezept.getPortionen());
         portionenInput.setMax(20);
         portionenInput.setHasControls(true);
 
@@ -74,7 +84,7 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
 
         HorizontalLayout portionenLayout = new HorizontalLayout(portionen, portionenInput, portionen2);
         portionenLayout.setDefaultVerticalComponentAlignment(Alignment.CENTER);
-        vLayout.add(portionenLayout);
+        vLayout.add(portionenLayout, zutatMengeGrid);
 
 
         Button print = new Button(new Icon(VaadinIcon.EDIT));
@@ -113,17 +123,31 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
         footer.setSpacing(true);
 
         setViewFooter(footer);
-
+        loadGridData(rezept);
     }
 
-    public void setRezeptID(long rezeptID) {
+    public void configureGrid(){
+        zutatMengeGrid.addColumn(Menge::getMenge).setHeader("Menge");
+        zutatMengeGrid.addColumn(Menge::getEinheit).setHeader("Einheit");
+        zutatMengeGrid.addColumn(Menge::getZutat).setHeader("Zutat");
+        zutatMengeGrid.addThemeVariants(GridVariant.LUMO_COLUMN_BORDERS);
+        zutatMengeGrid.addClassName("rezept-view-grid");
+    }
+
+    private void loadGridData(Rezept rezept){
+        zutatMengeGrid.setItems(mengeService.getMengenRezeptZutat(rezeptZutatenService.findAllByRezept(rezept)));
+    }
+
+    private void setRezeptID(long rezeptID) {
         this.rezeptId = rezeptID;
     }
 
-    public long getRezeptID() {
+    private long getRezeptID() {
         return rezeptId;
     }
 
-
+    private void editDisplayedMengenByListenerToInputField(){
+        
+    }
 
 }

@@ -54,3 +54,8 @@
     border-radius: 10px;
     color: white;
 }
+
+.rezept-view-grid{
+    margin-right: 5rem;
+    margin-left: 5rem;
+}

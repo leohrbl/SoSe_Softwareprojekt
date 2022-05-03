@@ -1,10 +1,7 @@
 package com.example.application.data.generator;
 
 import com.example.application.data.entity.*;
-import com.example.application.data.service.EinheitService;
-import com.example.application.data.service.RezeptService;
-import com.example.application.data.service.RezeptZutatenService;
-import com.example.application.data.service.ZutatService;
+import com.example.application.data.service.*;
 import com.example.application.data.repository.CompanyRepository;
 import com.example.application.data.repository.ContactRepository;
 import com.example.application.data.repository.StatusRepository;
@@ -161,5 +158,24 @@ public class DataGenerator {
             logger.info("Test");
             logger.info(service.findByTitel("Test").getZutatenFromZutat().toString());
         };
+    }
+    /**
+     * @author Joscha Cerny
+     * @param service
+     * @param zutatService
+     * Sucht alle Zutaten aus der Liste Der Zutaten und erstellt für jede einen Eintrag in einer neu erstellten Tabelle einkaufslisten_eintrag
+     *
+     */
+    @Bean
+    public CommandLineRunner einkaufslistenEintrag(EinkaufslistenService service, ZutatService zutatService, EinheitService einheitService) {
+        return args -> {
+            Zutat newZutat = zutatService.getZutaten().get(0);
+            service.saveEintrag(5, newZutat);
+            service.saveEintrag(6, newZutat);
+            service.saveEintrag(7, newZutat);
+            service.deleteEintragByID(6);
+
+        };
+
     }
 }

@@ -37,7 +37,7 @@ public class Rezept_Zutat {
     @JoinColumn(name = "Zutat_id")
     private Zutat zutat;
 
-    private int Menge;
+    private double Menge;
 
     public Rezept_Zutat() {
     }
@@ -80,7 +80,7 @@ public class Rezept_Zutat {
         this.zutat = zutat;
     }
 
-    public int getMenge() {
+    public double getMenge() {
         return this.Menge;
     }
 

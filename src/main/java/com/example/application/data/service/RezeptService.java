@@ -60,7 +60,8 @@ public class RezeptService {
         if (filterText == null || filterText.isEmpty()) {
             return null;
         } else {
-            return rezeptRepository.search(filterText);
+            return rezeptRepository.findByTitelContains(filterText);
         }
     }
+
 }

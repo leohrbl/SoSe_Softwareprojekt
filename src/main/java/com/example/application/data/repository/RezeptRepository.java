@@ -1,9 +1,12 @@
 package com.example.application.data.repository;
 
+import java.util.List;
+
 import com.example.application.data.entity.Rezept;
 import com.example.application.data.service.RezeptService;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -25,10 +28,12 @@ public interface RezeptRepository extends JpaRepository<Rezept, Long> {
     Rezept findById(long id);
 
     /**
-     * ucht anhand des Titels nach dem Rezept und gibt dieses zurück
+     * Sucht anhand des Titels nach dem Rezept und gibt dieses zurück
      * 
      * @param Titel
      * @return Gibt ein Rezept zurück
      */
     Rezept findByTitel(String Titel);
+
+    List<Rezept> search(@Param("searchTerm") String searchTerm);
 }

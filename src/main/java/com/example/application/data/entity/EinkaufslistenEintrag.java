@@ -1,5 +1,8 @@
 package com.example.application.data.entity;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 /**
@@ -19,8 +22,9 @@ public class EinkaufslistenEintrag {
 
     private double menge; //Variable für die Menge der Zutaten
 
-    @ManyToOne
+    @OneToOne
     @NotNull
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Zutat zutat; //Variable für den Fremdschlüssel der Entität Zutat
 
 

@@ -9,6 +9,8 @@ import javax.persistence.ManyToOne;
 
 import com.example.application.data.repository.RezeptZutatenRepository;
 import com.example.application.data.service.RezeptZutatenService;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 /**
  * Rezept_Zutat Entität mit einer ManyToOne Beziehung zu der Repzept Entität und
@@ -35,6 +37,7 @@ public class Rezept_Zutat {
 
     @ManyToOne
     @JoinColumn(name = "Zutat_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Zutat zutat;
 
     private double Menge;

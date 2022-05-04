@@ -88,26 +88,28 @@ public class EinkaufslisteView extends VerticalLayout {
         deleteDialog.getDeleteButton().addClickListener(e -> {
             deleteEinkaufsliste();
         });
-        deleteDialog.getDeleteButton().addClickListener(e -> {
+        deleteDialog.getCancelButton().addClickListener(e -> {
             deleteDialog.close();
         });
     }
+
 
     private void deleteEinkaufsliste() {
 
         if(displayedItems.isEmpty()){
             Notification.show("Keine Einkaufslisteneinträge vorhanden").addThemeVariants(NotificationVariant.LUMO_ERROR);
+            deleteDialog.close();
             return;
         }
         String response = einkaufslistenService.deleteAll();
         if(response == "success"){
-            // hier noch deleteDialog einbinden
             displayedItems.clear();
             einkaufsGrid.setItems(displayedItems);
             Notification.show("Einkaufsliste gelöscht!").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
         }else{
             Notification.show("Ein Fehler ist aufgetreten").addThemeVariants(NotificationVariant.LUMO_ERROR);
         }
+        deleteDialog.close();
     }
 
     private void printEinkaufsliste() {

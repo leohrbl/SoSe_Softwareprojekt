@@ -37,7 +37,7 @@ public class Rezept {
     private String titel;
     private String zubereitung;
     private int portionen;
-    @OneToMany(mappedBy = "rezept", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "rezept", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<Rezept_Zutat> zutaten = new HashSet<>();
 
     /*

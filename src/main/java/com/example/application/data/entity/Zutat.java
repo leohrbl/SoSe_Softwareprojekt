@@ -1,5 +1,8 @@
 package com.example.application.data.entity;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -26,14 +29,16 @@ public class Zutat{
     @NotNull
     @ManyToOne
     @JoinColumn(name = "einheit_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Einheit einheit;
 
-    public Einheit getEinheit() {
-        return einheit;
-    }
 
     public Zutat()  {
 
+    }
+
+    public Einheit getEinheit() {
+        return einheit;
     }
 
     public String getName() {

@@ -4,6 +4,7 @@ import com.example.application.data.entity.*;
 import com.example.application.data.service.*;
 import com.example.application.data.repository.CompanyRepository;
 import com.example.application.data.repository.ContactRepository;
+import com.example.application.data.repository.EinkaufslistenRepository;
 import com.example.application.data.repository.StatusRepository;
 import com.vaadin.exampledata.DataType;
 import com.vaadin.exampledata.ExampleDataGenerator;
@@ -138,10 +139,12 @@ public class DataGenerator {
         return args -> {
             Rezept rezept = new Rezept(new Image(
                     "https://media.gq-magazin.de/photos/5cf5323293d17014eb72ae59/1:1/w_1999,h_1999,c_limit/gesundheit-zuviel-essen.jpg",
-                    "Essen"), "Test", "zubereitung", 2);
+                    "Essen"), "Test",
+                    "Die Nudeln in reichlich Salzwasser nach Packungsanleitung kochen und danach zur Seite stellen. Zwiebeln und Schinken in Stücke schneiden. Eine Pfanne mit etwas Öl erhitzen und die Zwiebeln darin glasig anschwitzen. Den Schinken dazugeben und anbraten. Mit Weißwein ablöschen und kurz köcheln lassen, dann die Sahne dazugeben. Mit Salz, Pfeffer und evtl. etwas Fondor abschmecken. Alles bei geringer Hitze köcheln lassen, bis die Soße die gewünschte Konsistenz hat. Die Nudeln zu der Soße geben und kurz in der Pfanne ziehen lassen.",
+                    2);
             service.createRezept(rezept);
-            for (Zutat string : zutatService.getZutaten()) {
-                rezeptZutatenService.createRezeptZutaten(rezept, string, 2);
+            for (Zutat zutat : zutatService.getZutaten()) {
+                rezeptZutatenService.createRezeptZutaten(rezept, zutat, 2);
             }
 
             Logger logger = LoggerFactory.getLogger(getClass());
@@ -157,25 +160,37 @@ public class DataGenerator {
             logger.info(service.findByTitel("Test").toString());
             logger.info("Test");
             logger.info(service.findByTitel("Test").getZutatenFromZutat().toString());
+
+            // rezeptZutatenService.deleteAllByRezept(rezept);
+            logger.info(rezeptZutatenService.findAllByRezept(rezept).toString());
         };
     }
+
     /**
      * @author Joscha Cerny
      * @param service
      * @param zutatService
-     * Sucht alle Zutaten aus der Liste Der Zutaten und erstellt für jede einen Eintrag in einer neu erstellten Tabelle einkaufslisten_eintrag
+     *                     Sucht alle Zutaten aus der Liste Der Zutaten und erstellt
+     *                     für jede einen Eintrag in einer neu erstellten Tabelle
+     *                     einkaufslisten_eintrag
      *
      */
     @Bean
-    public CommandLineRunner einkaufslistenEintrag(EinkaufslistenService service, ZutatService zutatService, EinheitService einheitService) {
+    public CommandLineRunner einkaufslistenEintrag(EinkaufslistenService service, EinkaufslistenRepository repo,
+            ZutatService zutatService,
+            EinheitService einheitService) {
         return args -> {
             Zutat newZutat = zutatService.getZutaten().get(0);
             service.saveEintrag(5, newZutat);
             service.saveEintrag(6, newZutat);
             service.saveEintrag(7, newZutat);
             service.deleteEintragByID(6);
-
+            EinkaufslistenEintrag eintrag = service.getAllEintrag().get(0);
+            eintrag.setMenge(10);
+            System.out.println(eintrag.getId() + " " + eintrag.getMenge() + " " + eintrag.getZutat().getName());
+            repo.save(eintrag);
         };
 
     }
+
 }

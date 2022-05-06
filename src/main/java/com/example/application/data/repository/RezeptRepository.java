@@ -44,4 +44,5 @@ public interface RezeptRepository extends JpaRepository<Rezept, Long> {
 
     List<Rezept> findByTitelContains(String searchTerm);
 
+    void deleteById(long id);
 }

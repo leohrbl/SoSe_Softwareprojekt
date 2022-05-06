@@ -5,6 +5,7 @@ import com.example.application.data.service.RezeptService;
 import com.example.application.data.service.RezeptZutatenService;
 import com.example.application.views.MainLayout;
 import com.example.application.views.ViewFrame;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
@@ -43,12 +44,12 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
 
     @Override
     public void setParameter(BeforeEvent event, String parameter) {
-        try{
+        try {
             setRezeptID(Long.parseLong(parameter));
             Rezept rezept = rezeptService.findById(getRezeptID());
             createViewLayout(rezept);
 
-        }catch(Exception e){
+        } catch (Exception e) {
             event.rerouteTo("");
         }
 
@@ -60,7 +61,7 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
         return HttpServletResponse.SC_NOT_FOUND;
     }
 
-    private void createViewLayout(Rezept rezept){
+    private void createViewLayout(Rezept rezept) {
         Label title = new Label(rezept.getTitel());
 
         Label kategorie = new Label("Fast-Food");
@@ -82,7 +83,6 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
         portionenLayout.setDefaultVerticalComponentAlignment(Alignment.CENTER);
         vLayout.add(portionenLayout, zutatMengeGrid);
 
-
         Button print = new Button(new Icon(VaadinIcon.EDIT));
         Button external = new Button(new Icon(VaadinIcon.CLOSE));
         external.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -103,17 +103,16 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
         image.setHeight("100%");
         image.addClassName("image");
 
-        //hier dann auch noch das grid mit den Zutaten/Mengen Objekten zu dem Rezept lul
+        // hier dann auch noch das grid mit den Zutaten/Mengen Objekten zu dem Rezept
+        // lul
         VerticalLayout content = new VerticalLayout(image, vLayout, zubereitung, text);
         content.setPadding(true);
 
-
         setViewContent(content);
 
-
         // Footer
-        Button printBtn = new Button("Drucken" ,VaadinIcon.PRINT.create());
-
+        Button printBtn = new Button("Drucken", VaadinIcon.PRINT.create());
+        printBtn.addClickListener(e -> UI.getCurrent().navigate("print/" + rezeptId));
         HorizontalLayout footer = new HorizontalLayout(printBtn);
         footer.setPadding(true);
         footer.setSpacing(true);
@@ -122,7 +121,7 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
         loadGridData(rezept);
     }
 
-    public void configureGrid(){
+    public void configureGrid() {
         zutatMengeGrid.addColumn(Menge::getMenge).setHeader("Menge");
         zutatMengeGrid.addColumn(Menge::getEinheit).setHeader("Einheit");
         zutatMengeGrid.addColumn(Menge::getZutat).setHeader("Zutat");
@@ -130,7 +129,7 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
         zutatMengeGrid.addClassName("rezept-view-grid");
     }
 
-    private void loadGridData(Rezept rezept){
+    private void loadGridData(Rezept rezept) {
         zutatMengeGrid.setItems(mengeService.getMengenRezeptZutat(rezeptZutatenService.findAllByRezept(rezept)));
     }
 
@@ -142,8 +141,8 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
         return rezeptId;
     }
 
-    private void editDisplayedMengenByListenerToInputField(){
-        
+    private void editDisplayedMengenByListenerToInputField() {
+
     }
 
 }

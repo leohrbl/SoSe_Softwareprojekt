@@ -3,18 +3,27 @@ package com.example.application.data.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.example.application.data.entity.Kategorie;
 import com.example.application.data.repository.KategorieRepository;
 
+/**
+ * Die Klasse ist die Service-Klasse der Entität Kategorie.
+ * @author Anna Karle
+ * @see Kategorie
+ * @see KategorieRepository 
+ */
+@Service
 public class KategorieService {
 	
 	private final KategorieRepository kategorieRepository;
 	
-	@Autowired
+	
 	public KategorieService(KategorieRepository kategorieRepository) {
 		this.kategorieRepository = kategorieRepository;
 	}
+	
 	
 	public List <Kategorie> getKategorien (){
 		return kategorieRepository.findAll();

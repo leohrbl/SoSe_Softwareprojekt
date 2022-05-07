@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.application.data.entity.Kategorie;
 
 
-public interface KategorieRepository extends JpaRepository<Kategorie, UUID> {
+public interface KategorieRepository extends JpaRepository<Kategorie, Long> {
 	
 	/**
 	 * Sucht nach eine Kategorie anhand des Namens
@@ -15,8 +15,9 @@ public interface KategorieRepository extends JpaRepository<Kategorie, UUID> {
 	 * @return Kategorie
 	 * 
 	 */
+	/**
 	Kategorie findByKategorie(String name);
-	
+	*/
 	/**
 	 * Sucht nach eine Kategorie anhand der Id
 	 * @param id
@@ -28,7 +29,8 @@ public interface KategorieRepository extends JpaRepository<Kategorie, UUID> {
 	 * Löscht eine Kategorie, das Suchkriterium ist der Name
 	 * @param name
 	 */
-	
+	/**
 	void deleteByKategorie(String name);
+	*/
 
 }

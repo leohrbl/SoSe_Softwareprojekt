@@ -22,8 +22,8 @@ public class Kategorie {
 	@Column(unique = true)
 	private String name;
 	
-	@Column(unique = true)
-	private int sequenceNr;
+	@Column
+	private long sequenceNr;
 	
 	public Kategorie () {
 		
@@ -31,6 +31,11 @@ public class Kategorie {
 	
 	public Kategorie(String name) {
 		this.name = name;
+	}
+	
+	public Kategorie(String name, long sequenceNr) {
+		this.name = name;
+		this.sequenceNr = sequenceNr;
 	}
 
 	public long getId() {
@@ -48,11 +53,11 @@ public class Kategorie {
 	
 	
 
-	public int getSequenceNr() {
+	public long getSequenceNr() {
 		return sequenceNr;
 	}
 
-	public void setSequenceNr(int sequenceNr) {
+	public void setSequenceNr(long sequenceNr) {
 		this.sequenceNr = sequenceNr;
 	}
 	

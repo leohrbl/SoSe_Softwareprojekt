@@ -89,4 +89,8 @@ public class RezeptService {
         }
     }
 
+    public void delete(long id) {
+        rezeptRepository.deleteById(id);
+    }
+
 }

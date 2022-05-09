@@ -52,4 +52,5 @@ public interface RezeptRepository extends JpaRepository<Rezept, Long> {
             "where lower(z.titel) like lower(concat('%', :searchTerm, '%')) ")
     List<Rezept> search(@Param("searchTerm") String searchTerm);
 
+    void deleteById(long id);
 }

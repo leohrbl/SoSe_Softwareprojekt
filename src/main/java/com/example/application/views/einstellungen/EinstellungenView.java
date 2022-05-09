@@ -3,7 +3,12 @@ package com.example.application.views.einstellungen;
 
 import com.example.application.data.entity.Einheit;
 import com.example.application.data.service.EinheitService;
+<<<<<<< HEAD:src/main/java/com/example/application/views/einstellungen/EinstellungenView.java
 import com.example.application.views.components.MainLayout;
+=======
+import com.example.application.views.DeleteDialog;
+import com.example.application.views.MainLayout;
+>>>>>>> 025cf38beadae712ba7af8a8fedd8a2b54bfbcc0:src/main/java/com/example/application/views/einstellungenView/EinstellungenView.java
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -37,6 +42,8 @@ public class EinstellungenView extends VerticalLayout{
     Button addKategorie = new Button("Hinzufügen");
     Button removeKategorie = new Button("Löschen");
     EinheitService einheitService;
+
+    DeleteDialog deleteDialog;
     private Map<Tab, Component> tabComponentMap = new LinkedHashMap<>();
     public EinstellungenView(EinheitService einheitService){
         this.einheitService = einheitService;
@@ -212,15 +219,42 @@ public class EinstellungenView extends VerticalLayout{
     private void removeEinheit(){
         if(!gridEinheit.getSelectionModel().getSelectedItems().isEmpty()){
             Einheit einheit = gridEinheit.getSelectionModel().getFirstSelectedItem().get();
-            einheitService.deleteEinheit(einheit);
-            updateGridEinheit();
-            Notification.show("Einheit gelöscht: " + einheit.getEinheit()).addThemeVariants(NotificationVariant.LUMO_ERROR);
+            configuteDeleteDialogEinheit(einheit);
             dialog.close();
 
         }else{
             Notification.show("Löschen nicht möglich, da keine Einheit ausgewählt wurde.").addThemeVariants(NotificationVariant.LUMO_ERROR);
         }
     }
+
+    public void configuteDeleteDialogEinheit(Einheit einheit){
+        deleteDialog = new DeleteDialog("Einheit",einheit.getEinheit(), "Sicher, das die Einheit gelöscht werden soll?" );
+        deleteDialog.open();
+        deleteDialog.getDeleteButton().addClickListener( e -> {
+            einheitService.deleteEinheit(einheit);
+            Notification.show("Einheit gelöscht: " + einheit.getEinheit()).addThemeVariants(NotificationVariant.LUMO_ERROR);
+           updateGridEinheit();
+           deleteDialog.close();
+        });
+        deleteDialog.getCancelButton().addClickListener( e -> {
+            deleteDialog.close();
+        });
+    }
+    /**
+    public void configuteDeleteDialogKategorie(Kategorie kategorie){
+        deleteDialog = new DeleteDialog("Kategorie",kategorie.getKategorie(), "Sicher, das die Kategorie gelöscht werden soll?" );
+        deleteDialog.open();
+        deleteDialog.getDeleteButton().addClickListener( e -> {
+            einheitService.deleteKategorie(kategorie);
+            Notification.show("Kaategorie gelöscht: " + kategorie.getKategorie()).addThemeVariants(NotificationVariant.LUMO_ERROR);
+            updateGridKategorie();
+            deleteDialog.close();
+        });
+        deleteDialog.getCancelButton().addClickListener( e -> {
+            deleteDialog.close();
+        });
+    }
+    */
 }
 
 

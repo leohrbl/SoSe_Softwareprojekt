@@ -1,5 +1,6 @@
 package com.example.application.data.service;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,10 +23,12 @@ import org.springframework.stereotype.Service;
 public class RezeptZutatenService {
 
     private final RezeptZutatenRepository rezeptZutatenRepository;
+    private final RezeptService service;
 
     @Autowired
-    public RezeptZutatenService(RezeptZutatenRepository rezeptZutatenRepository) {
+    public RezeptZutatenService(RezeptZutatenRepository rezeptZutatenRepository, RezeptService service) {
         this.rezeptZutatenRepository = rezeptZutatenRepository;
+        this.service = service;
     }
 
     public void createRezeptZutaten(Rezept rezept, Zutat zutat, int menge) {
@@ -50,5 +53,13 @@ public class RezeptZutatenService {
             liste.add(rezept.getRezept());
         }
         return liste;
+    }
+
+    // DelteById
+
+    public void deleteAllByRezept(Rezept rezept) {
+        rezept.setZutaten(new HashSet<Rezept_Zutat>());
+        service.createRezept(rezept);
+        // rezeptZutatenRepository.deleteAllByRezept(rezept);
     }
 }

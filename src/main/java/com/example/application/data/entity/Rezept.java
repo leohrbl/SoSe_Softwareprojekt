@@ -35,6 +35,7 @@ public class Rezept {
     private Image bild;
     @Column(unique = true)
     private String titel;
+    @Column(columnDefinition = "TEXT")
     private String zubereitung;
     private int portionen;
     @OneToMany(mappedBy = "rezept", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)

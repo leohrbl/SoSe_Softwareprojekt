@@ -12,6 +12,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -206,6 +207,7 @@ public class RezeptuebersichtView extends VerticalLayout {
         } else if (value.isEmpty() && isFilterActive()) {
             filteredItemsByZutat = rezeptZutatenService.findAllRezepteByZutat(zutatFilter.getValue());
             displayedItems = filteredItemsByZutat;
+            updateCardLayout();
             return;
         } else if (isFilterActive()) {
             displayedItems = rezeptService.getRezeptByFilterAndSearchText(value, filteredItemsByZutat);

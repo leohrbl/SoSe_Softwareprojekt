@@ -1,14 +1,13 @@
 package com.example.application.views.einkaufsliste;
 
-import com.example.application.data.service.EinheitService;
 import com.example.application.data.service.EinkaufslistenService;
-import com.example.application.data.service.ZutatService;
-import com.example.application.views.DeleteDialog;
-import com.example.application.views.MainLayout;
-import com.example.application.views.rezeptansicht.Menge;
-import com.example.application.views.rezeptansicht.MengeService;
+import com.example.application.views.components.DeleteDialog;
+import com.example.application.views.components.MainLayout;
+import com.example.application.views.menge.Menge;
+import com.example.application.views.menge.MengeService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H3;
@@ -24,117 +23,163 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Die Klasse zeigt und bearbeitet die Daten der Einkaufslisteneintrag Entität. Die Klasse ermöglicht, durch den Zugriff auf die EinkaufslistenService-Klasse,
+ * das Löschen der gesamten Einkaufsliste und das Drucken von nicht abgewählten Zutaten.
+ * @see EinkaufslistenService
+ * @see // hier den Printservice hin
+ * @author Léo Hérubel
+ */
+@CssImport(value = "./themes/rezeptbuch/einkaufsgridStyle.css", themeFor = "vaadin-grid")
 @PageTitle("Einkaufsliste")
 @Route(value = "einkaufsliste", layout = MainLayout.class)
 public class EinkaufslisteView extends VerticalLayout {
 
-    private ZutatService zutatService;
-    private EinheitService einheitService;
-    private Button deleteEinkaufslisteBtn = new Button("Einkaufsliste löschen");
-    private Button printEinkaufslisteBtn = new Button("Drucken", VaadinIcon.PRINT.create());
-    Grid<Menge> einkaufsGrid = new Grid<Menge>(Menge.class, false);
-    private H3 heading = new H3("Einkaufsliste");
-    private DeleteDialog deleteDialog;
+    private Grid<Menge> einkaufsGrid;
     private EinkaufslistenService einkaufslistenService;
     private MengeService mengeService;
+    private DeleteDialog deleteDialog;
     private List<Menge> displayedItems;
 
-    public EinkaufslisteView(EinkaufslistenService einkaufslistenService){
+    /**
+     * Konstruktor zum Initialisieren der Instanzvariablen. Zudem wird das Grid konfiguriert und die View erstellt.
+     * @param einkaufslistenService
+     */
+    public EinkaufslisteView(EinkaufslistenService einkaufslistenService) {
         this.einkaufslistenService = einkaufslistenService;
         this.mengeService = new MengeService();
         this.displayedItems = mengeService.getMengenEinkaufsliste(einkaufslistenService.getAllEintrag());
-        deleteDialog = new DeleteDialog("Einkaufsliste", "Einkaufsliste", "Sicher, dass du die Einkaufsliste löschen möchtest?");
-        configureDeleteDialog();
-        styleHeading();
+        this.einkaufsGrid = new Grid<Menge>(Menge.class, false);
+        this.deleteDialog = createDeleteDialog();
         configureGrid();
-        configureButtons();
-        add(createViewLayout());
-
+        add(createView());
     }
 
-
-    private void styleHeading(){
-        heading.getStyle().set("margin", "0");
-    }
-
-    private void configureGrid(){
+    /**
+     * Methode zum Konfigurieren des Grids. Es werden zudem die Daten das erste Mal nach dem Aufruf im Konstruktor in das Grid geladen.
+     */
+    private void configureGrid() {
         einkaufsGrid.setSelectionMode(Grid.SelectionMode.MULTI);
         einkaufsGrid.addColumn(Menge::getZutat).setHeader("Zutat").setAutoWidth(true);
         einkaufsGrid.addColumn(Menge::getMenge).setHeader("Menge").setAutoWidth(true);
         einkaufsGrid.addColumn(Menge::getEinheit).setHeader("Einheit").setAutoWidth(true);
         einkaufsGrid.setWidth("50%");
         einkaufsGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        einkaufsGrid.addThemeName("grid-selection-theme");
+        // Initial Data load
         loadData();
-
     }
 
-    private VerticalLayout createViewLayout(){
-         return new VerticalLayout(heading, einkaufsGrid ,new HorizontalLayout(printEinkaufslisteBtn, deleteEinkaufslisteBtn));
+    /**
+     * Methode zum Erzeugen der View mit bereits gefüllten Daten.
+     * @return gibt ein VerticalLayout zurück, damit das Layout mit der add Methode im Konstruktor im Frontend angezeigt werden kann.
+     */
+    private VerticalLayout createView() {
+        return new VerticalLayout(createHeading(), einkaufsGrid, new HorizontalLayout(createPrintEinkaufslisteBtn(), createDeleteEinkaufslisteBtn()));
     }
 
-    private void configureButtons() {
-        printEinkaufslisteBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        printEinkaufslisteBtn.addClickListener(e -> printEinkaufsliste());
-
+    /**
+     * Methode zum Erzeugen eines Löschen Buttons zum Löschen der Einkaufsliste.
+     * @return gibt den Delete Button zum Hinzufügen in ein Layout zurück.
+     */
+    private Button createDeleteEinkaufslisteBtn() {
+        Button deleteEinkaufslisteBtn = new Button("Einkaufsliste löschen");
         deleteEinkaufslisteBtn.addThemeVariants(ButtonVariant.LUMO_ERROR);
         deleteEinkaufslisteBtn.addClickListener(e -> deleteDialog.open());
+        return deleteEinkaufslisteBtn;
     }
 
-    private void loadData() {
-        einkaufsGrid.setItems((displayedItems));
+    /**
+     * Methode zum Erzeugen eines Drucken Buttons zum Drucken der Einkaufsliste.
+     * @return gibt den Drucken Button zum Hinzufügen in ein Layout zurück.
+     */
+    private Button createPrintEinkaufslisteBtn() {
+        Button printEinkaufslisteBtn = new Button("Drucken", VaadinIcon.PRINT.create());
+        printEinkaufslisteBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        printEinkaufslisteBtn.addClickListener(e -> printEinkaufsliste());
+        return printEinkaufslisteBtn;
     }
 
-    private void configureDeleteDialog(){
+    /**
+     * Methode zum Erzeugen der Überschrift in der RezeptView.
+     * @return gibt einen H3 zum Hinzufügen in ein Layout zurück.
+     */
+    private H3 createHeading() {
+        H3 heading = new H3("Einkaufsliste");
+        heading.getStyle().set("margin", "0");
+        return heading;
+    }
+
+    /**
+     * Methode zum Erzeugen des Delete Dialogs. Der Delete dient dazu, dass der User seine Entscheidung zum Löschen der Einkaufsliste überprüfen kann.
+     * @return gibt einen DeleteDialog zurück. Dieser wird zur weiteren Verwendung der Instanzvariable deleteDialog zugewiesen.
+     */
+    private DeleteDialog createDeleteDialog() {
+        DeleteDialog deleteDialog = new DeleteDialog("Einkaufsliste", "Einkaufsliste", "Sicher, dass du die Einkaufsliste löschen möchtest?");
         deleteDialog.getDeleteButton().addClickListener(e -> {
             deleteEinkaufsliste();
         });
         deleteDialog.getCancelButton().addClickListener(e -> {
             deleteDialog.close();
         });
+        return deleteDialog;
     }
 
+    /**
+     * Diese Methode setzt die Items in dem Grid anhand der Variable displayedItems. Nachdem die displayedItems Variable manipuliert wurde, wird diese Methode zum Anzeigen der neuen Daten aufgerufen.
+     */
+    private void loadData() {
+        einkaufsGrid.setItems((displayedItems));
+    }
 
+    /**
+     * Die Methode delegiert den DeleteDialog und prüft die Entscheidung des Users, die Einkaufsliste löschen zu wollen. Zudem wird der Serviceklasse mitgeteilt, dass die Operation deleteAll() durchgeführt werden soll.
+     * Bei erfolgreicher Ausführung wird dem User eine Benachrichtigung angezeigt. Ansonsten wird eine Fehlermeldung in der Nutzeroberfläche ausgegeben.
+     */
     private void deleteEinkaufsliste() {
-
-        if(displayedItems.isEmpty()){
+        if (displayedItems.isEmpty()) {
             Notification.show("Keine Einkaufslisteneinträge vorhanden").addThemeVariants(NotificationVariant.LUMO_ERROR);
             deleteDialog.close();
             return;
         }
         String response = einkaufslistenService.deleteAll();
-        if(response == "success"){
+        if (response == "success") {
             displayedItems.clear();
             einkaufsGrid.setItems(displayedItems);
             Notification.show("Einkaufsliste gelöscht!").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-        }else{
+        } else {
             Notification.show("Ein Fehler ist aufgetreten").addThemeVariants(NotificationVariant.LUMO_ERROR);
         }
         deleteDialog.close();
     }
 
+    /**
+     * Methode zum Drucken der aktuellen Daten in der EinkaufslisteView.
+     */
     private void printEinkaufsliste() {
-
-        if(displayedItems.isEmpty()) {
+        if (displayedItems.isEmpty()) {
             Notification.show("Keine Einkaufslisteneinträge vorhanden").addThemeVariants(NotificationVariant.LUMO_ERROR);
             return;
         }
-
         List<Menge> printList = getNotSelectedItems();
         // hier dann die übergabe an den Printservice
     }
 
+    /**
+     * In dem Grid lassen sich unterschiedliche Felder selektieren. Eine oder mehrere Reihen werden selektiert. Da nur die nicht selektierten Daten ausgedruckt werden sollen,
+     * sucht diese Methode die nicht selektierten Komponenten der displayedItems.
+     * @return Es wird eine Liste von dem Container-Objekt Menge zurückgegeben. Diese Daten können anschließend ausgedruckt werden.
+     */
     private List<Menge> getNotSelectedItems() {
-
-        if(displayedItems.isEmpty()) {
+        if (displayedItems.isEmpty()) {
             Notification.show("Keine Einkaufslisteneinträge vorhanden").addThemeVariants(NotificationVariant.LUMO_ERROR);
             return null;
         }
-
         List<Menge> mengenList = new LinkedList<Menge>();
         Set<Menge> gridSelectedItems = einkaufsGrid.getSelectedItems();
 
-        for(Menge menge: gridSelectedItems) {
-            if(!displayedItems.contains(menge)) {
+        for (Menge menge : gridSelectedItems) {
+            if (!displayedItems.contains(menge)) {
                 mengenList.add(menge);
             }
         }

@@ -1,11 +1,11 @@
-package com.example.application.views.zutatenmanager;
+package com.example.application.views.zutat;
 
 import com.example.application.data.entity.Einheit;
 import com.example.application.data.entity.Zutat;
 import com.example.application.data.service.EinheitService;
 import com.example.application.data.service.ZutatService;
-import com.example.application.views.DeleteDialog;
-import com.example.application.views.MainLayout;
+import com.example.application.views.components.DeleteDialog;
+import com.example.application.views.components.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;

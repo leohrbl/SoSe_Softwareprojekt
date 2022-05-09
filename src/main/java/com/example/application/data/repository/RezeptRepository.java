@@ -3,6 +3,7 @@ package com.example.application.data.repository;
 import java.util.List;
 
 import com.example.application.data.entity.Rezept;
+import com.example.application.data.entity.Zutat;
 import com.example.application.data.service.RezeptService;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -42,6 +43,13 @@ public interface RezeptRepository extends JpaRepository<Rezept, Long> {
      * 
      */
 
-    List<Rezept> findByTitelContains(String searchTerm);
+    /**
+     * @author Léo Hérubel
+     * @param searchTerm
+     * @return
+     */
+    @Query("select z from Rezept z " +
+            "where lower(z.titel) like lower(concat('%', :searchTerm, '%')) ")
+    List<Rezept> search(@Param("searchTerm") String searchTerm);
 
 }

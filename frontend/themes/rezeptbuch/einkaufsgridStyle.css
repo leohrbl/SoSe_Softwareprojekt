@@ -1,0 +1,5 @@
+/* @author Léo Hérubel */
+:host([theme~="grid-selection-theme"]) [part~="row"][selected] [part~="body-cell"]:not([part~="details-cell"]) {
+   text-decoration: line-through;
+   background-color: rgb(255,114,118);
+}

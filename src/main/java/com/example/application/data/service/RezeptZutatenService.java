@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * Die Klasse ist die Serice-Klasse der Enität @Repzept_Zutaten
- * 
+ *
  * @author Philipp Laupichler
  * @see Rezept_Zutat
  * @see RezeptZutatenRepository

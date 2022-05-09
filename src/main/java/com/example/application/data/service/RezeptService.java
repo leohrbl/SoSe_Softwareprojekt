@@ -1,16 +1,18 @@
 package com.example.application.data.service;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import com.example.application.data.entity.Rezept;
 import com.example.application.data.repository.RezeptRepository;
 
+import com.example.application.views.rezept.display.RezeptuebersichtView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
  * Die Klasse ist die Serice-Klasse der Enität @Rezept
- * 
+ *
  * @author Philipp Laupichler
  * @see Rezept
  * @see RezeptRepository
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 public class RezeptService {
 
     private final RezeptRepository rezeptRepository;
+
 
     @Autowired
     public RezeptService(RezeptRepository rezeptRepository) {
@@ -44,6 +47,28 @@ public class RezeptService {
         return true;
     }
 
+    /**
+     * Die Methode erstellt eine Ergebnisliste der Zutaten anhand eines Suchtexts. Anschließend wird geprüft, welche Objekte des Suchergebnisses ebenfalls in den übergebenen bereits
+     * gefilterten Rezepten vorhanden sind. Dadurch wird eine gefilterte Ergebnisliste mit einer Ergebnisliste der Textsuche kombiniert und zurückgegeben.
+     * @see RezeptuebersichtView
+     * @param searchText
+     * @param filteredItemsByZutat
+     * @return Liste (Java.Util.Collection) von den kombinierten Ergebnislisten
+     * @author Léo Hérubel
+     */
+    public List<Rezept> getRezeptByFilterAndSearchText(String searchText, List<Rezept> filteredItemsByZutat) {
+        List<Rezept> filteredItemsByText = searchRezeptByFilterText(searchText);
+        List<Rezept> filteredItemsByTextAndZutat = new LinkedList<>();
+        for (Rezept filteredRezeptByZutat : filteredItemsByZutat) {
+            for (Rezept filteredRezeptByText : filteredItemsByText) {
+                if (filteredRezeptByText.getId() == filteredRezeptByZutat.getId()) {
+                    filteredItemsByTextAndZutat.add(filteredRezeptByText);
+                }
+            }
+        }
+        return filteredItemsByTextAndZutat;
+    }
+
     public void deleteRezept(Rezept rezept) {
         rezeptRepository.delete(rezept);
     }
@@ -60,7 +85,7 @@ public class RezeptService {
         if (filterText == null || filterText.isEmpty()) {
             return null;
         } else {
-            return rezeptRepository.findByTitelContains(filterText);
+            return rezeptRepository.search(filterText);
         }
     }
 

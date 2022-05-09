@@ -1,4 +1,4 @@
-package com.example.application.views.rezeptansicht;
+package com.example.application.views.menge;
 
 import com.example.application.data.entity.Einheit;
 import com.example.application.data.entity.Zutat;
@@ -31,7 +31,7 @@ public class Menge {
         this.einheit = einheit;
     }
 
-    public void setMenge(int menge) {
+    public void setMenge(double menge) {
         this.menge = menge;
     }
 

@@ -1,9 +1,9 @@
-package com.example.application.views.einstellungenView;
+package com.example.application.views.einstellungen;
 
 
 import com.example.application.data.entity.Einheit;
 import com.example.application.data.service.EinheitService;
-import com.example.application.views.MainLayout;
+import com.example.application.views.components.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -26,7 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @PageTitle("Rezeptbuch")
-@Route(value = "/einstellugnen", layout = MainLayout.class)
+@Route(value = "/einstellungen", layout = MainLayout.class)
 public class EinstellungenView extends VerticalLayout{
 
     Grid<Einheit> gridEinheit = new Grid<>(Einheit.class, false);

@@ -204,6 +204,8 @@ public class RezeptuebersichtView extends VerticalLayout {
         if (value.isEmpty() && !isFilterActive()) {
             displayedItems = rezeptService.getAllRezepte();
         } else if (value.isEmpty() && isFilterActive()) {
+            filteredItemsByZutat = rezeptZutatenService.findAllRezepteByZutat(zutatFilter.getValue());
+            displayedItems = filteredItemsByZutat;
             return;
         } else if (isFilterActive()) {
             displayedItems = rezeptService.getRezeptByFilterAndSearchText(value, filteredItemsByZutat);

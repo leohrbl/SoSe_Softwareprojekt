@@ -164,6 +164,7 @@ public class RezeptuebersichtView extends VerticalLayout {
         if (zutatFilter.getValue() == null && !isSearching()) {
             displayedItems = rezeptService.getAllRezepte();
         } else if (zutatFilter.getValue() == null || zutatFilter.getValue() != null && isSearching()) {
+            filteredItemsByZutat = rezeptZutatenService.findAllRezepteByZutat(zutatFilter.getValue());
             handleSearch();
         } else {
             filteredItemsByZutat = rezeptZutatenService.findAllRezepteByZutat(zutatFilter.getValue());

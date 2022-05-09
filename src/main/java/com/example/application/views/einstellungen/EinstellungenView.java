@@ -3,12 +3,8 @@ package com.example.application.views.einstellungen;
 
 import com.example.application.data.entity.Einheit;
 import com.example.application.data.service.EinheitService;
-<<<<<<< HEAD:src/main/java/com/example/application/views/einstellungen/EinstellungenView.java
+import com.example.application.views.components.DeleteDialog;
 import com.example.application.views.components.MainLayout;
-=======
-import com.example.application.views.DeleteDialog;
-import com.example.application.views.MainLayout;
->>>>>>> 025cf38beadae712ba7af8a8fedd8a2b54bfbcc0:src/main/java/com/example/application/views/einstellungenView/EinstellungenView.java
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -27,6 +23,7 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 

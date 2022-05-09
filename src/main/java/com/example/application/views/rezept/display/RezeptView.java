@@ -124,7 +124,7 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
         HorizontalLayout portionenLayout = new HorizontalLayout();
         Paragraph portionenText1 = new Paragraph("Zutaten für ");
         Paragraph portionenText2 = new Paragraph("Portionen");
-        portionenLayout.add(portionenText1, portionenInput, portionenText1);
+        portionenLayout.add(portionenText1, portionenInput, portionenText2);
         portionenLayout.setDefaultVerticalComponentAlignment(Alignment.CENTER);
         return portionenLayout;
     }

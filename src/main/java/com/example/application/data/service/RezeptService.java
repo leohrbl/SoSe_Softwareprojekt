@@ -7,7 +7,9 @@ import com.example.application.data.entity.Rezept;
 import com.example.application.data.repository.RezeptRepository;
 
 import com.example.application.views.rezept.display.RezeptuebersichtView;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -94,5 +96,6 @@ public class RezeptService {
     public void delete(long id) {
         rezeptRepository.deleteById(id);
     }
-
+   
+   
 }

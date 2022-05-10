@@ -241,4 +241,15 @@ public class DataGenerator {
         };
     }
     */
+    /**
+    @Bean
+    public CommandLineRunner loadKategorien(KategorieService service) {
+    	return args -> {
+    		service.saveKategorie("Vorspeisen");
+    		service.saveKategorie("Nachspeisen");
+    		service.saveKategorie("Getränke");
+    		
+    	};
+    }
+    */
 }

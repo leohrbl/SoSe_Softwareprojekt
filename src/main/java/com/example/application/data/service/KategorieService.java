@@ -3,9 +3,11 @@ package com.example.application.data.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.example.application.data.entity.Kategorie;
+import com.example.application.data.entity.Rezept;
 import com.example.application.data.repository.KategorieRepository;
 
 /**
@@ -52,11 +54,19 @@ public class KategorieService {
 	public String updateKategorie(String newName, long id) {
 		if (kategorieRepository.findById(id) == null ) {
 			return "Kategorie existiert nicht";
-		}
-		kategorieRepository.findById(id).setName(newName);
+		}		
+		Kategorie kategorie = kategorieRepository.findById(id);
+	    kategorie.setName(newName);
+	    kategorieRepository.save(kategorie);
 		return "success";
 	}
 	
+	 public List<Kategorie> sortBySequenceNr(){
+	    	Sort sort = Sort.by("sequenceNr").ascending();
+	    	List <Kategorie> kategorien = kategorieRepository.findAll(sort);
+	    	return kategorien;
+	 }
+
 	
 
 }

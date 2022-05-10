@@ -17,7 +17,7 @@ public class Kategorie {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private Long id;
 	
 	@Column(unique = true)
 	private String name;
@@ -38,7 +38,7 @@ public class Kategorie {
 		this.sequenceNr = sequenceNr;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 

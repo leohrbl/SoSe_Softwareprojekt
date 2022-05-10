@@ -1,10 +1,12 @@
-package com.example.application.views.rezeptansicht;
+package com.example.application.views.rezept.display;
 
 import com.example.application.data.entity.Rezept;
 import com.example.application.data.service.RezeptService;
 import com.example.application.data.service.RezeptZutatenService;
-import com.example.application.views.MainLayout;
-import com.example.application.views.ViewFrame;
+import com.example.application.views.components.MainLayout;
+import com.example.application.views.components.ViewFrame;
+import com.example.application.views.menge.Menge;
+import com.example.application.views.menge.MengeService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;

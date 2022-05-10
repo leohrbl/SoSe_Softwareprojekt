@@ -29,6 +29,7 @@ import com.vaadin.flow.component.html.Image;
  */
 @Entity
 public class Rezept {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

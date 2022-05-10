@@ -132,19 +132,24 @@ public class DataGenerator {
      * @param rezeptZutatenService
      * @return
      */
+
     @Bean
     public CommandLineRunner loadRezept(RezeptService service, ZutatService zutatService,
             RezeptZutatenService rezeptZutatenService) {
         return args -> {
+
             Rezept rezept = new Rezept(new Image(
                     "https://media.gq-magazin.de/photos/5cf5323293d17014eb72ae59/1:1/w_1999,h_1999,c_limit/gesundheit-zuviel-essen.jpg",
                     "Essen"), "Test", "zubereitung", 2);
+            Logger logger = LoggerFactory.getLogger(getClass());
+            logger.info(rezept.toString());
             service.createRezept(rezept);
             for (Zutat string : zutatService.getZutaten()) {
                 rezeptZutatenService.createRezeptZutaten(rezept, string, 2);
             }
 
-            Logger logger = LoggerFactory.getLogger(getClass());
+
+
             logger.info("Einheiten wurden durch Service Klasse erzeugt");
             logger.info(service.getAllRezepte().toString());
             logger.info(rezeptZutatenService.findAllByRezept(rezept).toString());
@@ -159,6 +164,7 @@ public class DataGenerator {
             logger.info(service.findByTitel("Test").getZutatenFromZutat().toString());
         };
     }
+
     /**
      * @author Joscha Cerny
      * @param service

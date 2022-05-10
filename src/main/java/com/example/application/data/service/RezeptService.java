@@ -7,6 +7,7 @@ import com.example.application.data.repository.RezeptRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Die Klasse ist die Serice-Klasse der Enität @Rezept
@@ -29,6 +30,7 @@ public class RezeptService {
         return rezeptRepository.findAll();
     }
 
+//    @Transactional
     public void createRezept(Rezept rezept) {
         rezeptRepository.save(rezept);
     }

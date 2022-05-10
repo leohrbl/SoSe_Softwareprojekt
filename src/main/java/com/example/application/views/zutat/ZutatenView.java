@@ -1,14 +1,13 @@
-package com.example.application.views.zutatenmanager;
+package com.example.application.views.zutat;
 
-import com.example.application.data.entity.Einheit;
 import com.example.application.data.entity.Zutat;
 import com.example.application.data.service.EinheitService;
 import com.example.application.data.service.ZutatService;
-import com.example.application.views.DeleteDialog;
-import com.example.application.views.MainLayout;
+import com.example.application.views.components.AddZutatDialog;
+import com.example.application.views.components.DeleteDialog;
+import com.example.application.views.components.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
@@ -17,7 +16,6 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -75,8 +73,15 @@ public class ZutatenView extends VerticalLayout {
      * Beim Klick auf Löschen wird die Methode removeZutaten() aufgerufen, um eine ausgewählt Zutat zu löschen.
      */
     public void configureButtons(){
+        AddZutatDialog addZutatDialog = new AddZutatDialog(einheitService, zutatService);
         addZutat.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        addZutat.addClickListener(e -> addZutatDialog().open());
+        addZutat.addClickListener(e -> {
+            addZutatDialog.open();
+        });
+
+        addZutatDialog.addDetachListener(e -> {
+           updateGrid();
+        });
 
         removeZutat.addThemeVariants(ButtonVariant.LUMO_ERROR);
         removeZutat.addClickListener(e -> removeZutaten());
@@ -86,7 +91,8 @@ public class ZutatenView extends VerticalLayout {
      * Das Dialogfenster zum Hinzufügen von Zutaten wird erstellt und konfiguriert.
      *
      * @return Das konfigurierte Dialogfenster wird zurückgegeben.
-     */
+
+
     private Dialog addZutatDialog(){
         dialog = new Dialog();
         dialog.add(new H5("Zutat hinzufügen"));
@@ -133,6 +139,7 @@ public class ZutatenView extends VerticalLayout {
         dialog.add(new HorizontalLayout(speichern, abbrechen));
         return dialog;
     }
+     */
 
     /**
      * Das Grid / Die Tabelle wird konfiguriert, indem die Spalten, das Theme und die Breite festgelegt werden.

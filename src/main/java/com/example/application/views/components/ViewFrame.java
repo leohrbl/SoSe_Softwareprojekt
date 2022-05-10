@@ -1,4 +1,4 @@
-package com.example.application.views;
+package com.example.application.views.components;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasStyle;

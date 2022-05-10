@@ -45,14 +45,14 @@ public class Rezept_Zutat {
     public Rezept_Zutat() {
     }
 
-    public Rezept_Zutat(long id, Rezept rezept, Zutat zutat, int Menge) {
+    public Rezept_Zutat(long id, Rezept rezept, Zutat zutat, double Menge) {
         this.id = id;
         this.rezept = rezept;
         this.zutat = zutat;
         this.Menge = Menge;
     }
 
-    public Rezept_Zutat(Rezept rezept, Zutat zutat, int Menge) {
+    public Rezept_Zutat(Rezept rezept, Zutat zutat, double Menge) {
 
         this.rezept = rezept;
         this.zutat = zutat;
@@ -87,7 +87,7 @@ public class Rezept_Zutat {
         return this.Menge;
     }
 
-    public void setMenge(int Menge) {
+    public void setMenge(double Menge) {
         this.Menge = Menge;
     }
 

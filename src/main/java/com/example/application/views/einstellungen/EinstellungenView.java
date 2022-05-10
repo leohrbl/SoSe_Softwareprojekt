@@ -1,10 +1,10 @@
-package com.example.application.views.einstellungenView;
+package com.example.application.views.einstellungen;
 
 
 import com.example.application.data.entity.Einheit;
 import com.example.application.data.service.EinheitService;
-import com.example.application.views.DeleteDialog;
-import com.example.application.views.MainLayout;
+import com.example.application.views.components.DeleteDialog;
+import com.example.application.views.components.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;

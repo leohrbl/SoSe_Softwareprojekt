@@ -1,8 +1,8 @@
-package com.example.application.views;
+package com.example.application.views.components;
 
-import com.example.application.views.einstellungenView.EinstellungenView;
-import com.example.application.views.rezeptansicht.RezeptansichtView;
-import com.example.application.views.zutatenmanager.ZutatenView;
+import com.example.application.views.einstellungen.EinstellungenView;
+import com.example.application.views.rezept.display.RezeptansichtView;
+import com.example.application.views.zutat.ZutatenView;
 import com.example.application.views.einkaufsliste.EinkaufslisteView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;

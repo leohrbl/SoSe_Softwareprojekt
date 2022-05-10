@@ -28,7 +28,7 @@ public class RezeptZutatenService {
         this.rezeptZutatenRepository = rezeptZutatenRepository;
     }
 
-    public void createRezeptZutaten(Rezept rezept, Zutat zutat, int menge) {
+    public void createRezeptZutaten(Rezept rezept, Zutat zutat, double menge) {
         rezeptZutatenRepository.save(new Rezept_Zutat(rezept, zutat, menge));
     }
 

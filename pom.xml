@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
     <!-- Project from https://start.vaadin.com/ -->
     <groupId>com.example.application</groupId>
-    <artifactId>flowcrmtutorial</artifactId>
-    <name>Flow CRM Tutorial</name>
+    <artifactId>rezeptbuch</artifactId>
+    <name>Rezeptbuch</name>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 

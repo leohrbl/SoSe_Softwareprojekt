@@ -1,4 +1,4 @@
-package com.example.application.views.rezeptansicht;
+package com.example.application.views.menge;
 
 import com.example.application.data.entity.Einheit;
 import com.example.application.data.entity.Zutat;

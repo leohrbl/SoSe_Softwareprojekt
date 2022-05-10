@@ -1,4 +1,4 @@
-package com.example.application.views.rezeptansicht;
+package com.example.application.views.components;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.H1;

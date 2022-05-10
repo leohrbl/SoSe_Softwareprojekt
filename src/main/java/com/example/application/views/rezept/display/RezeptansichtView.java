@@ -1,14 +1,13 @@
-package com.example.application.views.rezeptansicht;
+package com.example.application.views.rezept.display;
 
 import com.example.application.data.entity.Rezept;
 import com.example.application.data.service.RezeptService;
-import com.example.application.views.MainLayout;
-import com.vaadin.flow.component.ComponentEvent;
+import com.example.application.views.components.MainLayout;
+import com.example.application.views.components.RezeptCard;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -67,12 +66,13 @@ public class RezeptansichtView extends VerticalLayout {
     }
 
     private void addRezept(){
-
+        UI.getCurrent().navigate("create");
     }
 
     private HorizontalLayout loadCards (){
         List<Rezept> rezeptList = rezeptService.getAllRezepte();
         HorizontalLayout cardLayout = new HorizontalLayout();
+        cardLayout.setWidth("100%");
         for(Rezept rezept : rezeptList){
             RezeptCard card = new RezeptCard(rezept.getTitel(), "Indisch", rezept.getId(), rezept.getBild());
             cardLayout.add(card);

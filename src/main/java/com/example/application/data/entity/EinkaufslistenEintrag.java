@@ -38,7 +38,7 @@ public class EinkaufslistenEintrag {
         return this.menge;
     }
 
-    public void setMenge(Integer menge)
+    public void setMenge(double menge)
     {
         this.menge = menge;
     }

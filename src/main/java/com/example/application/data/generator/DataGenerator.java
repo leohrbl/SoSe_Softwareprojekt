@@ -27,7 +27,7 @@ public class DataGenerator {
 
     @Bean
     public CommandLineRunner loadData(ContactRepository contactRepository, CompanyRepository companyRepository,
-            StatusRepository statusRepository) {
+                                      StatusRepository statusRepository) {
 
         return args -> {
             Logger logger = LoggerFactory.getLogger(getClass());
@@ -68,22 +68,23 @@ public class DataGenerator {
     }
 
     /**
-     * @author Philipp Laupichler
      * @param service
-     * @return
-     *         Die Methode erzeugt zwei Einheiten: ML und Wasser
-     *         Diese werden mit dem Service in der Datenbank gespeichert
+     * @return Die Methode erzeugt zwei Einheiten: ML und Wasser
+     * Diese werden mit dem Service in der Datenbank gespeichert
+     * @author Philipp Laupichler
      */
     @Bean
     public CommandLineRunner createService(EinheitService service) {
         return args -> {
             service.createEinheit("ML");
             service.createEinheit("KG");
+            service.createEinheit("L");
+            service.createEinheit("G");
+            service.createEinheit("Flasche");
+            service.createEinheit("Stück");
+            service.createEinheit("Scheibe");
             Logger logger = LoggerFactory.getLogger(getClass());
             logger.info("Einheiten wurden durch Service Klasse erzeugt");
-            logger.info(service.findById(1l).getEinheit());
-            service.updateEinheit("L", 1l);
-            logger.info(service.findById(1l).getEinheit());
         };
     }
 
@@ -91,14 +92,14 @@ public class DataGenerator {
      * Die Methode erzeugt Zutatenobjekte, ordnet diese Einheiten zu, welche in der
      * vorherigen Methode erstellt wurden, und testet die Methoden der Service
      * Klasse der Entität Zutat.
-     * 
-     * @author Léo Hérubel
-     * @author Léo Hérubel
+     *
      * @param zutatService
      * @param einheitService
+     * @return
+     * @author Léo Hérubel
+     * @author Léo Hérubel
      * @see ZutatService
      * @see com.example.application.data.repository.ZutatRepository
-     * @return
      */
     @Bean
     public CommandLineRunner loadZutaten(ZutatService zutatService, EinheitService einheitService) {
@@ -106,10 +107,29 @@ public class DataGenerator {
             String name1 = "Milch";
             String name2 = "Wurst";
             String name3 = "Käse";
+            String name4 = "Salat";
+            String name5 = "Hackfleisch";
+            String name6 = "Nudeln";
+            String name7 = "Brot";
+            String name8 = "Reis";
+            String name9 = "Tomate";
+            String name10 = "Joghurt";
+            String name11 = "Butter";
+            String name12 = "Korn";
             List<Einheit> einheitList = new LinkedList<Einheit>(einheitService.getEinheiten());
             String response1 = zutatService.saveZutat(name1, einheitList.get(0));
             String response2 = zutatService.saveZutat(name2, einheitList.get(1));
-            String response3 = zutatService.saveZutat(name3, einheitList.get(1));
+            String response3 = zutatService.saveZutat(name3, einheitList.get(6));
+            zutatService.saveZutat(name4, einheitList.get(1));
+            zutatService.saveZutat(name5, einheitList.get(3));
+            zutatService.saveZutat(name6, einheitList.get(3));
+            zutatService.saveZutat(name7, einheitList.get(6));
+            zutatService.saveZutat(name8, einheitList.get(3));
+            zutatService.saveZutat(name9, einheitList.get(5));
+            zutatService.saveZutat(name10, einheitList.get(0));
+            zutatService.saveZutat(name11, einheitList.get(3));
+            zutatService.saveZutat(name11, einheitList.get(4));
+
             Logger logger = LoggerFactory.getLogger(getClass());
             logger.info(String.valueOf(einheitList.size()));
             logger.info(response1);
@@ -126,7 +146,7 @@ public class DataGenerator {
     /**
      * Nur zum Testen!!!
      * Erklärung folgt später
-     * 
+     *
      * @param service
      * @param zutatService
      * @param rezeptZutatenService
@@ -135,7 +155,7 @@ public class DataGenerator {
 
     @Bean
     public CommandLineRunner loadRezept(RezeptService service, ZutatService zutatService,
-            RezeptZutatenService rezeptZutatenService) {
+                                        RezeptZutatenService rezeptZutatenService) {
         return args -> {
 
             Rezept rezept = new Rezept(new Image(
@@ -147,7 +167,41 @@ public class DataGenerator {
             for (Zutat string : zutatService.getZutaten()) {
                 rezeptZutatenService.createRezeptZutaten(rezept, string, 2);
             }
-
+            Rezept rezept2 = new Rezept(new Image(
+                    "https://media.gq-magazin.de/photos/5cf5323293d17014eb72ae59/1:1/w_1999,h_1999,c_limit/gesundheit-zuviel-essen.jpg",
+                    "Essen"), "Test124412", "zubereitung", 2);
+            service.createRezept(rezept2);
+            for (Zutat string : zutatService.getZutaten()) {
+                rezeptZutatenService.createRezeptZutaten(rezept2, string, 2);
+            }
+            Rezept rezept3 = new Rezept(new Image(
+                    "https://media.gq-magazin.de/photos/5cf5323293d17014eb72ae59/1:1/w_1999,h_1999,c_limit/gesundheit-zuviel-essen.jpg",
+                    "Essen"), "Test1243", "zubereitung", 2);
+            service.createRezept(rezept3);
+            for (Zutat string : zutatService.getZutaten()) {
+                rezeptZutatenService.createRezeptZutaten(rezept3, string, 2);
+            }
+            Rezept rezep4 = new Rezept(new Image(
+                    "https://media.gq-magazin.de/photos/5cf5323293d17014eb72ae59/1:1/w_1999,h_1999,c_limit/gesundheit-zuviel-essen.jpg",
+                    "Essen"), "Test1324", "zubereitung", 2);
+            service.createRezept(rezep4);
+            for (Zutat string : zutatService.getZutaten()) {
+                rezeptZutatenService.createRezeptZutaten(rezep4, string, 2);
+            }
+            Rezept rezept5 = new Rezept(new Image(
+                    "https://media.gq-magazin.de/photos/5cf5323293d17014eb72ae59/1:1/w_1999,h_1999,c_limit/gesundheit-zuviel-essen.jpg",
+                    "Essen"), "Test123", "zubereitung", 2);
+            service.createRezept(rezept5);
+            for (Zutat string : zutatService.getZutaten()) {
+                rezeptZutatenService.createRezeptZutaten(rezept5, string, 2);
+            }
+            Rezept rezept6 = new Rezept(new Image(
+                    "https://media.gq-magazin.de/photos/5cf5323293d17014eb72ae59/1:1/w_1999,h_1999,c_limit/gesundheit-zuviel-essen.jpg",
+                    "Essen"), "Test12", "zubereitung", 2);
+            service.createRezept(rezept6);
+            for (Zutat string : zutatService.getZutaten()) {
+                rezeptZutatenService.createRezeptZutaten(rezept6, string, 2);
+            }
 
 
             logger.info("Einheiten wurden durch Service Klasse erzeugt");
@@ -165,6 +219,7 @@ public class DataGenerator {
         };
     }
 
+
     /**
      * @author Joscha Cerny
      * @param service
@@ -172,6 +227,7 @@ public class DataGenerator {
      * Sucht alle Zutaten aus der Liste Der Zutaten und erstellt für jede einen Eintrag in einer neu erstellten Tabelle einkaufslisten_eintrag
      *
      */
+    /*
     @Bean
     public CommandLineRunner einkaufslistenEintrag(EinkaufslistenService service, ZutatService zutatService, EinheitService einheitService) {
         return args -> {
@@ -181,7 +237,8 @@ public class DataGenerator {
             service.saveEintrag(7, newZutat);
             service.deleteEintragByID(6);
 
-        };
 
+        };
     }
+    */
 }

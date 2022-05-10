@@ -111,6 +111,10 @@ public class Rezept_Zutat {
         return this;
     }
 
+    public Einheit getEinheitFromZutat() {
+        return this.getZutat().getEinheit();
+    }
+
     @Override
     public String toString() {
         return "{" +

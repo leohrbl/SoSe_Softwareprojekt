@@ -2,12 +2,15 @@ package com.example.application.data.repository;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import com.example.application.data.entity.Rezept;
 import com.example.application.data.entity.Rezept_Zutat;
 import com.example.application.data.entity.Zutat;
 import com.example.application.data.service.RezeptZutatenService;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 
 /**
  * Repository der Entität Rezept_Zutat. Auf die Methoden des JpaRepository wird
@@ -36,4 +39,8 @@ public interface RezeptZutatenRepository extends JpaRepository<Rezept_Zutat, Lon
      * @return Das Suchergebnis, ist eine Liste mit allen Datensätzen
      */
     List<Rezept_Zutat> findAllByZutat(Zutat zutat);
+
+    @Modifying
+    @Transactional
+    void deleteAllByRezept(Rezept rezept);
 }

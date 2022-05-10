@@ -1,10 +1,18 @@
 package com.example.application.views.components;
 
+import com.example.application.views.rezept.display.RezeptView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
+/**
+ * Die Klasse dient als ein Container der RezeptView. Die Klasse hat keine Funktion außer die Lesbarkeit der RezeptView zu erleichtern und grundlegende CSS regeln anzuwenden.
+ * @see RezeptView
+ * @see // RezeptEdit
+ * @see // RezeptCreateView
+ * @author Léo Hérubel
+ */
 public class ViewFrame extends VerticalLayout implements HasStyle {
 
     private String CLASS_NAME = "view-frame";
@@ -14,20 +22,15 @@ public class ViewFrame extends VerticalLayout implements HasStyle {
     private Div footer;
     private Div container;
 
-
+    /**
+     * Konstruktor initialisiert die den Container und die Container-Komponenten (Header, Content, Footer)
+     */
     public ViewFrame() {
 
         this.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-
         header = new Div();
-        header.setClassName(CLASS_NAME + "__header");
-
         content = new Div();
-        content.setClassName(CLASS_NAME + "__content");
-
         footer = new Div();
-        footer.setClassName(CLASS_NAME + "__footer");
-
         container = new Div();
         container.addClassName("viewframe-max-width");
         container.add(header, content, footer);
@@ -35,7 +38,7 @@ public class ViewFrame extends VerticalLayout implements HasStyle {
     }
 
     /**
-     * Sets the header slot's components.
+     * Die Methode setzt den Header
      */
     public void setViewHeader(Component... components) {
         header.removeAll();
@@ -43,7 +46,7 @@ public class ViewFrame extends VerticalLayout implements HasStyle {
     }
 
     /**
-     * Sets the content slot's components.
+     * Die Methode setzt den Content
      */
     public void setViewContent(Component... components) {
         content.removeAll();
@@ -51,12 +54,10 @@ public class ViewFrame extends VerticalLayout implements HasStyle {
     }
 
     /**
-     * Sets the footer slot's components.
+     * Die Methode setzt den Footer
      */
     public void setViewFooter(Component... components) {
         footer.removeAll();
         footer.add(components);
     }
-
-
 }

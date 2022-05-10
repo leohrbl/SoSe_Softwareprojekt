@@ -10,6 +10,7 @@ import java.util.UUID;
 
 /**
  * Repository Klasse der Entität Zutat. Auf die Methoden des JpaRepository wird über eine Service-Klasse zugegriffen.
+ *
  * @author Léo Hérubel
  * @see Zutat
  * @see com.example.application.data.service.ZutatService
@@ -18,6 +19,7 @@ public interface ZutatRepository extends JpaRepository<Zutat, UUID> {
 
     /**
      * Sucht anhand eines Strings Datensätze aus der Zutaten Tabelle, welche dem String ohne Berücksichtigung der Groß- und Kleinschreibung ähneln.
+     *
      * @param searchTerm
      * @return Das Suchergebnis wird als Liste (Java.Util.Collection) zurückgegeben
      */
@@ -27,9 +29,18 @@ public interface ZutatRepository extends JpaRepository<Zutat, UUID> {
 
     /**
      * Sucht anhand der ID des Fremdschlüssels der Einheit alle Datensätze von Zutaten.
+     *
      * @param id
      * @return Das Suchergebnis wird als Liste (Java.Util.Collection) zurückgegeben
      */
     @Query("select z from Zutat z where z.einheit.id = :id")
     List<Zutat> findByEinheit_Id(@Param("id") Long id);
+
+    /**
+     * @param name
+     * @return Das Ergebnis ist eine Zutat Entity
+     * @author Joscha Cerny
+     * Sucht anhand des Namens einer Zutat nach einer Zutat
+     */
+    Zutat getZutatenByName(String name);
 }

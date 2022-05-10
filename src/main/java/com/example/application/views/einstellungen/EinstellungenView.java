@@ -23,11 +23,12 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 @PageTitle("Rezeptbuch")
-@Route(value = "/einstellugnen", layout = MainLayout.class)
+@Route(value = "/einstellungen", layout = MainLayout.class)
 public class EinstellungenView extends VerticalLayout{
 
     Grid<Einheit> gridEinheit = new Grid<>(Einheit.class, false);

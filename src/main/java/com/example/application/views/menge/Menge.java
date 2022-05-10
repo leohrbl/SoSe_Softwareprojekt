@@ -31,7 +31,7 @@ public class Menge {
         this.einheit = einheit;
     }
 
-    public void setMenge(int menge) {
+    public void setMenge(double menge) {
         this.menge = menge;
     }
 

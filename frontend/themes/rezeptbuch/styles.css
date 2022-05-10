@@ -1,5 +1,6 @@
 @import url('line-awesome/dist/line-awesome/css/line-awesome.min.css');
 
+/* Author: Léo Hérubel */
 .card-heading {
     border-bottom: 2px solid var(--lumo-contrast-20pct);
     margin-bottom: 0px;
@@ -20,6 +21,8 @@
 
 #card {
     padding: 0px;
+    margin-bottom: 1em;
+    margin-right: 1em;
     background-color: var(--lumo-contrast-5pct);
 }
 
@@ -43,8 +46,12 @@
     height: 100%;
 }
 
+.view-frame{
+    width: 1000px;
+}
+
 .viewframe-max-width{
-    max-width: 1000px;
+    width: 1000px;
     background-color: var(--lumo-contrast-5pct);
 }
 

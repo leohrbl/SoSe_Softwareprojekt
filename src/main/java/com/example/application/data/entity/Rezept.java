@@ -10,6 +10,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.example.application.data.repository.RezeptRepository;
@@ -42,12 +44,12 @@ public class Rezept {
     @OneToMany(mappedBy = "rezept", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<Rezept_Zutat> zutaten = new HashSet<>();
 
-    /*
-     * @MantToOne
-     * 
-     * @JoinColumn(name = "kategorie_id")
-     * private Kategorie kategorie;
-     */
+    
+    @ManyToOne
+     
+    @JoinColumn(name = "kategorie_id")
+    private Kategorie kategorie;
+     
     public Rezept() {
     }
 
@@ -65,6 +67,27 @@ public class Rezept {
         this.titel = titel;
         this.zubereitung = zubereitung;
         this.portionen = portionen;
+    }
+    
+    /**
+     * Konstruktor, der auch den Parameter Kategorie enthält
+     * @param id
+     * @param bild
+     * @param titel
+     * @param zubereitung
+     * @param portionen
+     * @param zutaten
+     * @param kategorie
+     * @author Anna Karle
+     */
+    public Rezept(long id, Image bild, String titel, String zubereitung, int portionen, Set<Rezept_Zutat> zutaten, Kategorie kategorie) {
+        this.id = id;
+        this.bild = bild;
+        this.titel = titel;
+        this.zubereitung = zubereitung;
+        this.portionen = portionen;
+        this.zutaten = zutaten;
+        this.kategorie = kategorie;
     }
 
     public long getId() {
@@ -148,6 +171,8 @@ public class Rezept {
         setZutaten(zutaten);
         return this;
     }
+    
+    
 
     /*
      * @Override
@@ -177,6 +202,18 @@ public class Rezept {
         }
         return zutaten;
     }
+    
+    /**
+     * Getter und Setter Methoden für die Instanzvariable Kategorie
+     * @author Anna Karle
+     */
+    public Kategorie getKategorie() {
+		return kategorie;
+	}
+
+	public void setKategorie(Kategorie kategorie) {
+		this.kategorie = kategorie;
+	}
 
     @Override
     public String toString() {
@@ -189,5 +226,22 @@ public class Rezept {
                 ", zutaten='" + getZutatenFromZutat().toString() + "'" +
                 "}";
     }
+    /**
+     * Methode toString, die die Variable Kategorie enthält
+     * @author Anna Karle
+     */
+    public String toStringMitKategorie () {
+    	return "{" +
+                " id='" + this.id + "'" +
+                ", bild='" + this.bild + "'" +
+                ", titel='" + this.titel  + "'" +
+                ", zubereitung='" + this.zubereitung + "'" +
+                ", portionen='" + this.portionen + "'" +
+                ", zutaten='" + getZutatenFromZutat().toString() + "'" +
+                ", kategorie= '" + this.kategorie.toString() + "'" +
+                "}";
+    }
+
+	
 
 }

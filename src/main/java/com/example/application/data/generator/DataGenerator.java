@@ -89,6 +89,31 @@ public class DataGenerator {
     }
 
     /**
+     * @author Edwin Polle
+     * @param kategorieService
+     * @return
+     */
+
+    @Bean
+    public CommandLineRunner createKategorie(KategorieService kategorieService) {
+        return args -> {
+            kategorieService.saveKategorie("Abendessen");
+            kategorieService.saveKategorie("Nachtisch");
+            kategorieService.saveKategorie("Grillen");
+            kategorieService.saveKategorie("Frühstück");
+            kategorieService.saveKategorie("Snack");
+            kategorieService.saveKategorie("Brot");
+            Logger logger = LoggerFactory.getLogger(getClass());
+            logger.info("Kategorien wurden durch Service Klasse erzeugt");
+        };
+    }
+
+
+
+
+
+
+    /**
      * Die Methode erzeugt Zutatenobjekte, ordnet diese Einheiten zu, welche in der
      * vorherigen Methode erstellt wurden, und testet die Methoden der Service
      * Klasse der Entität Zutat.
@@ -239,6 +264,17 @@ public class DataGenerator {
 
 
         };
+    }
+    */
+    /**
+    @Bean
+    public CommandLineRunner loadKategorien(KategorieService service) {
+    	return args -> {
+    		service.saveKategorie("Vorspeisen");
+    		service.saveKategorie("Nachspeisen");
+    		service.saveKategorie("Getränke");
+    		
+    	};
     }
     */
 }

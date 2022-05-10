@@ -93,6 +93,20 @@ public class RezeptService {
         }
     }
 
+    /**
+     * Die Methode setzt alle werte eines alten rezepts auf die Werte des Neuen angegeben Rezepts
+     * @author Joscha Cerny
+     */
+    public void updateRezept(Rezept oldRezept, Rezept newRezept) {
+        oldRezept.setZutaten(newRezept.getZutatenFromRezept_Zutaten());
+        oldRezept.setPortionen(newRezept.getPortionen());
+        oldRezept.setTitel(newRezept.getTitel());
+        oldRezept.setBild(newRezept.getBild());
+        oldRezept.setZubereitung(newRezept.getZubereitung());
+
+        rezeptRepository.save(oldRezept);
+    }
+
     public void delete(long id) {
         rezeptRepository.deleteById(id);
     }

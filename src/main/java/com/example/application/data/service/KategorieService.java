@@ -31,8 +31,8 @@ public class KategorieService {
 	
 	public String saveKategorie(String name) {
 		try {
-			Kategorie kategorie = new Kategorie();
-			kategorie.setName(name);
+			long sequenceNr = kategorieRepository.count();
+			Kategorie kategorie = new Kategorie(name, sequenceNr);
 			kategorieRepository.save(kategorie);
 			return "success";
 		}catch(Exception e){
@@ -55,6 +55,14 @@ public class KategorieService {
 		}
 		kategorieRepository.findById(id).setName(newName);
 		return "success";
+	}
+
+	/**
+	 * @uthor Edwin Polle
+	 * @param kategorie
+	 */
+	public void updateSequenceNr(Kategorie kategorie){
+		kategorieRepository.save(kategorie);
 	}
 	
 	

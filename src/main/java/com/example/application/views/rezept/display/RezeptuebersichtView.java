@@ -142,7 +142,7 @@ public class RezeptuebersichtView extends VerticalLayout {
         FlexLayout cardLayout = new FlexLayout();
         cardLayout.setFlexWrap(FlexLayout.FlexWrap.WRAP);
         for (Rezept rezept : displayedItems) {
-            RezeptCard card = new RezeptCard(rezept.getTitel(), "Indisch", rezept.getId(), rezept.getBild());
+            RezeptCard card = new RezeptCard(rezept.getTitel(), rezept.getKategorie().getName(), rezept.getId(), rezept.getBild());
             cardLayout.add(card);
         }
         return cardLayout;

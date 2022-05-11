@@ -214,7 +214,7 @@ public class DataGenerator {
                     "Essen"), "Der Weltbeste Kräuterquark", "Joghurt, Quark und Schmand gut miteinander verrühren. Die Limette auf der Arbeitsfläche hin und her rollen damit sie mehr Saft gibt, auspressen und den Saft zum Quark geben. Zwiebel, Knoblauch und die Kräuter dazu geben und alles gut durchrühren. Mit Salz, Pfeffer und Paprika oder Chili abschmecken.\nDen Quark für mindestens 1 Stunde zum Durchziehen in den Kühlschrank stellen. Vor dem Servieren nochmal verrühren und abschmecken.\nDen Quark gibt es bei uns traditionell zu Pellkartoffeln, er schmeckt aber auch lecker auf Brot, passt zum Grillen, zum Dippen von Rohkost und als abrundender Klecks auf warme Speisen wie Ratatouille.", 2);
             Logger logger = LoggerFactory.getLogger(getClass());
             logger.info(rezept.toString());
-            rezept.setKategorie(kategorieService.getKategorien().get(0));
+            rezept.setKategorie(kategorieService.getKategorien().get(4));
             service.createRezept(rezept);
             rezeptZutatenService.createRezeptZutaten(rezept, zutatService.getZutatenByName("Magerquark"),1000);
             rezeptZutatenService.createRezeptZutaten(rezept, zutatService.getZutatenByName("Schmand"),100);
@@ -224,7 +224,7 @@ public class DataGenerator {
             Rezept rezept2 = new Rezept(new Image(
                     "https://img.chefkoch-cdn.de/rezepte/3208091477471041/bilder/1278063/crop-600x400/optimierter-nudel-schinken-auflauf.jpg",
                     "Essen"), "Nudeln-Schinken-Auflauf", "Den Ofen auf 230 Grad Ober-Unterhitze vorheizen. Das Tomatenmark mit etwas Sahne in der Auflaufform verrühren. Die restliche Sahne hinzufügen und großzügig würzen. Die zerkleinerten Zwiebelstückchen, die rohen Nudeln und den Schinken hineingeben. Das Wasser hinzufügen, so dass die Nudeln gerade so bedeckt sind, und alles gut vermengen. Den Käse darüberstreuen. Den Auflauf in den Ofen schieben und ca. 35 Minuten backen lassen.\n\nAnmerkung: Es gibt viele Rezepte für einen Nudel-Schinken-Auflauf. Da mir diese aber alle zu kompliziert sind, hier mein optimierter Auflauf. Das besondere ist der gute Geschmack bei sehr einfacher und schneller Zubereitung. Am Ende muss lediglich eine Auflaufform abgewaschen werden, die Zutaten kann man leicht passend und auf Vorrat kaufen und man braucht keine Gemüsebrühe mit vielen Zusatzstoffen. Von der Arbeit nach Hause kommen, schnell den Ofen anschmeißen, 10 Minuten Arbeit, Timer stellen und kurze Zeit später das fertige Essen genießen. ", 2);
-            rezept2.setKategorie(kategorieService.getKategorien().get(0));
+            rezept2.setKategorie(kategorieService.getKategorien().get(4));
             service.createRezept(rezept2);
             rezeptZutatenService.createRezeptZutaten(rezept2, zutatService.getZutatenByName("Zwiebel"),100);
             rezeptZutatenService.createRezeptZutaten(rezept2, zutatService.getZutatenByName("Kräuter"),10);
@@ -236,21 +236,24 @@ public class DataGenerator {
             Rezept rezept3 = new Rezept(new Image(
                     "https://img.chefkoch-cdn.de/rezepte/3104701463388573/bilder/916289/crop-600x400/super-einfaches-grillbrot-mit-joghurt.jpg",
                     "Essen"), "Super einfaches Grillbrot mit Joghurt", "zubereitung", 2);
-            service.createRezept(rezept3);
+                    rezept3.setKategorie(kategorieService.getKategorien().get(3));
+                    service.createRezept(rezept3);
             for (Zutat string : zutatService.getZutaten()) {
                 rezeptZutatenService.createRezeptZutaten(rezept3, string, 2);
             }
-            Rezept rezep4 = new Rezept(new Image(
+            Rezept rezept4 = new Rezept(new Image(
                     "https://img.chefkoch-cdn.de/rezepte/1406731245497012/bilder/745155/crop-600x400/spaghetti-carbonara.jpg",
                     "Essen"), "Spaghetti Carbonara", "Die Spaghetti wie gewohnt im Salzwasser kochen.\nDen Schinken oder Speck klein schneiden, in wenig Margarine anbraten, Knoblauch dazu. Schlagsahne oder Cremefine einrühren und die einzelnen Schmelzkäseecken langsam hineinschmelzen lassen.\nAlles auf kleiner Flamme, bei öfterem Umrühren einmal kurz aufköcheln lassen. Sollte die Soße zu dünnflüssig sein, mit etwas Saucenbinder binden.\n Wenn man möchte, kann man noch Petersilie dazugeben. Mit den Nudeln mischen und servieren. ", 2);
-            service.createRezept(rezep4);
+                    rezept4.setKategorie(kategorieService.getKategorien().get(2));
+                    service.createRezept(rezept4);
             for (Zutat string : zutatService.getZutaten()) {
-                rezeptZutatenService.createRezeptZutaten(rezep4, string, 2);
+                rezeptZutatenService.createRezeptZutaten(rezept4, string, 2);
             }
             Rezept rezept5 = new Rezept(new Image(
                     "https://img.chefkoch-cdn.de/rezepte/1060321211349230/bilder/261021/crop-600x400/torte-der-faulenzer.jpg",
                     "Essen"), "Torte 'Der Faulenzer'", "Die Kekse müssen zuerst zerkleinert werden.\n einer Schüssel mischt man dann die zerkleinerten Kekse mit Milchmädchen und den Nüssen. Danach stellt man mit dieser Masse auf einem Teller eine beliebige Form her, bestreut diese mit Puderzucker und stellt sie bis zum Verzehr im Kühlschrank kühl.\nTipp: Man kann auch die Torte z. B. mit Schokoladenglasur beziehen.\nDie Torte ist sehr lecker und lässt sich einfach vorbereiten.", 2);
-            service.createRezept(rezept5);
+                    rezept5.setKategorie(kategorieService.getKategorien().get(4));
+                    service.createRezept(rezept5);
             for (Zutat string : zutatService.getZutaten()) {
                 rezeptZutatenService.createRezeptZutaten(rezept5, string, 2);
             }
@@ -258,7 +261,7 @@ public class DataGenerator {
                     "https://img.chefkoch-cdn.de/rezepte/3807881579963868/bilder/1271758/crop-600x400/superschnelle-nutella-cookies.jpg",
                     "Essen"), "Superschnelle Nutella-Cookies", "Den Backofen auf 140 °C Ober-/Unterhitze vorheizen und ein Blech mit Backpapier auslegen.\nAlle Zutaten, bis auf die Smarties, in einer Schüssel vermengen und zu einem gleichmäßigen Teig kneten. Aus dem Teig 25 gleich große Bällchen formen und diese platt drücken. Die Smarties in die geformten Kekse drücken.\nDie Cookies 20 Minuten backen.\nNach dem Abkühlen zum Kaffee oder einem kalten Glas Milch genießen. ", 2);
             rezept6.setKategorie(kategorieService.getKategorien().get(4));
-                    service.createRezept(rezept6);
+            service.createRezept(rezept6);
             for (Zutat string : zutatService.getZutaten()) {
                 rezeptZutatenService.createRezeptZutaten(rezept6, string, 2);
             }

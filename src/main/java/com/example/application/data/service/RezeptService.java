@@ -54,11 +54,11 @@ public class RezeptService {
     /**
      * Die Methode erstellt eine Ergebnisliste der Zutaten anhand eines Suchtexts. Anschließend wird geprüft, welche Objekte des Suchergebnisses ebenfalls in den übergebenen bereits
      * gefilterten Rezepten vorhanden sind. Dadurch wird eine gefilterte Ergebnisliste mit einer Ergebnisliste der Textsuche kombiniert und zurückgegeben.
+     * @author Léo Hérubel
      * @see RezeptuebersichtView
      * @param searchText
      * @param filteredItemsByZutat
      * @return Liste (Java.Util.Collection) von den kombinierten Ergebnislisten
-     * @author Léo Hérubel
      */
     public List<Rezept> getRezeptByFilterAndSearchText(String searchText, List<Rezept> filteredItemsByZutat) {
         List<Rezept> filteredItemsByText = searchRezeptByFilterText(searchText);

@@ -271,9 +271,4 @@ public class RezeptCreateView extends ViewFrame {
 
     }
 
-
-
-
-
-
 }

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 /**
  * Repository der Entität Rezept. Auf die Methoden des JpaRepository wird
  * über eine Service-Klasse zugegriffen.
- * 
+ *
  * @author Philipp Laupichler
  * @see Rezept
  * @see RezeptService
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Repository;
 public interface RezeptRepository extends JpaRepository<Rezept, Long> {
     /**
      * Sucht anhand einer id nach dem Rezept und gibt dieses zurück
-     * 
+     *
      * @param id
      * @return Gibt ein Rezept zurück
      */
@@ -31,22 +31,18 @@ public interface RezeptRepository extends JpaRepository<Rezept, Long> {
 
     /**
      * Sucht anhand des Titels nach dem Rezept und gibt dieses zurück
-     * 
+     *
      * @param Titel
      * @return Gibt ein Rezept zurück
      */
     Rezept findByTitel(String Titel);
 
-    /*
-     * Sucht anhand eines Strings Datensätze aus der Zutaten Tabelle, welche dem
-     * String ohne Berücksichtigung der Groß- und Kleinschreibung ähneln.
-     * 
-     */
-
     /**
-     * @author Léo Hérubel
+     * Sucht anhand eines Strings Datensätze aus der Zutaten Tabelle, welche dem Input String ohne Berücksichtigung der Groß- und Kleinschreibung ähneln.
+     *
      * @param searchTerm
-     * @return
+     * @return Das Suchergebnis wird als Liste (Java.Util.Collection) zurückgegeben.
+     * @author Léo Hérubel
      */
     @Query("select z from Rezept z " +
             "where lower(z.titel) like lower(concat('%', :searchTerm, '%')) ")

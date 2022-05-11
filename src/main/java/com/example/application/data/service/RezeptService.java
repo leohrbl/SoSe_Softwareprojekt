@@ -54,11 +54,11 @@ public class RezeptService {
     /**
      * Die Methode erstellt eine Ergebnisliste der Zutaten anhand eines Suchtexts. Anschließend wird geprüft, welche Objekte des Suchergebnisses ebenfalls in den übergebenen bereits
      * gefilterten Rezepten vorhanden sind. Dadurch wird eine gefilterte Ergebnisliste mit einer Ergebnisliste der Textsuche kombiniert und zurückgegeben.
+     * @author Léo Hérubel
      * @see RezeptuebersichtView
      * @param searchText
      * @param filteredItemsByZutat
      * @return Liste (Java.Util.Collection) von den kombinierten Ergebnislisten
-     * @author Léo Hérubel
      */
     public List<Rezept> getRezeptByFilterAndSearchText(String searchText, List<Rezept> filteredItemsByZutat) {
         List<Rezept> filteredItemsByText = searchRezeptByFilterText(searchText);
@@ -91,6 +91,20 @@ public class RezeptService {
         } else {
             return rezeptRepository.search(filterText);
         }
+    }
+
+    /**
+     * Die Methode setzt alle werte eines alten rezepts auf die Werte des Neuen angegeben Rezepts
+     * @author Joscha Cerny
+     */
+    public void updateRezept(Rezept oldRezept, Rezept newRezept) {
+        oldRezept.setZutaten(newRezept.getZutatenFromRezept_Zutaten());
+        oldRezept.setPortionen(newRezept.getPortionen());
+        oldRezept.setTitel(newRezept.getTitel());
+        oldRezept.setBild(newRezept.getBild());
+        oldRezept.setZubereitung(newRezept.getZubereitung());
+
+        rezeptRepository.save(oldRezept);
     }
 
     public void delete(long id) {

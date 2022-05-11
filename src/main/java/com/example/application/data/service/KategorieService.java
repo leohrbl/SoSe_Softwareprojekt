@@ -61,18 +61,14 @@ public class KategorieService {
 		return "success";
 	}
 
-	/**
-	 * @uthor Edwin Polle
-	 * @param kategorie
-	 */
+	
 	public void updateSequenceNr(Kategorie kategorie){
 		kategorieRepository.save(kategorie);
 	}
 	
-	 public List<Kategorie> sortBySequenceNr(){
-	    	Sort sort = Sort.by("sequenceNr").ascending();
-	    	List <Kategorie> kategorien = kategorieRepository.findAll(sort);
-	    	return kategorien;
+	 public void updateName(Kategorie kategorie, String newName){
+		kategorie.setName(newName);
+		kategorieRepository.save(kategorie);	    	
 	 }
 
 	

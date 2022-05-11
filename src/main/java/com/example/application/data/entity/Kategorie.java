@@ -7,7 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 /**
- * Entität Kategorie mit drei Instansvariablen: name als String, id als long und orderNr (Reihenfolgenummer) Außerdem Konstruktoren, Getter und Setter
+ * Entität Kategorie mit drei Instansvariablen: name als String, id als long und SequenceNr (Reihenfolgenummer) Außerdem Konstruktoren, Getter und Setter
  * @author Anna Karle
  * @see com.example.application.data.repository.KategoerieRepository
  * @see com.example.application.data.service.KategorieService
@@ -65,6 +65,13 @@ public class Kategorie {
 	public String toString() {
 		return this.sequenceNr + " " + this.name;
 	}
+	
+	
+	
+	
+	
+	
+	
 	
 
 }

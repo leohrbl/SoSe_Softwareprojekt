@@ -90,7 +90,7 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
     private HorizontalLayout createHeader(Rezept rezept) {
         setDefaultPortionenInputValue(rezept);
         Label title = new Label(rezept.getTitel());
-        Label kategorie = new Label("Fast-Food");
+        Label kategorie = new Label(rezept.getKategorie().getName());
         kategorie.setClassName("rezept-kategorie-view");
         HorizontalLayout header = new HorizontalLayout(kategorie, title, createEditButton(), createCloseButton());
         header.setAlignItems(FlexComponent.Alignment.CENTER);

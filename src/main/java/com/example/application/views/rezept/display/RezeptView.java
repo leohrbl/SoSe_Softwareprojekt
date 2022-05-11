@@ -190,7 +190,7 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
     }
 
     private void printRezept() {
-        UI.getCurrent().navigate("/print" + rezeptId);
+        UI.getCurrent().navigate("/print/" + rezeptId);
     }
 
     private void calcMengen() {

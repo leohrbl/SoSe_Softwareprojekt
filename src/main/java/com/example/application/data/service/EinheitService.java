@@ -5,6 +5,7 @@ import java.util.List;
 import com.example.application.data.entity.Einheit;
 import com.example.application.data.entity.Zutat;
 import com.example.application.data.repository.EinheitenRepository;
+import com.helger.commons.hierarchy.visit.EHierarchyVisitorReturn;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -86,5 +87,9 @@ public class EinheitService {
 
     public Einheit findById(Long id) {
         return einheitenRepository.findById(id).get();
+    }
+
+    public Einheit findByName(String name){
+        return einheitenRepository.findByEinheit(name);
     }
 }

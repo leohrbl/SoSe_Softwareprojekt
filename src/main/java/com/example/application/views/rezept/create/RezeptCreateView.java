@@ -1,10 +1,7 @@
 package com.example.application.views.rezept.create;
 
 import com.example.application.data.entity.*;
-import com.example.application.data.service.EinheitService;
-import com.example.application.data.service.RezeptService;
-import com.example.application.data.service.RezeptZutatenService;
-import com.example.application.data.service.ZutatService;
+import com.example.application.data.service.*;
 import com.example.application.views.components.AddZutatDialog;
 import com.example.application.views.components.AddZutatRow;
 import com.example.application.views.components.MainLayout;
@@ -31,6 +28,10 @@ import com.vaadin.flow.router.Route;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * @author Lennart Rummel & Leo Herubel
+ */
+
 @PageTitle("Rezept erstellen")
 @Route(value = "create", layout = MainLayout.class)
 public class RezeptCreateView extends ViewFrame {
@@ -41,7 +42,7 @@ public class RezeptCreateView extends ViewFrame {
     private Button neueZutatButton = new Button("Neue Zutat anlegen");
     private Button speichernButton = new Button("Speichern");
     private TextField title;
-    private Select<Einheit> kategorie;
+    private Select<Kategorie> kategorie;
     private IntegerField portionenInput;
     private Image image;
     private TextArea zubereitung;
@@ -50,13 +51,15 @@ public class RezeptCreateView extends ViewFrame {
     private MengeService mengeService;
     private RezeptZutatenService rezeptZutatenService;
     private ZutatService zutatService;
+    private KategorieService kategorieService;
     private EinheitService einheitService;
 
-    public RezeptCreateView(RezeptService rezeptService, RezeptZutatenService rezeptZutatenService, ZutatService zutatService, EinheitService einheitService) {
+    public RezeptCreateView(RezeptService rezeptService, RezeptZutatenService rezeptZutatenService, ZutatService zutatService, KategorieService kategorieService, EinheitService einheitService) {
         this.rezeptService = rezeptService;
         this.rezeptZutatenService = rezeptZutatenService;
         this.mengeService = new MengeService();
         this.zutatService = zutatService;
+        this.kategorieService = kategorieService;
         this.einheitService = einheitService;
 
         configureButtons();
@@ -68,7 +71,7 @@ public class RezeptCreateView extends ViewFrame {
 
         kategorie = new Select<>();
         kategorie.setLabel("Kategorie");
-        kategorie.setItems(einheitService.getEinheiten());
+        kategorie.setItems(kategorieService.getKategorien());
 
         Paragraph portionen = new Paragraph("Zutaten für ");
         Paragraph portionen2 = new Paragraph("Portionen");
@@ -198,6 +201,7 @@ public class RezeptCreateView extends ViewFrame {
                 Rezept rezept = new Rezept(new Image(
                         image.getSrc(),
                         image.getAlt().toString()), title.getValue(), zubereitung.getValue(), portionenInput.getValue());
+                rezept.setKategorie(kategorie.getValue());
                 Notification.show(rezept.toString());
                 rezeptService.createRezept(rezept);
                 for (AddZutatRow row : zutatenRows) {

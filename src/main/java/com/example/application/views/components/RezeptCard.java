@@ -94,6 +94,7 @@ public class RezeptCard extends VerticalLayout {
      */
     private HorizontalLayout createKategorieLayout(String kategorie) {
         HorizontalLayout kategorieLayout = new HorizontalLayout(createKategorie(new Span(kategorie)));
+        kategorieLayout.setAlignItems(Alignment.CENTER);
         kategorieLayout.setDefaultVerticalComponentAlignment(Alignment.CENTER);
         kategorieLayout.setWidth("30%");
         return kategorieLayout;

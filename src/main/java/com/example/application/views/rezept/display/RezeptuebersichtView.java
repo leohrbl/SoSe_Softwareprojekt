@@ -7,16 +7,19 @@ import com.example.application.data.service.RezeptZutatenService;
 import com.example.application.data.service.ZutatService;
 import com.example.application.views.components.MainLayout;
 import com.example.application.views.components.RezeptCard;
+import com.example.application.views.components.ZutatFilterDialog;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -41,11 +44,12 @@ public class RezeptuebersichtView extends VerticalLayout {
     private List<Rezept> filteredItemsByZutat;
     private FlexLayout cardLayout;
     private RezeptService rezeptService;
-    private ZutatService zutatService;
     private RezeptZutatenService rezeptZutatenService;
     private TextField searchField = new TextField();
-    private ComboBox<Zutat> zutatFilter = new ComboBox<>();
+    private Button zutatFilterButton;
+    private ZutatFilterDialog zutatFilterDialog;
     private VerticalLayout mainLayout;
+    private boolean isFilterActive;
 
     /**
      * Der Konstruktor initialisiert die unterschiedlichen Services. Zudem werden alle Rezepte der Instanzvariable displayedItems zugewiesen und die View wird erstellt.
@@ -55,13 +59,15 @@ public class RezeptuebersichtView extends VerticalLayout {
      */
     public RezeptuebersichtView(RezeptService rezeptService, ZutatService zutatService, RezeptZutatenService rezeptZutatenService) {
         this.rezeptService = rezeptService;
-        this.zutatService = zutatService;
         this.rezeptZutatenService = rezeptZutatenService;
         this.displayedItems = rezeptService.getAllRezepte();
         this.cardLayout = loadCards();
         this.filteredItemsByZutat = new LinkedList<>();
+        this.zutatFilterDialog = new ZutatFilterDialog(zutatService);
+        this.isFilterActive = false;
+        configureZutatFilterButton();
+        configureZutatFilterDialog();
         configureSearchField();
-        configureZutatComboBox();
         mainLayout = createView(cardLayout);
         add(mainLayout);
 
@@ -73,7 +79,7 @@ public class RezeptuebersichtView extends VerticalLayout {
      * @return gibt die View als VerticalLayout zum Anzeigen der GUI zurück.
      */
     private VerticalLayout createView(FlexLayout cardLayout) {
-        return new VerticalLayout(new HorizontalLayout(searchField, zutatFilter, createEditKategorienBtn(), createPrintDisplayedRezepteBtn(), createAddRezeptBtn()), cardLayout);
+        return new VerticalLayout(new HorizontalLayout(searchField, zutatFilterButton, createEditKategorienBtn(), createPrintDisplayedRezepteBtn(), createAddRezeptBtn()), cardLayout);
     }
 
     /**
@@ -88,17 +94,40 @@ public class RezeptuebersichtView extends VerticalLayout {
         searchField.addValueChangeListener(event -> handleSearch());
     }
 
-    /**
-     * Methode zum Konfigurieren der zutatFilter Komponente zum Filtern von Rezepten anhand von Zutaten.
-     */
-    private void configureZutatComboBox() {
-        zutatFilter.setPlaceholder("Zutat filtern");
-        zutatFilter.setRequired(false);
-        zutatFilter.setAllowCustomValue(false);
-        zutatFilter.setClearButtonVisible(true);
-        zutatFilter.setItems(zutatService.getZutaten());
-        zutatFilter.addValueChangeListener(event -> handleZutatFilter());
+    private void configureZutatFilterDialog(){
+        zutatFilterDialog.getFilterButton().addClickListener(e -> handleZutatFilterButtonClick());
+        zutatFilterDialog.getRemoveFilterButton().addClickListener(e -> handleZutatFilterRemoveButtonClick());
     }
+
+    private void handleZutatFilterButtonClick(){
+        if(zutatFilterDialog.getFilteredItem() == null){
+            Notification.show("Keine Zutat zum Filtern ausgewählt!").addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }else{
+            isFilterActive = true;
+            zutatFilterButton.removeThemeVariants(ButtonVariant.LUMO_CONTRAST);
+            zutatFilterButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+            handleZutatFilter(zutatFilterDialog.getFilteredItem());
+            zutatFilterDialog.close();
+        }
+    }
+
+    private void handleZutatFilterRemoveButtonClick(){
+        isFilterActive = false;
+        zutatFilterButton.removeThemeVariants(ButtonVariant.LUMO_SUCCESS);
+        zutatFilterButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
+        zutatFilterDialog.close();
+        handleSearch();
+    }
+
+    private Button configureZutatFilterButton(){
+        zutatFilterButton = new Button("Filtern" ,VaadinIcon.FILTER.create());
+        zutatFilterButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
+        zutatFilterButton.addClickListener(e -> {
+            zutatFilterDialog.open();
+        });
+        return zutatFilterButton;
+    }
+
 
     /**
      * Methode zum Erzeugen des Buttons zum editieren der Kategorien.
@@ -161,29 +190,17 @@ public class RezeptuebersichtView extends VerticalLayout {
      * Methode zum Filtern von Rezepten anhand einer Zutat. Sofern kein Suchergebnis besteht, werden alle gefilterten Rezepte angezeigt. Ansonsten wird die handleSearch() Methode aufgerufen,
      * damit diese die Kombination der Suchtext-Ergebnisliste und den gefilterten Rezepten anzeigen kann.
      */
-    private void handleZutatFilter() {
-        if (zutatFilter.getValue() == null && !isSearching()) {
-            displayedItems = rezeptService.getAllRezepte();
-        } else if (zutatFilter.getValue() == null || zutatFilter.getValue() != null && isSearching()) {
-            filteredItemsByZutat = rezeptZutatenService.findAllRezepteByZutat(zutatFilter.getValue());
+    private void handleZutatFilter(Zutat zutat) {
+        if (isSearching()) {
+            filteredItemsByZutat = rezeptZutatenService.findAllRezepteByZutat(zutat);
             handleSearch();
         } else {
-            filteredItemsByZutat = rezeptZutatenService.findAllRezepteByZutat(zutatFilter.getValue());
+            filteredItemsByZutat = rezeptZutatenService.findAllRezepteByZutat(zutat);
             displayedItems = filteredItemsByZutat;
         }
         updateCardLayout();
     }
 
-    /**
-     * Methode welche zurückgibt, ob nach einer Zutat in der View gefiltert wurde.
-     * @return gibt einen Boolean zurück. Ist der Filter aktiv, ist der Wert = true
-     */
-    private boolean isFilterActive() {
-        if (zutatFilter.getValue() != null) {
-            return true;
-        }
-        return false;
-    }
 
     /**
      * Methode welche zurückgibt, ob nach einem Rezept in der View gesucht wurde.
@@ -202,14 +219,13 @@ public class RezeptuebersichtView extends VerticalLayout {
     private void handleSearch() {
         String value = searchField.getValue();
 
-        if (value.isEmpty() && !isFilterActive()) {
+        if (value.isEmpty() && !isFilterActive) {
             displayedItems = rezeptService.getAllRezepte();
-        } else if (value.isEmpty() && isFilterActive()) {
-            filteredItemsByZutat = rezeptZutatenService.findAllRezepteByZutat(zutatFilter.getValue());
+        } else if (value.isEmpty() && isFilterActive) {
             displayedItems = filteredItemsByZutat;
             updateCardLayout();
             return;
-        } else if (isFilterActive()) {
+        } else if (isFilterActive) {
             displayedItems = rezeptService.getRezeptByFilterAndSearchText(value, filteredItemsByZutat);
             updateCardLayout();
             return;

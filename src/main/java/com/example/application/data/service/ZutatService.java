@@ -50,7 +50,7 @@ public class ZutatService {
     public String saveZutat(String name, Einheit einheit) {
         try {
             Zutat zutat = new Zutat();
-            zutat.setName(name);
+            zutat.setName(name.trim());
             zutat.setEinheit(einheit);
             zutatRepository.save(zutat);
             return "success";
@@ -82,10 +82,9 @@ public class ZutatService {
      */
     public List<Zutat> searchZutatenByFilterText(String filterText) {
         if (filterText == null || filterText.isEmpty()) {
-
             return null;
         } else {
-            return zutatRepository.search(filterText);
+            return zutatRepository.search(filterText.trim());
         }
     }
 
@@ -119,7 +118,6 @@ public class ZutatService {
      * Methode zum Zurückgeben von Einer Zutat Entity mit einem Angegeben Namen
      */
     public Zutat getZutatenByName(String name) {
-        System.out.println(zutatRepository.getZutatenByName(name).getName());
-        return zutatRepository.getZutatenByName(name);
+        return zutatRepository.getZutatenByName(name.trim());
     }
 }

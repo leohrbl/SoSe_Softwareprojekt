@@ -5,13 +5,13 @@ import com.example.application.views.rezept.display.RezeptuebersichtView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 /**
  * Die Klasse RezeptCard ist eine Custom Vaadin Component. Sie ist für das Anzeigen der Daten eines Rezeptes in der RezeptansichtView verantwortlich. Zudem kann die Karte durch einen
- * eigenen ClickListener zu der erweiterten Ansicht des Rezeptes der Karte navigieren. Die Klasse wird in die RezeptansichtView angebunden.
+ * eigenen ClickListener zu der erweiterten Ansicht des Rezeptes der Karte navigieren. Die Klasse wird in die RezeptansichtView eingebunden.
  * @author Léo Hérubel
  * @see RezeptView
  * @see RezeptuebersichtView
@@ -81,8 +81,8 @@ public class RezeptCard extends VerticalLayout {
      * @return gibt den ggf. gekürzten Titel zurück.
      */
     private String trimTitel(String titel) {
-        if (titel.length() >= 26) {
-            return titel.substring(0, 25);
+        if (titel.length() >= 60) {
+            return titel.substring(0, 59);
         }
         return titel;
     }
@@ -93,8 +93,8 @@ public class RezeptCard extends VerticalLayout {
      * @return gibt das Layout zum Hinzufügen in die Header-Funktion zurück.
      */
     private HorizontalLayout createKategorieLayout(String kategorie) {
-        HorizontalLayout kategorieLayout = new HorizontalLayout(createKategorie(new Span(kategorie)));
-        kategorieLayout.setAlignItems(Alignment.CENTER);
+        HorizontalLayout kategorieLayout = new HorizontalLayout(createKategorie(new Paragraph(kategorie)));
+        kategorieLayout.setJustifyContentMode(JustifyContentMode.END);
         kategorieLayout.setDefaultVerticalComponentAlignment(Alignment.CENTER);
         kategorieLayout.setWidth("30%");
         return kategorieLayout;
@@ -105,9 +105,9 @@ public class RezeptCard extends VerticalLayout {
      * @param kategorie
      * @return gibt einen H1 zum Hinzufügen in ein Layout zurück.
      */
-    private H1 createKategorie(Span kategorie) {
+    private H1 createKategorie(Paragraph kategorie) {
         H1 kategorieH1 = new H1(kategorie);
-        kategorieH1.addClassName("card-category");
+        kategorieH1.getStyle().set("margin-right", "0.3em");
         kategorieH1.addClassNames("card-text", "card-category");
         return kategorieH1;
     }
@@ -158,6 +158,7 @@ public class RezeptCard extends VerticalLayout {
      */
     private H1 createTitel(String titel) {
         H1 titelH1 = new H1(titel);
+        titelH1.getStyle().set("margin-left", "0.3em");
         titelH1.addClassName("card-text");
         return titelH1;
     }

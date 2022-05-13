@@ -2,7 +2,6 @@ package com.example.application.views.menge;
 
 import com.example.application.data.entity.EinkaufslistenEintrag;
 import com.example.application.data.entity.Rezept_Zutat;
-import com.example.application.views.menge.Menge;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -14,6 +14,10 @@ import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 
 
+/**
+ * @author Lennart Rummel & Leo Herubel
+ */
+
 public class AddZutatRow extends HorizontalLayout {
 
     private NumberField mengeField;

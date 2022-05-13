@@ -24,6 +24,7 @@ public class EinheitView extends VerticalLayout {
     Button removeEinheit = new Button("Löschen");
     DeleteDialog deleteDialogEinheit;
     EinheitService einheitService;
+    
     public EinheitView(){
 
     }
@@ -70,11 +71,15 @@ public class EinheitView extends VerticalLayout {
         speichern.addClickListener(e ->{
 
                     if(einheit.getValue() != null){
+                    	if(einheitService.searchEinheitByBezeichnung(einheit.getValue()) != null) {
+                    		Notification.show("Die Einheit '"+ einheit.getValue() + "' existiert bereits.").addThemeVariants(NotificationVariant.LUMO_ERROR);
+                    	}else {
                         einheitService.createEinheit(einheit.getValue());
                         dialogEinheit.close();
                         Notification.show("Einheit hinzugefügt: " + einheit.getValue()).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                    	}
                     }else{
-                        Notification.show("Die Einheit '"+ einheit.getValue() + "' existiert bereits.").addThemeVariants(NotificationVariant.LUMO_ERROR);
+                        Notification.show("Fehler! Gib eine Bezeichnung ein!").addThemeVariants(NotificationVariant.LUMO_ERROR);
                     }
                     updateGridEinheit();
                 });

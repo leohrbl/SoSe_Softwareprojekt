@@ -5,6 +5,7 @@ import com.example.application.data.entity.Zutat;
 import com.example.application.data.service.RezeptService;
 import com.example.application.data.service.RezeptZutatenService;
 import com.example.application.data.service.ZutatService;
+import com.example.application.views.Druckservice;
 import com.example.application.views.components.MainLayout;
 import com.example.application.views.components.RezeptCard;
 import com.example.application.views.components.ZutatFilterDialog;
@@ -15,6 +16,9 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -23,7 +27,13 @@ import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.InputStreamFactory;
+import com.vaadin.flow.server.StreamResource;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -51,6 +61,7 @@ public class RezeptuebersichtView extends VerticalLayout {
     private VerticalLayout mainLayout;
     private boolean isFilterActive;
 
+    private Druckservice druckservice = new Druckservice();
     /**
      * Der Konstruktor initialisiert die unterschiedlichen Services. Zudem werden alle Rezepte der Instanzvariable displayedItems zugewiesen und die View wird erstellt.
      * @param rezeptService
@@ -144,11 +155,29 @@ public class RezeptuebersichtView extends VerticalLayout {
      * Methode zum Erzeugen des Drucken-Buttons
      * @return gibt den Button zum Hinzufügen ein einem Layout zurück
      */
-    private Button createPrintDisplayedRezepteBtn() {
+    private Anchor createPrintDisplayedRezepteBtn() {
         Button printDisplayedRezepteBtn = new Button(VaadinIcon.PRINT.create());
         printDisplayedRezepteBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        Anchor anchor = new Anchor(new StreamResource("Rezeptliste.pdf", new InputStreamFactory() {
+            @Override
+            public InputStream createInputStream() {
+
+                File file = new File("Rezeptliste.pdf");
+
+                try {
+                    return new FileInputStream(file);
+                } catch (FileNotFoundException e) {
+                    // TODO: handle FileNotFoundException somehow
+                    throw new RuntimeException(e);
+                }
+            }
+        }), "");
+        anchor.setTarget("_rezeptlisteDrucken");
+        anchor.add(printDisplayedRezepteBtn);
+
+       
         printDisplayedRezepteBtn.addClickListener(e -> printErgebnisliste());
-        return printDisplayedRezepteBtn;
+        return anchor;
     }
 
     /**
@@ -246,7 +275,8 @@ public class RezeptuebersichtView extends VerticalLayout {
      * Methode zum Drucken der aktuell angezeigten Rezepte.
      */
     private void printErgebnisliste() {
-
+        // Druck Service aufrufen, und displayItems übergeben
+        druckservice.createRezept(displayedItems);
     }
 
     /**

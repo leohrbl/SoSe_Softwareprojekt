@@ -92,4 +92,14 @@ public class EinheitService {
     public Einheit findByName(String name){
         return einheitenRepository.findByEinheit(name);
     }
+    
+    /** 
+     * @author Anna Karle
+     * @param bezeichnung
+     * @return
+     */
+    public Einheit searchEinheitByBezeichnung(String bezeichnung) {
+    	return this.einheitenRepository.findByEinheit(bezeichnung);
+    }
+    
 }

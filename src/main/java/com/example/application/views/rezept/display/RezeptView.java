@@ -5,6 +5,7 @@ import com.example.application.data.entity.Rezept_Zutat;
 import com.example.application.data.service.EinkaufslistenService;
 import com.example.application.data.service.RezeptService;
 import com.example.application.data.service.RezeptZutatenService;
+import com.example.application.views.Druckservice;
 import com.example.application.views.components.MainLayout;
 import com.example.application.views.components.ViewFrame;
 import com.vaadin.flow.component.UI;
@@ -12,6 +13,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Paragraph;
@@ -24,8 +26,15 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.router.*;
+import com.vaadin.flow.server.InputStreamFactory;
+import com.vaadin.flow.server.StreamResource;
 
 import javax.servlet.http.HttpServletResponse;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -42,6 +51,7 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
     private List<Rezept_Zutat> displayedItems;
     private IntegerField portionenInput = new IntegerField();
 
+    private Druckservice druckservice = new Druckservice();
 
     public RezeptView(RezeptService rezeptService, RezeptZutatenService rezeptZutatenService, EinkaufslistenService einkaufslistenService) {
         this.rezeptService = rezeptService;
@@ -164,10 +174,28 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
         return close;
     }
 
-    private Button createPrintBtn() {
+    //Es wird ein Anchor erzeugt, der in einem Button gemapped wird. Dieser Anchor verweist auf das Dokument "Rezept.pdf", welches erstellt wird, wenn der Button gedrückt wird
+    private Anchor createPrintBtn() {
+        Anchor anchor = new Anchor(new StreamResource("Rezept.pdf", new InputStreamFactory() {
+            @Override
+            public InputStream createInputStream() {
+
+                File file = new File("Rezept.pdf");
+
+                try {
+                    return new FileInputStream(file);
+                } catch (FileNotFoundException e) {
+                    // TODO: handle FileNotFoundException somehow
+                    throw new RuntimeException(e);
+                }
+            }
+        }), "");
         Button printBtn = new Button("Drucken", VaadinIcon.PRINT.create());
-        printBtn.addClickListener(e -> printRezept());
-        return printBtn;
+        anchor.setTarget("_rezeptDrucken");
+        anchor.add(printBtn);
+
+        printBtn.addClickListener(e -> printRezept(rezeptService.findById(rezeptId)));
+        return anchor;
     }
 
     private Button createAddToEinkaufslisteBtn() {
@@ -186,8 +214,9 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
         }
     }
 
-    private void printRezept() {
-        UI.getCurrent().navigate("/print/" + rezeptId);
+    private void printRezept(Rezept rezept) {
+        //Portion auch übergeben
+       druckservice.createRezept(rezept);
     }
 
     private void calcMengen() {

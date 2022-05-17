@@ -7,10 +7,10 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 /**
- * Die Klasse dient als ein Container der RezeptView. Die Klasse hat keine Funktion außer die Lesbarkeit der RezeptView zu erleichtern und grundlegende CSS regeln anzuwenden.
+ * Die Klasse dient als ein Container der RezeptView-Klassen. Die Klasse hat keine Funktion außer die Lesbarkeit der RezeptView-Klassen zu erleichtern und grundlegende CSS regeln anzuwenden.
  * @see RezeptView
- * @see // RezeptEdit
- * @see // RezeptCreateView
+ * @see com.example.application.views.rezept.create.RezeptCreateView
+ * @see com.example.application.views.rezept.edit.RezeptEditView
  * @author Léo Hérubel
  */
 public class ViewFrame extends VerticalLayout implements HasStyle {

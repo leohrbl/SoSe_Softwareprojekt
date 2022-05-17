@@ -39,8 +39,7 @@ import java.util.List;
  * @see RezeptCard
  * @see RezeptView
  * @see RezeptService
- * @see ZutatService
- * @see RezeptZutatenService
+ * @see ZutatFilterDialog
  */
 @PageTitle("Rezeptbuch")
 @Route(value = "", layout = MainLayout.class)

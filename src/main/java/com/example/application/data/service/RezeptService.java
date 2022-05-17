@@ -53,7 +53,7 @@ public class RezeptService {
 
     /**
      * Die Methode erstellt eine Ergebnisliste der Zutaten anhand eines Suchtexts. Anschließend wird geprüft, welche Objekte des Suchergebnisses ebenfalls in den übergebenen bereits
-     * gefilterten Rezepten vorhanden sind. Dadurch wird eine gefilterte Ergebnisliste mit einer Ergebnisliste der Textsuche kombiniert und zurückgegeben.
+     * gefilterten Rezepten vorhanden sind. Dadurch wird eine gefilterte Ergebnisliste mit der Ergebnisliste der Textsuche kombiniert und zurückgegeben.
      * @author Léo Hérubel
      * @see RezeptuebersichtView
      * @param searchText

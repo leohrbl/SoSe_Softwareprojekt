@@ -15,9 +15,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -131,9 +129,7 @@ public class RezeptuebersichtView extends VerticalLayout {
     private Button configureZutatFilterButton(){
         zutatFilterButton = new Button("Filtern" ,VaadinIcon.FILTER.create());
         zutatFilterButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
-        zutatFilterButton.addClickListener(e -> {
-            zutatFilterDialog.open();
-        });
+        zutatFilterButton.addClickListener(e -> zutatFilterDialog.open());
         return zutatFilterButton;
     }
 
@@ -234,10 +230,7 @@ public class RezeptuebersichtView extends VerticalLayout {
      * @return gibt einen Boolean zurück. Ist die eine Suche aktiv, ist der Wert = true
      */
     private boolean isSearching() {
-        if (!searchField.getValue().isEmpty()) {
-            return true;
-        }
-        return false;
+        return !searchField.getValue().isEmpty();
     }
 
     /**
@@ -273,7 +266,6 @@ public class RezeptuebersichtView extends VerticalLayout {
      * Methode zum Drucken der aktuell angezeigten Rezepte.
      */
     private void printErgebnisliste() {
-        // Druck Service aufrufen, und displayItems übergeben
         druckservice.createRezept(displayedItems);
     }
 

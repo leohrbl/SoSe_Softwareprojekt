@@ -57,4 +57,8 @@ public class EinkaufslistenEintrag {
     {
         return this.id;
     }
+
+    public Einheit getEinheitByZutat() {
+        return this.getZutat().getEinheit();
+    }
 }

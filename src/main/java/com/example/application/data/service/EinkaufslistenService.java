@@ -3,10 +3,10 @@ package com.example.application.data.service;
 import java.util.List;
 
 import com.example.application.data.entity.EinkaufslistenEintrag;
+import com.example.application.data.entity.Rezept_Zutat;
 import com.example.application.data.repository.EinkaufslistenRepository;
 import com.example.application.data.entity.Zutat;
 
-import com.example.application.views.menge.Menge;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -74,19 +74,19 @@ public class EinkaufslistenService {
      * @return Gibt die Meldung "success" bei Erfolg oder die Fehlermeldung der Exception zurück
      * @author Léo Hérubel
      */
-    public String addEintraege(List<Menge> mengenList) {
+    public String addEintraege(List<Rezept_Zutat> mengenList) {
         try {
             if (mengenList.isEmpty()) {
                 return "Keine Zutaten zum Hinzufügen in die Einkaufsliste vorhanden.";
             }
-            for (Menge menge : mengenList) {
-                EinkaufslistenEintrag eintrag = existsInEintrag(menge.getZutat());
+            for (Rezept_Zutat rezeptZutat : mengenList) {
+                EinkaufslistenEintrag eintrag = existsInEintrag(rezeptZutat.getZutat());
                 if (eintrag != null) {
-                    double newMenge = eintrag.getMenge() + menge.getMenge();
+                    double newMenge = eintrag.getMenge() + rezeptZutat.getMenge();
                     eintrag.setMenge(newMenge);
                     updateEintrag(eintrag);
                 } else {
-                    saveEintrag(menge.getMenge(), menge.getZutat());
+                    saveEintrag(rezeptZutat.getMenge(), rezeptZutat.getZutat());
                 }
             }
             return "success";

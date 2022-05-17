@@ -1,10 +1,9 @@
 package com.example.application.views.einkaufsliste;
 
+import com.example.application.data.entity.EinkaufslistenEintrag;
 import com.example.application.data.service.EinkaufslistenService;
 import com.example.application.views.components.DeleteDialog;
 import com.example.application.views.components.MainLayout;
-import com.example.application.views.menge.Menge;
-import com.example.application.views.menge.MengeService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -35,11 +34,10 @@ import java.util.Set;
 @Route(value = "einkaufsliste", layout = MainLayout.class)
 public class EinkaufslisteView extends VerticalLayout {
 
-    private Grid<Menge> einkaufsGrid;
+    private Grid<EinkaufslistenEintrag> einkaufsGrid;
     private EinkaufslistenService einkaufslistenService;
-    private MengeService mengeService;
     private DeleteDialog deleteDialog;
-    private List<Menge> displayedItems;
+    private List<EinkaufslistenEintrag> displayedItems;
 
     /**
      * Konstruktor zum Initialisieren der Instanzvariablen. Zudem wird das Grid konfiguriert und die View erstellt.
@@ -47,9 +45,8 @@ public class EinkaufslisteView extends VerticalLayout {
      */
     public EinkaufslisteView(EinkaufslistenService einkaufslistenService) {
         this.einkaufslistenService = einkaufslistenService;
-        this.mengeService = new MengeService();
-        this.displayedItems = mengeService.getMengenEinkaufsliste(einkaufslistenService.getAllEintrag());
-        this.einkaufsGrid = new Grid<Menge>(Menge.class, false);
+        this.displayedItems = einkaufslistenService.getAllEintrag();
+        this.einkaufsGrid = new Grid<EinkaufslistenEintrag>(EinkaufslistenEintrag.class, false);
         this.deleteDialog = createDeleteDialog();
         configureGrid();
         add(createView());
@@ -60,9 +57,9 @@ public class EinkaufslisteView extends VerticalLayout {
      */
     private void configureGrid() {
         einkaufsGrid.setSelectionMode(Grid.SelectionMode.MULTI);
-        einkaufsGrid.addColumn(Menge::getZutat).setHeader("Zutat").setAutoWidth(true);
-        einkaufsGrid.addColumn(Menge::getMenge).setHeader("Menge").setAutoWidth(true);
-        einkaufsGrid.addColumn(Menge::getEinheit).setHeader("Einheit").setAutoWidth(true);
+        einkaufsGrid.addColumn(EinkaufslistenEintrag::getZutat).setHeader("Zutat").setAutoWidth(true);
+        einkaufsGrid.addColumn(EinkaufslistenEintrag::getMenge).setHeader("Menge").setAutoWidth(true);
+        einkaufsGrid.addColumn(EinkaufslistenEintrag::getEinheitByZutat).setHeader("Einheit").setAutoWidth(true);
         einkaufsGrid.setWidth("50%");
         einkaufsGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         einkaufsGrid.addThemeName("grid-selection-theme");
@@ -161,7 +158,7 @@ public class EinkaufslisteView extends VerticalLayout {
             Notification.show("Keine Einkaufslisteneinträge vorhanden").addThemeVariants(NotificationVariant.LUMO_ERROR);
             return;
         }
-        List<Menge> printList = getNotSelectedItems();
+        List<EinkaufslistenEintrag> printList = getNotSelectedItems();
         // hier dann die übergabe an den Printservice
     }
 
@@ -170,19 +167,19 @@ public class EinkaufslisteView extends VerticalLayout {
      * sucht diese Methode die nicht selektierten Komponenten der displayedItems.
      * @return Es wird eine Liste von dem Container-Objekt Menge zurückgegeben. Diese Daten können anschließend ausgedruckt werden.
      */
-    private List<Menge> getNotSelectedItems() {
+    private List<EinkaufslistenEintrag> getNotSelectedItems() {
         if (displayedItems.isEmpty()) {
             Notification.show("Keine Einkaufslisteneinträge vorhanden").addThemeVariants(NotificationVariant.LUMO_ERROR);
             return null;
         }
-        List<Menge> mengenList = new LinkedList<Menge>();
-        Set<Menge> gridSelectedItems = einkaufsGrid.getSelectedItems();
+        List<EinkaufslistenEintrag> printList = new LinkedList<EinkaufslistenEintrag>();
+        Set<EinkaufslistenEintrag> gridSelectedItems = einkaufsGrid.getSelectedItems();
 
-        for (Menge menge : gridSelectedItems) {
-            if (!displayedItems.contains(menge)) {
-                mengenList.add(menge);
+        for (EinkaufslistenEintrag eintrag : gridSelectedItems) {
+            if (!displayedItems.contains(eintrag)) {
+                printList.add(eintrag);
             }
         }
-        return mengenList;
+        return printList;
     }
 }

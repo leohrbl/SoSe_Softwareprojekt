@@ -1,13 +1,12 @@
 package com.example.application.views.rezept.display;
 
 import com.example.application.data.entity.Rezept;
+import com.example.application.data.entity.Rezept_Zutat;
 import com.example.application.data.service.EinkaufslistenService;
 import com.example.application.data.service.RezeptService;
 import com.example.application.data.service.RezeptZutatenService;
 import com.example.application.views.components.MainLayout;
 import com.example.application.views.components.ViewFrame;
-import com.example.application.views.menge.Menge;
-import com.example.application.views.menge.MengeService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -36,19 +35,17 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
 
     private static long rezeptId;
     private RezeptService rezeptService;
-    private Grid<Menge> zutatMengeGrid;
-    private MengeService mengeService;
+    private Grid<Rezept_Zutat> zutatMengeGrid;
     private RezeptZutatenService rezeptZutatenService;
     private int previousPortionenInputValue;
     private EinkaufslistenService einkaufslistenService;
-    private List<Menge> displayedItems;
+    private List<Rezept_Zutat> displayedItems;
     private IntegerField portionenInput = new IntegerField();
 
 
     public RezeptView(RezeptService rezeptService, RezeptZutatenService rezeptZutatenService, EinkaufslistenService einkaufslistenService) {
         this.rezeptService = rezeptService;
-        this.mengeService = new MengeService();
-        this.zutatMengeGrid = new Grid<>(Menge.class, false);
+        this.zutatMengeGrid = new Grid<>(Rezept_Zutat.class, false);
         this.einkaufslistenService = einkaufslistenService;
         this.rezeptZutatenService = rezeptZutatenService;
         configureGrid();
@@ -138,9 +135,9 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
     }
 
     public void configureGrid() {
-        zutatMengeGrid.addColumn(Menge::getMenge).setHeader("Menge");
-        zutatMengeGrid.addColumn(Menge::getEinheit).setHeader("Einheit");
-        zutatMengeGrid.addColumn(Menge::getZutat).setHeader("Zutat");
+        zutatMengeGrid.addColumn(Rezept_Zutat::getMenge).setHeader("Menge");
+        zutatMengeGrid.addColumn(Rezept_Zutat::getEinheitFromZutat).setHeader("Einheit");
+        zutatMengeGrid.addColumn(Rezept_Zutat::getEinheitFromZutat).setHeader("Zutat");
         zutatMengeGrid.addThemeVariants(GridVariant.LUMO_COLUMN_BORDERS);
         zutatMengeGrid.addClassName("rezept-view-grid");
     }
@@ -199,17 +196,17 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
         }
         int currentPortionen = portionenInput.getValue();
 
-        for (Menge menge : displayedItems) {
-            double currentMenge = menge.getMenge();
+        for (Rezept_Zutat zutat : displayedItems) {
+            double currentMenge = zutat.getMenge();
             double newMenge = (currentMenge / previousPortionenInputValue) * currentPortionen;
-            menge.setMenge(newMenge);
+            zutat.setMenge(newMenge);
         }
         zutatMengeGrid.setItems(displayedItems);
         previousPortionenInputValue = currentPortionen;
     }
 
     private void loadGridData(Rezept rezept) {
-        displayedItems = mengeService.getMengenRezeptZutat(rezeptZutatenService.findAllByRezept(rezept));
+        displayedItems = rezeptZutatenService.findAllByRezept(rezept);
         zutatMengeGrid.setItems(displayedItems);
     }
 

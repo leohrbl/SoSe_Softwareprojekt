@@ -6,7 +6,6 @@ import com.example.application.views.components.AddZutatDialog;
 import com.example.application.views.components.AddZutatRow;
 import com.example.application.views.components.MainLayout;
 import com.example.application.views.components.ViewFrame;
-import com.example.application.views.menge.MengeService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -48,7 +47,6 @@ public class RezeptCreateView extends ViewFrame {
     private TextArea zubereitung;
 
     private RezeptService rezeptService;
-    private MengeService mengeService;
     private RezeptZutatenService rezeptZutatenService;
     private ZutatService zutatService;
     private KategorieService kategorieService;
@@ -57,7 +55,6 @@ public class RezeptCreateView extends ViewFrame {
     public RezeptCreateView(RezeptService rezeptService, RezeptZutatenService rezeptZutatenService, ZutatService zutatService, KategorieService kategorieService, EinheitService einheitService) {
         this.rezeptService = rezeptService;
         this.rezeptZutatenService = rezeptZutatenService;
-        this.mengeService = new MengeService();
         this.zutatService = zutatService;
         this.kategorieService = kategorieService;
         this.einheitService = einheitService;

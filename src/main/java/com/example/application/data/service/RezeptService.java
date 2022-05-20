@@ -103,6 +103,7 @@ public class RezeptService {
         oldRezept.setTitel(newRezept.getTitel());
         oldRezept.setBild(newRezept.getBild());
         oldRezept.setZubereitung(newRezept.getZubereitung());
+        oldRezept.setKategorie(newRezept.getKategorie());
 
         rezeptRepository.save(oldRezept);
     }
@@ -111,5 +112,7 @@ public class RezeptService {
         rezeptRepository.deleteById(id);
     }
    
+
+    
    
 }

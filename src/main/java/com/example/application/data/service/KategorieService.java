@@ -71,6 +71,10 @@ public class KategorieService {
 		kategorieRepository.save(kategorie);	    	
 	 }
 
+
+	 public Kategorie getKategorieByName(String name){
+		return kategorieRepository.findByName(name);
+	}
 	
 
 }

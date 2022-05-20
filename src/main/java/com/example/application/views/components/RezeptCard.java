@@ -10,22 +10,24 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 /**
- * Die Klasse RezeptCard ist eine Custom Vaadin Component. Sie ist für das Anzeigen der Daten eines Rezeptes in der RezeptansichtView verantwortlich. Zudem kann die Karte durch einen
- * eigenen ClickListener zu der erweiterten Ansicht des Rezeptes der Karte navigieren. Die Klasse wird in die RezeptansichtView eingebunden.
+ * Die Klasse RezeptCard ist eine Custom Vaadin Component. Sie ist für das Anzeigen der Daten eines Rezeptes in der RezeptView verantwortlich. Zudem kann die Karte durch einen
+ * eigenen ClickListener zu der erweiterten Ansicht des Rezeptes der Karte navigieren. Die Klasse wird in die RezeptView eingebunden.
+ *
  * @author Léo Hérubel
  * @see RezeptView
  * @see RezeptuebersichtView
  */
 public class RezeptCard extends VerticalLayout {
 
-    private long rezeptId;
+    private final long rezeptId;
 
     /**
      * Konstruktor weist die Daten des Rezeptes den Methoden zu. Zudem wird die Id des Rezeptes in der Komponente gespeichert und es wird die Komponente anhand der übergebenen Daten erzeugt.
-     * @param titel
-     * @param kategorie
-     * @param rezeptId
-     * @param image
+     *
+     * @param titel     Titel des Rezeptes
+     * @param kategorie Kategorie des Rezeptes
+     * @param rezeptId  Id des Rezeptes
+     * @param image     Bild des Rezeptes
      */
     public RezeptCard(String titel, String kategorie, long rezeptId, Image image) {
         this.rezeptId = rezeptId;
@@ -34,9 +36,10 @@ public class RezeptCard extends VerticalLayout {
 
     /**
      * Anhand des Titels und der Kategorie wird der Header der Karte erzeugt.
-     * @param titel
-     * @param kategorie
-     * @return
+     *
+     * @param titel     Titel des Rezeptes
+     * @param kategorie Kategorie des Rezeptes
+     * @return Gibt den Header als HorizontalLayout zurück
      */
     private HorizontalLayout createHeader(String titel, String kategorie) {
         HorizontalLayout headingLayout = new HorizontalLayout(createTitelLayout(titel), createKategorieLayout(kategorie));
@@ -50,8 +53,9 @@ public class RezeptCard extends VerticalLayout {
 
     /**
      * Anhand eines übergebenen Bildes erzeugt die Methode Layout, welches das Bild anzeigt und zu dem Header angrenzt.
-     * @param image
-     * @return
+     *
+     * @param image Bild des Rezeptes
+     * @return Gibt ein HorizontalLayout mit dem Bild zurück
      */
     private HorizontalLayout createImageLayout(Image image) {
         HorizontalLayout imageLayout = new HorizontalLayout(createImage(image));
@@ -64,7 +68,8 @@ public class RezeptCard extends VerticalLayout {
 
     /**
      * Die Methode erzeugt anhand des Titels ein Layout, welches in der Header-Funktion hinzugefügt wird.
-     * @param titel
+     *
+     * @param titel Titel des Rezeptes
      * @return gibt das Layout zum Hinzufügen in die Header-Funktion zurück
      */
     private HorizontalLayout createTitelLayout(String titel) {
@@ -77,7 +82,8 @@ public class RezeptCard extends VerticalLayout {
 
     /**
      * Da die Schrift im Header nicht responsive ist, muss der eingegebene Titel (Sofern > 26 Zeichen) gekürzt werden.
-     * @param titel
+     *
+     * @param titel Titel des Rezeptes
      * @return gibt den ggf. gekürzten Titel zurück.
      */
     private String trimTitel(String titel) {
@@ -89,7 +95,8 @@ public class RezeptCard extends VerticalLayout {
 
     /**
      * Die Methode erzeugt anhand der Kategorie ein Layout, welches in der Header-Funktion hinzugefügt wird.
-     * @param kategorie
+     *
+     * @param kategorie Kategorie des Rezeptes
      * @return gibt das Layout zum Hinzufügen in die Header-Funktion zurück.
      */
     private HorizontalLayout createKategorieLayout(String kategorie) {
@@ -102,7 +109,8 @@ public class RezeptCard extends VerticalLayout {
 
     /**
      * Funktion zum Erstellen und stylen eines H1 Elementes, welches in der Funktion createKategorieLayout hinzugefügt wird.
-     * @param kategorie
+     *
+     * @param kategorie Kategorie des Rezeptes
      * @return gibt einen H1 zum Hinzufügen in ein Layout zurück.
      */
     private H1 createKategorie(Paragraph kategorie) {
@@ -118,7 +126,8 @@ public class RezeptCard extends VerticalLayout {
 
     /**
      * Funktion definiert Layout regeln, damit das Bild in die Parent Komponente, also das ImageLayout, passt.
-     * @param image
+     *
+     * @param image Bild des Rezeptes
      * @return das Image wird an die Funktion createImageLayout zurückgegeben.
      */
     private Image createImage(Image image) {
@@ -130,9 +139,10 @@ public class RezeptCard extends VerticalLayout {
     }
 
     /**
-     * Funktion zum Erzeugen der Karte anhand des Headers und des ImageLayouts
-     * @param header
-     * @param imageLayout
+     * Funktion zum Erzeugen der Karte anhand des Headers und des ImageLayouts.
+     *
+     * @param header      HeaderLayout, welches aus dem Titel und der Kategorie besteht
+     * @param imageLayout ImageLayout, welches aus dem Bild des Rezeptes besteht
      */
     private void createCard(HorizontalLayout header, HorizontalLayout imageLayout) {
         customizeCard();
@@ -153,7 +163,8 @@ public class RezeptCard extends VerticalLayout {
 
     /**
      * Funktion zum Erstellen und stylen eines H1 Elementes, welches in der Funktion createTitelLayout hinzugefügt wird.
-     * @param titel
+     *
+     * @param titel Titel des Rezeptes
      * @return gibt einen H1 zum Hinzufügen in ein Layout zurück.
      */
     private H1 createTitel(String titel) {
@@ -167,8 +178,6 @@ public class RezeptCard extends VerticalLayout {
      * Funktion zum Hinzufügen des Click Listeners der Karte. Der ClickListener navigiert anschließend mit dem URl-Parameter, welcher die Instanzvariable rezeptId ist, zur RezeptView.
      */
     private void addClickListener() {
-        this.addClickListener(event -> {
-            UI.getCurrent().navigate("display/" + rezeptId);
-        });
+        this.addClickListener(event -> UI.getCurrent().navigate("display/" + rezeptId));
     }
 }

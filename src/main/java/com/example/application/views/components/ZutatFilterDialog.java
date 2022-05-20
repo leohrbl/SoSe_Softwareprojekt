@@ -13,25 +13,40 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 
+/**
+ * Der ZutatFilterDialog wird genutzt, damit der Nutzer nach einer Zutat filtern kann. Der Dialog wird aus der RezeptuebersichtView gesteuert. Innerhalb des Dialoges kann der Nutzer den Filter entfernen
+ * oder eine andere Zutat zum Filtern auswählen. Des Weiteren kann der Nutzer nach bestimmten Zutaten über ein Suchfeld suchen.
+ *
+ * @author Léo Hérubel
+ * @see com.example.application.views.rezept.display.RezeptuebersichtView
+ * @see ZutatService
+ */
+public class ZutatFilterDialog extends Dialog {
 
-public class ZutatFilterDialog extends Dialog{
+    private final TextField searchField;
+    private final Grid<Zutat> grid;
+    private final ZutatService zutatService;
+    private final Button filterButton;
+    private final Button removeFilterButton;
 
-    private TextField searchField;
-    private Grid<Zutat> grid;
-    private ZutatService zutatService;
-    private Button filterButton;
-    private Button removeFilterButton;
-
-    public ZutatFilterDialog(ZutatService zutatService){
+    /**
+     * Der Konstruktor initialisiert die Instanzvariablen der Klasse. Zudem wird der Dialog im Konstruktor konfiguriert.
+     *
+     * @param zutatService Datenbankservice der Zutat Entität
+     */
+    public ZutatFilterDialog(ZutatService zutatService) {
         this.searchField = new TextField();
         this.grid = new Grid<>(Zutat.class, false);
         this.filterButton = new Button("Filtern");
         this.zutatService = zutatService;
         this.removeFilterButton = new Button("Filter entfernen");
-        createDialog();
+        configureDialog();
     }
 
-    private void createDialog(){
+    /**
+     * Methode zum Konfigurieren des Dialoges. Der Dialog besteht aus einem Footer, dem Content, und einem Header.
+     */
+    private void configureDialog() {
         configureFilterButton();
         configureRemoveFilterButton();
         configureSearchField();
@@ -39,7 +54,12 @@ public class ZutatFilterDialog extends Dialog{
         this.add(createHeaderLayout(), grid, createFooterLayout());
     }
 
-    private HorizontalLayout createHeaderLayout(){
+    /**
+     * Methode zum Erstellen des Headers des Dialoges. Der Header besteht aus dem Suchfeld und einem Abbrechen Button, welcher den Dialog schließt.
+     *
+     * @return Gibt das HeaderLayout zurück, damit es im Dialog hinzugefügt werden kann.
+     */
+    private HorizontalLayout createHeaderLayout() {
         HorizontalLayout header = new HorizontalLayout(searchField, createAbbrechenButton());
         header.setAlignItems(FlexComponent.Alignment.CENTER);
         header.setFlexGrow(1, searchField);
@@ -48,27 +68,44 @@ public class ZutatFilterDialog extends Dialog{
         return header;
     }
 
-    private HorizontalLayout createFooterLayout(){
+    /**
+     * Methode zum Erstellen des Footers, welcher aus dem FilterButton und dem RemoveFilterButton besteht.
+     *
+     * @return Gibt den Footer als HorizontalLayout zurück.
+     */
+    private HorizontalLayout createFooterLayout() {
         return new HorizontalLayout(filterButton, removeFilterButton);
     }
 
-    private void configureFilterButton(){
+    /**
+     * Methode zum Konfigurieren des FilterButtons. Die Funktionalität wird von der Klasse hinzugefügt, die den Dialog nutzt.
+     */
+    private void configureFilterButton() {
         filterButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
     }
 
-    private void configureRemoveFilterButton(){
+    /**
+     * Methode zum Konfigurieren des RemoveFilterButtons. Die Funktionalität wird von der Klasse hinzugefügt, die den Dialog benutzt.
+     */
+    private void configureRemoveFilterButton() {
         removeFilterButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
     }
 
-    private Button createAbbrechenButton(){
+    /**
+     * Methode zum Erstellen des AbbrechenButtons.
+     *
+     * @return Gibt den Button zurück, damit dieser in ein Layout hinzugefügt werden kann.
+     */
+    private Button createAbbrechenButton() {
         Button abbrechenButton = new Button(VaadinIcon.CLOSE.create());
         abbrechenButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
-        abbrechenButton.addClickListener(e -> {
-            this.close();
-        });
+        abbrechenButton.addClickListener(e -> this.close());
         return abbrechenButton;
     }
 
+    /**
+     * Methode zum Konfigurieren des Suchfeldes.
+     */
     private void configureSearchField() {
         searchField.getElement().setAttribute("aria-label", "search");
         searchField.setPlaceholder("Search");
@@ -78,6 +115,9 @@ public class ZutatFilterDialog extends Dialog{
         searchField.addValueChangeListener(event -> handleSearch());
     }
 
+    /**
+     * Methode zum Konfigurieren des Grids, welches die Zutaten anzeigt.
+     */
     private void configureGrid() {
         grid.addColumn(Zutat::getName).setHeader("Bezeichnung");
         grid.addColumn(Zutat::getEinheit).setHeader("Einheit");
@@ -85,30 +125,42 @@ public class ZutatFilterDialog extends Dialog{
         updateGrid();
     }
 
-    private void updateGrid(){
-        if(searchField.isEmpty()){
+    /**
+     * Methode zum Aktualisieren der Daten des Grids des Dialoges.
+     */
+    private void updateGrid() {
+        if (searchField.isEmpty()) {
             grid.setItems(zutatService.getZutaten());
-        }else{
+        } else {
             grid.setItems(zutatService.searchZutatenByFilterText(searchField.getValue()));
         }
     }
 
-    private void handleSearch(){
+    /**
+     * Methode zum Verarbeiten der veränderten Werte im Suchfeld.
+     */
+    private void handleSearch() {
         updateGrid();
     }
 
-    public Button getFilterButton(){
+
+    public Button getFilterButton() {
         return this.filterButton;
     }
 
-    public Button getRemoveFilterButton(){
+    public Button getRemoveFilterButton() {
         return this.removeFilterButton;
     }
 
-    public  Zutat getFilteredItem (){
-        if(!grid.getSelectedItems().isEmpty()){
+    /**
+     * Methode, mit der sich andere Klassen die aktuell selektierte Zutat aus dem Grid des Dialoges holen können.
+     *
+     * @return Gibt das Zutat-Objekt zurück
+     */
+    public Zutat getFilteredItem() {
+        if (!grid.getSelectedItems().isEmpty()) {
             return grid.getSelectionModel().getFirstSelectedItem().get();
-        }else{
+        } else {
             return null;
         }
     }

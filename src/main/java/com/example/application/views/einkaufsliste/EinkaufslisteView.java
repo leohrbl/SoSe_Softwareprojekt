@@ -25,28 +25,30 @@ import java.util.Set;
 /**
  * Die Klasse zeigt und bearbeitet die Daten der Einkaufslisteneintrag Entität. Die Klasse ermöglicht, durch den Zugriff auf die EinkaufslistenService-Klasse,
  * das Löschen der gesamten Einkaufsliste und das Drucken von nicht abgewählten Zutaten.
- * @see EinkaufslistenService
- * @see // hier den Printservice hin
+ *
  * @author Léo Hérubel
+ * @see EinkaufslistenService
+ * hier printservice
  */
 @CssImport(value = "./themes/rezeptbuch/einkaufsgridStyle.css", themeFor = "vaadin-grid")
 @PageTitle("Einkaufsliste")
 @Route(value = "einkaufsliste", layout = MainLayout.class)
 public class EinkaufslisteView extends VerticalLayout {
 
-    private Grid<EinkaufslistenEintrag> einkaufsGrid;
-    private EinkaufslistenService einkaufslistenService;
-    private DeleteDialog deleteDialog;
-    private List<EinkaufslistenEintrag> displayedItems;
+    private final Grid<EinkaufslistenEintrag> einkaufsGrid;
+    private final EinkaufslistenService einkaufslistenService;
+    private final DeleteDialog deleteDialog;
+    private final List<EinkaufslistenEintrag> displayedItems;
 
     /**
      * Konstruktor zum Initialisieren der Instanzvariablen. Zudem wird das Grid konfiguriert und die View erstellt.
-     * @param einkaufslistenService
+     *
+     * @param einkaufslistenService Datenbankservice der Einkaufsliste
      */
     public EinkaufslisteView(EinkaufslistenService einkaufslistenService) {
         this.einkaufslistenService = einkaufslistenService;
         this.displayedItems = einkaufslistenService.getAllEintrag();
-        this.einkaufsGrid = new Grid<EinkaufslistenEintrag>(EinkaufslistenEintrag.class, false);
+        this.einkaufsGrid = new Grid<>(EinkaufslistenEintrag.class, false);
         this.deleteDialog = createDeleteDialog();
         configureGrid();
         add(createView());
@@ -69,6 +71,7 @@ public class EinkaufslisteView extends VerticalLayout {
 
     /**
      * Methode zum Erzeugen der View mit bereits gefüllten Daten.
+     *
      * @return gibt ein VerticalLayout zurück, damit das Layout mit der add Methode im Konstruktor im Frontend angezeigt werden kann.
      */
     private VerticalLayout createView() {
@@ -77,6 +80,7 @@ public class EinkaufslisteView extends VerticalLayout {
 
     /**
      * Methode zum Erzeugen eines Löschen Buttons zum Löschen der Einkaufsliste.
+     *
      * @return gibt den Delete Button zum Hinzufügen in ein Layout zurück.
      */
     private Button createDeleteEinkaufslisteBtn() {
@@ -88,6 +92,7 @@ public class EinkaufslisteView extends VerticalLayout {
 
     /**
      * Methode zum Erzeugen eines Drucken Buttons zum Drucken der Einkaufsliste.
+     *
      * @return gibt den Drucken Button zum Hinzufügen in ein Layout zurück.
      */
     private Button createPrintEinkaufslisteBtn() {
@@ -99,6 +104,7 @@ public class EinkaufslisteView extends VerticalLayout {
 
     /**
      * Methode zum Erzeugen der Überschrift in der RezeptView.
+     *
      * @return gibt einen H3 zum Hinzufügen in ein Layout zurück.
      */
     private H3 createHeading() {
@@ -109,16 +115,13 @@ public class EinkaufslisteView extends VerticalLayout {
 
     /**
      * Methode zum Erzeugen des Delete Dialogs. Der Delete dient dazu, dass der User seine Entscheidung zum Löschen der Einkaufsliste überprüfen kann.
+     *
      * @return gibt einen DeleteDialog zurück. Dieser wird zur weiteren Verwendung der Instanzvariable deleteDialog zugewiesen.
      */
     private DeleteDialog createDeleteDialog() {
         DeleteDialog deleteDialog = new DeleteDialog("Einkaufsliste", "Einkaufsliste", "Sicher, dass du die Einkaufsliste löschen möchtest?");
-        deleteDialog.getDeleteButton().addClickListener(e -> {
-            deleteEinkaufsliste();
-        });
-        deleteDialog.getCancelButton().addClickListener(e -> {
-            deleteDialog.close();
-        });
+        deleteDialog.getDeleteButton().addClickListener(e -> deleteEinkaufsliste());
+        deleteDialog.getCancelButton().addClickListener(e -> deleteDialog.close());
         return deleteDialog;
     }
 
@@ -140,7 +143,7 @@ public class EinkaufslisteView extends VerticalLayout {
             return;
         }
         String response = einkaufslistenService.deleteAll();
-        if (response == "success") {
+        if (response.equals("success")) {
             displayedItems.clear();
             einkaufsGrid.setItems(displayedItems);
             Notification.show("Einkaufsliste gelöscht!").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
@@ -165,6 +168,7 @@ public class EinkaufslisteView extends VerticalLayout {
     /**
      * In dem Grid lassen sich unterschiedliche Felder selektieren. Eine oder mehrere Reihen werden selektiert. Da nur die nicht selektierten Daten ausgedruckt werden sollen,
      * sucht diese Methode die nicht selektierten Komponenten der displayedItems.
+     *
      * @return Es wird eine Liste von dem Container-Objekt Menge zurückgegeben. Diese Daten können anschließend ausgedruckt werden.
      */
     private List<EinkaufslistenEintrag> getNotSelectedItems() {
@@ -172,7 +176,7 @@ public class EinkaufslisteView extends VerticalLayout {
             Notification.show("Keine Einkaufslisteneinträge vorhanden").addThemeVariants(NotificationVariant.LUMO_ERROR);
             return null;
         }
-        List<EinkaufslistenEintrag> printList = new LinkedList<EinkaufslistenEintrag>();
+        List<EinkaufslistenEintrag> printList = new LinkedList<>();
         Set<EinkaufslistenEintrag> gridSelectedItems = einkaufsGrid.getSelectedItems();
 
         for (EinkaufslistenEintrag eintrag : gridSelectedItems) {

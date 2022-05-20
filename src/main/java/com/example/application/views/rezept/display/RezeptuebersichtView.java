@@ -35,11 +35,13 @@ import java.util.List;
 
 /**
  * Die RezeptansichtView-Klasse ist die Main View der Applikation. Sie bietet neben der Anzeige von Rezept noch eine Filter- und eine Suchfunktion. Zudem kann die Klasse zu der RezeptCreateView und EinstellungenView navigieren.
+ *
  * @author Léo Hérubel
  * @see RezeptCard
  * @see RezeptView
  * @see RezeptService
  * @see ZutatFilterDialog
+ * @see Druckservice
  */
 @PageTitle("Rezeptbuch")
 @Route(value = "", layout = MainLayout.class)
@@ -48,20 +50,21 @@ public class RezeptuebersichtView extends VerticalLayout {
     private List<Rezept> displayedItems;
     private List<Rezept> filteredItemsByZutat;
     private FlexLayout cardLayout;
-    private RezeptService rezeptService;
-    private RezeptZutatenService rezeptZutatenService;
-    private TextField searchField = new TextField();
-    private Button zutatFilterButton;
-    private ZutatFilterDialog zutatFilterDialog;
-    private VerticalLayout mainLayout;
+    private final RezeptService rezeptService;
+    private final RezeptZutatenService rezeptZutatenService;
+    private final TextField searchField;
+    private final Button zutatFilterButton;
+    private final ZutatFilterDialog zutatFilterDialog;
+    private final VerticalLayout mainLayout;
     private boolean isFilterActive;
+    private final Druckservice druckservice = new Druckservice();
 
-    private Druckservice druckservice = new Druckservice();
     /**
      * Der Konstruktor initialisiert die unterschiedlichen Services. Zudem werden alle Rezepte der Instanzvariable displayedItems zugewiesen und die View wird erstellt.
-     * @param rezeptService
-     * @param zutatService
-     * @param rezeptZutatenService
+     *
+     * @param rezeptService        Datenbankservice für Rezepte
+     * @param zutatService         Datenbankservice für Zutaten
+     * @param rezeptZutatenService Datenbankservice für Rezept_Zutat Entitäten
      */
     public RezeptuebersichtView(RezeptService rezeptService, ZutatService zutatService, RezeptZutatenService rezeptZutatenService) {
         this.rezeptService = rezeptService;
@@ -71,17 +74,19 @@ public class RezeptuebersichtView extends VerticalLayout {
         this.filteredItemsByZutat = new LinkedList<>();
         this.zutatFilterDialog = new ZutatFilterDialog(zutatService);
         this.isFilterActive = false;
+        this.searchField = new TextField();
+        this.zutatFilterButton = new Button("Filtern", VaadinIcon.FILTER.create());
         configureZutatFilterButton();
         configureZutatFilterDialog();
         configureSearchField();
         mainLayout = createView(cardLayout);
         add(mainLayout);
-
     }
 
     /**
      * Methode zum Erzeugen der View Komponente mit den Instanzvariablen searchField, zutatFilter und cardLayout. Die anderen Komponenten werden jeweils durch eine Funktion erzeugt.
-     * @param cardLayout
+     *
+     * @param cardLayout Gibt das CardLayout zurück, indem die RezeptCards enthalten sind.
      * @return gibt die View als VerticalLayout zum Anzeigen der GUI zurück.
      */
     private VerticalLayout createView(FlexLayout cardLayout) {
@@ -100,15 +105,22 @@ public class RezeptuebersichtView extends VerticalLayout {
         searchField.addValueChangeListener(event -> handleSearch());
     }
 
-    private void configureZutatFilterDialog(){
+    /**
+     * Methode zum Konfigurieren des ZutatFilterDialogs. Für die Buttons des Dialoges werden ClickListener hinzugefügt, damit diese Klasse die Informationen aus dem FilterDialog verarbeiten kann.
+     */
+    private void configureZutatFilterDialog() {
         zutatFilterDialog.getFilterButton().addClickListener(e -> handleZutatFilterButtonClick());
         zutatFilterDialog.getRemoveFilterButton().addClickListener(e -> handleZutatFilterRemoveButtonClick());
     }
 
-    private void handleZutatFilterButtonClick(){
-        if(zutatFilterDialog.getFilteredItem() == null){
+    /**
+     * Methode zum Verarbeiten vom Click des Filter-Buttons. Die Informationen aus dem ZutatFilterDialog werden mit der aktiven oder inaktiven Suchfunktion verknüpft
+     * und die gefilterten Rezepte werden verarbeitet.
+     */
+    private void handleZutatFilterButtonClick() {
+        if (zutatFilterDialog.getFilteredItem() == null) {
             Notification.show("Keine Zutat zum Filtern ausgewählt!").addThemeVariants(NotificationVariant.LUMO_ERROR);
-        }else{
+        } else {
             isFilterActive = true;
             zutatFilterButton.removeThemeVariants(ButtonVariant.LUMO_CONTRAST);
             zutatFilterButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
@@ -117,7 +129,10 @@ public class RezeptuebersichtView extends VerticalLayout {
         }
     }
 
-    private void handleZutatFilterRemoveButtonClick(){
+    /**
+     * Methode, welche nach einem Click vom RemoveFilterButton den aktiven Filter aus der View entfernt.
+     */
+    private void handleZutatFilterRemoveButtonClick() {
         isFilterActive = false;
         zutatFilterButton.removeThemeVariants(ButtonVariant.LUMO_SUCCESS);
         zutatFilterButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
@@ -125,17 +140,18 @@ public class RezeptuebersichtView extends VerticalLayout {
         handleSearch();
     }
 
-    private Button configureZutatFilterButton(){
-        zutatFilterButton = new Button("Filtern" ,VaadinIcon.FILTER.create());
+    /**
+     * Methode zum Erstellen und Konfigurieren des ZutatFilterButtons der RezeptuebersichtView.
+     */
+    private void configureZutatFilterButton() {
         zutatFilterButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
         zutatFilterButton.addClickListener(e -> zutatFilterDialog.open());
-        return zutatFilterButton;
     }
-
 
     /**
      * Methode zum Erzeugen des Buttons zum editieren der Kategorien.
-     * @return gibt den Button zum Hinzufügen ein einem Layout zurück
+     *
+     * @return gibt den Button zum Hinzufügen in ein Layout zurück.
      */
     private Button createEditKategorienBtn() {
         Button editKategorienBtn = new Button("Kategorien bearbeiten");
@@ -146,6 +162,7 @@ public class RezeptuebersichtView extends VerticalLayout {
 
     /**
      * Methode zum Erzeugen des Drucken-Buttons
+     *
      * @return gibt den Button zum Hinzufügen ein einem Layout zurück
      */
     private Anchor createPrintDisplayedRezepteBtn() {
@@ -168,13 +185,14 @@ public class RezeptuebersichtView extends VerticalLayout {
         anchor.setTarget("_rezeptlisteDrucken");
         anchor.add(printDisplayedRezepteBtn);
 
-       
+
         printDisplayedRezepteBtn.addClickListener(e -> printErgebnisliste());
         return anchor;
     }
 
     /**
      * Methode zum Erzeugen des Create-Buttons
+     *
      * @return gibt den Button zum Hinzufügen ein einem Layout zurück
      */
     private Button createAddRezeptBtn() {
@@ -186,8 +204,9 @@ public class RezeptuebersichtView extends VerticalLayout {
 
     /**
      * Methode zum Erzeugen eines gefüllten Layouts mit RezeptCard Komponenten anhand der aktuellen Datensätze von Rezepten.
-     * @see RezeptCard
+     *
      * @return gibt ein Layout zum Ersetzen des bereits existierenden cardLayouts zurück.
+     * @see RezeptCard
      */
     private FlexLayout loadCards() {
         FlexLayout cardLayout = new FlexLayout();
@@ -210,7 +229,7 @@ public class RezeptuebersichtView extends VerticalLayout {
 
     /**
      * Methode zum Filtern von Rezepten anhand einer Zutat. Sofern kein Suchergebnis besteht, werden alle gefilterten Rezepte angezeigt. Ansonsten wird die handleSearch() Methode aufgerufen,
-     * damit diese die Kombination der Suchtext-Ergebnisliste und den gefilterten Rezepten anzeigen kann.
+     * damit diese die Kombination der Suchtext-Ergebnisliste und den gefilterten Rezepten verarbeiten kann.
      */
     private void handleZutatFilter(Zutat zutat) {
         if (isSearching()) {
@@ -226,6 +245,7 @@ public class RezeptuebersichtView extends VerticalLayout {
 
     /**
      * Methode welche zurückgibt, ob nach einem Rezept in der View gesucht wurde.
+     *
      * @return gibt einen Boolean zurück. Ist die eine Suche aktiv, ist der Wert = true
      */
     private boolean isSearching() {
@@ -242,12 +262,8 @@ public class RezeptuebersichtView extends VerticalLayout {
             displayedItems = rezeptService.getAllRezepte();
         } else if (value.isEmpty() && isFilterActive) {
             displayedItems = filteredItemsByZutat;
-            updateCardLayout();
-            return;
-        } else if (isFilterActive) {
+        } else if (isFilterActive && !value.isEmpty()) {
             displayedItems = rezeptService.getRezeptByFilterAndSearchText(value, filteredItemsByZutat);
-            updateCardLayout();
-            return;
         } else {
             displayedItems = rezeptService.searchRezeptByFilterText(value);
         }

@@ -28,7 +28,7 @@ public interface ZutatRepository extends JpaRepository<Zutat, UUID> {
     List<Zutat> search(@Param("searchTerm") String searchTerm);
 
     /**
-     * Sucht anhand der ID des Fremdschlüssels der Einheit alle Datensätze von Zutaten.
+     * Sucht anhand der Id des Fremdschlüssels der Einheit alle Datensätze von Zutaten.
      *
      * @param id
      * @return Das Suchergebnis wird als Liste (Java.Util.Collection) zurückgegeben

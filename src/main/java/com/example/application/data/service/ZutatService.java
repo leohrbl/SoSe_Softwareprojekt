@@ -22,7 +22,7 @@ public class ZutatService {
     private final ZutatRepository zutatRepository;
 
     /**
-     * Konstruktor welcher die Instazvariable zutatRepository initialisiert
+     * Konstruktor welcher die Instanzvariable zutatRepository initialisiert
      *
      * @param zutatRepository Repository wird als Instanzvariable der Klasse initialisiert, damit man auf dessen Methoden zugreifen kann.
      */
@@ -43,8 +43,8 @@ public class ZutatService {
     /**
      * In dieser Methode kann anhand der Eingabe des Names und der Übergabe einer bereits persistierten Einheit eine Zutat erzeugt und in der Datenbank gespeichert werden.
      *
-     * @param name
-     * @param einheit
+     * @param name    Name der Zutat
+     * @param einheit Einheit, welche zu der Zutat gespeichert wird
      * @return Gibt die Meldung "success" bei Erfolg oder die Fehlermeldung der Exception zurück
      */
     public String saveZutat(String name, Einheit einheit) {
@@ -62,7 +62,7 @@ public class ZutatService {
     /**
      * In dieser Methode kann eine bereits persistierte Zutat mit neuen Werten überschrieben werden.
      *
-     * @param zutat
+     * @param zutat Zutat, welche aktualisiert wird
      * @return Gibt die Meldung "success" bei Erfolg oder die Fehlermeldung der Exception zurück
      */
     public String updateZutat(Zutat zutat) {
@@ -89,9 +89,9 @@ public class ZutatService {
     }
 
     /**
-     * Methode zum Löschen einer bereits persistierten Zutat Entity
+     * Methode zum Löschen einer bereits persistierten Zutat Entity.
      *
-     * @param zutat
+     * @param zutat Zutat, welche gelöscht werden soll
      * @return Gibt die Meldung "success" bei Erfolg oder die Fehlermeldung der Exception zurück
      */
     public String deleteZutat(Zutat zutat) {
@@ -106,7 +106,7 @@ public class ZutatService {
     /**
      * Methode zum Anzeigen der Zutaten, welche zu einer Einheit gehören.
      *
-     * @param id Es wird die Einheit anhand der ID des Fremdschlüssels gesucht.
+     * @param id Es wird die Einheit anhand der Id des Fremdschlüssels gesucht.
      * @return Das Suchergebnis wird als Liste (Java.Util.Collection) zurückgegeben
      */
     public List<Zutat> findZutatenByEinheitId(Long id) {
@@ -115,7 +115,7 @@ public class ZutatService {
 
     /**
      * @author Joscha Cerny
-     * Methode zum Zurückgeben von Einer Zutat Entity mit einem Angegeben Namen
+     * Methode zum Zurückgeben von Einer Zutat Entity mit einem angegebenen Namen
      */
     public Zutat getZutatenByName(String name) {
         return zutatRepository.getZutatenByName(name.trim());

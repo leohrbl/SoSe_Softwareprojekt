@@ -8,7 +8,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
- *  Zutat Entität mit einer ManyToOne Beziehung zu der Einheit Entität. Die Zutat hat neben der Einheit einen Namen. Zutaten existieren nicht ohne Einheit. Die Klasse hat Getter und Setter Methoden für alle Instanzvariablen.
+ * Zutat Entität mit einer ManyToOne Beziehung zu der Einheit Entität. Die Zutat hat neben der Einheit einen Namen. Zutaten existieren nicht ohne Einheit. Die Klasse hat Getter und Setter Methoden für alle Instanzvariablen.
+ *
  * @author Léo Hérubel
  * @see Einheit
  * @see com.example.application.data.repository.ZutatRepository
@@ -16,7 +17,7 @@ import javax.validation.constraints.NotNull;
  */
 
 @Entity
-public class Zutat{
+public class Zutat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,7 +34,7 @@ public class Zutat{
     private Einheit einheit;
 
 
-    public Zutat()  {
+    public Zutat() {
 
     }
 

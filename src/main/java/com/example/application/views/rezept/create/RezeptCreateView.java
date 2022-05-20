@@ -199,7 +199,7 @@ public class RezeptCreateView extends ViewFrame {
                         image.getSrc(),
                         image.getAlt().toString()), title.getValue(), zubereitung.getValue(), portionenInput.getValue());
                 rezept.setKategorie(kategorie.getValue());
-                Notification.show(rezept.toString());
+                //Notification.show(rezept.toString());
                 rezeptService.createRezept(rezept);
                 for (AddZutatRow row : zutatenRows) {
                     rezeptZutatenService.createRezeptZutaten(rezept, row.getZutat(), row.getMenge());
@@ -221,6 +221,7 @@ public class RezeptCreateView extends ViewFrame {
             Notification.show("Bitte Eingabewerte überprüfen!").addThemeVariants(NotificationVariant.LUMO_ERROR);
             return false;
         }
+
         return true;
     }
 
@@ -259,7 +260,6 @@ public class RezeptCreateView extends ViewFrame {
         }
         Set<String> zutatNameSet = new HashSet<>(zutatNameList);
         return zutatNameSet.size() < zutatNameList.size();
-
     }
 
     private void clearAll(){
@@ -268,6 +268,7 @@ public class RezeptCreateView extends ViewFrame {
         portionenInput.clear();
         zutatenContainer.removeAll();
         zubereitung.clear();
+        zutatenRows.clear();
         addZutatZeile();
 
     }

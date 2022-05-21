@@ -48,13 +48,16 @@ public class RezeptService {
     }
 
     /**
+     * Methode, die ein Rezept in der Datenbank speichert, bei der jede Variable
+     * einzeln übergeben wird
      * 
-     * @param bild
-     * @param titel
-     * @param zubereitung
-     * @param portionen
-     * @param kategorie
-     * @return
+     * @param bild        Bild des Rezeptes
+     * @param titel       Titel des Rezeptes
+     * @param zubereitung Zubereitung des Rezeptes
+     * @param portionen   Protionen des Rezeptes
+     * @param kategorie   Kategorie des Rezeptes
+     * @return Bei einem Fehler wird null zurückgegeben, wenn das Rezept erfolgreich
+     *         gespeichert wird, wird dieses zurückgegeben
      */
     public Rezept createRezept(Image bild, String titel, String zubereitung, int portionen, Kategorie kategorie) {
         System.out.println(titel.trim());
@@ -77,9 +80,12 @@ public class RezeptService {
     }
 
     /**
+     * Methode, die ein Rezept in der Datenbank speichert, bei der das Rezept
+     * übergeben wird
      * 
-     * @param rezept
-     * @return
+     * @param rezept Rezept, das gespeichert werden soll
+     * @return succes beim erfolgreichen speichern, sonst die entsprechende
+     *         Fehlermeldung
      */
     public String createRezept(Rezept rezept) {
         try {
@@ -147,7 +153,7 @@ public class RezeptService {
     /**
      * Methode die, anhand des Titels nach einem Rezept sucht und dieses zurückgibt
      * 
-     * @param titel Titel des Rezepts
+     * @param titel Titel des Rezeptes
      * @return Rezept, welches den Titel hat
      */
     public Rezept findByTitel(String titel) {
@@ -157,7 +163,7 @@ public class RezeptService {
     /**
      * Methode die, anhand einer Id nach einem Rezept sucht und dieses zurückgibt
      * 
-     * @param id Id des Rezepts
+     * @param id Id des Rezeptes
      * @return Rezept, welches die Id hat
      */
     public Rezept findById(long id) {
@@ -173,8 +179,8 @@ public class RezeptService {
     }
 
     /**
-     * Die Methode setzt alle werte eines alten rezepts auf die Werte des Neuen
-     * angegeben Rezepts
+     * Die Methode setzt alle werte eines alten Rezeptes auf die Werte des Neuen
+     * angegeben Rezeptes
      * 
      * @author Joscha Cerny
      */

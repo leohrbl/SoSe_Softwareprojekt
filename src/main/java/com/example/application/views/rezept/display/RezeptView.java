@@ -37,8 +37,13 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
- * Die Klasse RezeptView ist für das erweiterte Anzeigen der Informationen eines Rezeptes verantwortlich. Über einen URL-Parameter kann diese Klasse von anderen Views aufgerufen werden. Der Url Parameter ist die Id des Rezeptes welches angezeigt
- * werden soll. Abgesehen vom Anzeigen der Informationen zu einem Rezept kann der Nutzer die Zutaten des Rezeptes für beliebige Portionen zur Einkaufsliste hinzufügen. Ergänzend kann der User aus dieser View das Rezept ausdrucken.
+ * Die Klasse RezeptView ist für das erweiterte Anzeigen der Informationen eines
+ * Rezeptes verantwortlich. Über einen URL-Parameter kann diese Klasse von
+ * anderen Views aufgerufen werden. Der Url Parameter ist die Id des Rezeptes
+ * welches angezeigt
+ * werden soll. Abgesehen vom Anzeigen der Informationen zu einem Rezept kann
+ * der Nutzer die Zutaten des Rezeptes für beliebige Portionen zur Einkaufsliste
+ * hinzufügen. Ergänzend kann der User aus dieser View das Rezept ausdrucken.
  *
  * @author Léo Hérubel
  * @see EinkaufslistenService
@@ -61,24 +66,29 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
     private final Druckservice druckservice;
 
     /**
-     * Der Konstruktor initialisiert die Instanzvariablen. Zudem wird das Grid konfiguriert. Die View wird aber erst in der setParameter() Methode erstellt, da dort erst auf das Rezept in der Datenbank zugegriffen werden kann.
+     * Der Konstruktor initialisiert die Instanzvariablen. Zudem wird das Grid
+     * konfiguriert. Die View wird aber erst in der setParameter() Methode erstellt,
+     * da dort erst auf das Rezept in der Datenbank zugegriffen werden kann.
      *
      * @param rezeptService         Datenbankservice für Rezepte
      * @param rezeptZutatenService  Datenbankservice für Rezept_Zutaten
      * @param einkaufslistenService Datenbankservice für die Einkaufsliste
      */
-    public RezeptView(RezeptService rezeptService, RezeptZutatenService rezeptZutatenService, EinkaufslistenService einkaufslistenService) {
+    public RezeptView(RezeptService rezeptService, RezeptZutatenService rezeptZutatenService,
+            EinkaufslistenService einkaufslistenService) {
         this.rezeptService = rezeptService;
         this.zutatMengeGrid = new Grid<>(Rezept_Zutat.class, false);
         this.einkaufslistenService = einkaufslistenService;
         this.rezeptZutatenService = rezeptZutatenService;
         this.portionenInput = new IntegerField();
-        this.druckservice = new Druckservice();
+        this.druckservice = Druckservice.getInstance();
         configureGrid();
     }
 
     /**
-     * Die Methode ist der Startpunkt der View und verarbeitet den URL-Parameter. Sofern der Parameter eine valide Id eines Rezeptes ist, wird die View erstellt.
+     * Die Methode ist der Startpunkt der View und verarbeitet den URL-Parameter.
+     * Sofern der Parameter eine valide Id eines Rezeptes ist, wird die View
+     * erstellt.
      *
      * @param event     Event bevor der HTML Code gerendert wird
      * @param parameter URL Parameter (RezeptId)
@@ -95,11 +105,13 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
     }
 
     /**
-     * Falls kein Parameter abgefangen wird, wird zur RezeptuebersichtView navigiert.
+     * Falls kein Parameter abgefangen wird, wird zur RezeptuebersichtView
+     * navigiert.
      *
      * @param event     Event bevor der HTML Code gerendert wird
      * @param parameter URL Parameter (Keine valide Id)
-     * @return gibt eine Http Response zurück, damit das Frontend weiterhin kompiliert werden kann.
+     * @return gibt eine Http Response zurück, damit das Frontend weiterhin
+     *         kompiliert werden kann.
      */
     @Override
     public int setErrorParameter(BeforeEnterEvent event, ErrorParameter<NotFoundException> parameter) {
@@ -153,7 +165,9 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
     }
 
     /**
-     * Methode zum Setzen des Parameters previousPortionenInputValue auf die Portionen vom Rezept. Die Variable wird zur Umrechnung der Mengen von Zutaten auf Grundlage der Portionen genutzt.
+     * Methode zum Setzen des Parameters previousPortionenInputValue auf die
+     * Portionen vom Rezept. Die Variable wird zur Umrechnung der Mengen von Zutaten
+     * auf Grundlage der Portionen genutzt.
      *
      * @param rezept Rezept, welches aus dem validen URL Parameter hervorgeht
      */
@@ -162,7 +176,8 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
     }
 
     /**
-     * Methode zum Erstellen des Contents der View. Der Content besteht aus dem Bild, den Zutaten und dem Zubereitungstext.
+     * Methode zum Erstellen des Contents der View. Der Content besteht aus dem
+     * Bild, den Zutaten und dem Zubereitungstext.
      *
      * @param rezept Rezept, welches aus dem validen URL Parameter hervorgeht.
      * @return Gibt den gesamten Content als VerticalLayout zurück
@@ -177,7 +192,8 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
     }
 
     /**
-     * Methode zum Erstellen des Footers der View. Der Footer besteht aus einem Druck Button.
+     * Methode zum Erstellen des Footers der View. Der Footer besteht aus einem
+     * Druck Button.
      *
      * @return Gibt den Footer als HorizontalLayout zurück
      */
@@ -189,7 +205,8 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
     }
 
     /**
-     * Methode zum Erstellen des PortionenLayouts. Das Layout besitzt den PortionenInput für die Umrechnung der Zutaten und dazu zwei Labels.
+     * Methode zum Erstellen des PortionenLayouts. Das Layout besitzt den
+     * PortionenInput für die Umrechnung der Zutaten und dazu zwei Labels.
      *
      * @return Gibt das PortionenLayout als HorizontalLayout zurück
      */
@@ -203,7 +220,9 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
     }
 
     /**
-     * Methode zum Erstellen des Grids für die Zutaten des Rezeptes. Das Layout besteht aus dem PortionenLayout als Überschrift der Tabelle, dem Grid und aus dem Button zum Hinzufügen der Zutaten in die Einkaufsliste.
+     * Methode zum Erstellen des Grids für die Zutaten des Rezeptes. Das Layout
+     * besteht aus dem PortionenLayout als Überschrift der Tabelle, dem Grid und aus
+     * dem Button zum Hinzufügen der Zutaten in die Einkaufsliste.
      *
      * @return Gibt das PortionenAndZutatenLayout als VerticalLayout zurück
      */
@@ -241,9 +260,11 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
     }
 
     /**
-     * Methode zum Erstellen des Edit Rezept Buttons, welcher bei einem Click mit der rezeptId als URL Parameter zur RezeptEditView navigiert.
+     * Methode zum Erstellen des Edit Rezept Buttons, welcher bei einem Click mit
+     * der rezeptId als URL Parameter zur RezeptEditView navigiert.
      *
-     * @return Gibt den CreateButton zurück, damit dieser einem Layout hinzugefügt werden kann.
+     * @return Gibt den CreateButton zurück, damit dieser einem Layout hinzugefügt
+     *         werden kann.
      */
     private Button createEditButton() {
         Button edit = new Button(new Icon(VaadinIcon.EDIT));
@@ -253,9 +274,11 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
     }
 
     /**
-     * Methode zum Erstellen des CloseButtons, welcher bei einem Click zurück zur RezeptuebersichtView navigiert.
+     * Methode zum Erstellen des CloseButtons, welcher bei einem Click zurück zur
+     * RezeptuebersichtView navigiert.
      *
-     * @return Gibt den EditButton zurück, damit dieser in ein Layout eingefügt werden kann.
+     * @return Gibt den EditButton zurück, damit dieser in ein Layout eingefügt
+     *         werden kann.
      */
     private Button createCloseButton() {
         Button close = new Button(new Icon(VaadinIcon.CLOSE));
@@ -265,9 +288,12 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
     }
 
     /**
-     * Es wird ein Anchor erzeugt, der in einem Button gemapped wird. Dieser Anchor verweist auf das Dokument "Rezept.pdf", welches erstellt wird, wenn der Button gedrückt wird.
+     * Es wird ein Anchor erzeugt, der in einem Button gemapped wird. Dieser Anchor
+     * verweist auf das Dokument "Rezept.pdf", welches erstellt wird, wenn der
+     * Button gedrückt wird.
      *
-     * @return Gibt den PrintButton zurück, damit dieser in ein Layout eingefügt werden kann.
+     * @return Gibt den PrintButton zurück, damit dieser in ein Layout eingefügt
+     *         werden kann.
      * @author Phillip Laupichler
      */
     private Anchor createPrintBtn() {
@@ -296,7 +322,8 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
     /**
      * Methode zum Erstellen des EinkaufslisteButtons.
      *
-     * @return Gibt den Button zurück, damit dieser in ein Layout hinzugefügt werden kann.
+     * @return Gibt den Button zurück, damit dieser in ein Layout hinzugefügt werden
+     *         kann.
      */
     private Button createAddToEinkaufslisteBtn() {
         Button addToEinkaufslisteBtn = new Button("Zur Einkaufsliste hinzufügen");
@@ -306,12 +333,15 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
     }
 
     /**
-     * Nachdem der AddToEinkaufslisteBtn angeklickt wurde, wird die der Datenbankservice von der Einkaufsliste aufgerufen, um die aktuell angezeigten Rezept_Zutat Objekte zu der Einkaufsliste hinzuzufügen.
+     * Nachdem der AddToEinkaufslisteBtn angeklickt wurde, wird die der
+     * Datenbankservice von der Einkaufsliste aufgerufen, um die aktuell angezeigten
+     * Rezept_Zutat Objekte zu der Einkaufsliste hinzuzufügen.
      */
     private void addEintraege() {
         String response = einkaufslistenService.addEintraege(displayedItems);
         if (response.equals("success")) {
-            Notification.show("Zutaten wurden erfolgreich in die Einkaufsliste hinzugefügt!").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            Notification.show("Zutaten wurden erfolgreich in die Einkaufsliste hinzugefügt!")
+                    .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
         } else {
             Notification.show(response).addThemeVariants(NotificationVariant.LUMO_ERROR);
         }
@@ -320,15 +350,17 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
     /**
      * Methode zum Drucken des Rezeptes.
      *
-     * @param rezept Rezept, welches aus dieser View an den Druckservice übergeben wird
+     * @param rezept Rezept, welches aus dieser View an den Druckservice übergeben
+     *               wird
      */
     private void printRezept(Rezept rezept) {
-        //Portion auch übergeben
-        druckservice.createRezept(rezept);
+        // Portion auch übergeben
+        druckservice.createRezept(rezept, displayedItems, portionenInput.getValue());
     }
 
     /**
-     * Methode zum Umrechnen der Mengen von Zutaten, nachdem sich der Value vom PortionenInput verändert hat.
+     * Methode zum Umrechnen der Mengen von Zutaten, nachdem sich der Value vom
+     * PortionenInput verändert hat.
      */
     private void calcMengen() {
         if (displayedItems.isEmpty()) {

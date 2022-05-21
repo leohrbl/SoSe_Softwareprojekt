@@ -221,7 +221,7 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
     public void configureGrid() {
         zutatMengeGrid.addColumn(Rezept_Zutat::getMenge).setHeader("Menge");
         zutatMengeGrid.addColumn(Rezept_Zutat::getEinheitFromZutat).setHeader("Einheit");
-        zutatMengeGrid.addColumn(Rezept_Zutat::getEinheitFromZutat).setHeader("Zutat");
+        zutatMengeGrid.addColumn(Rezept_Zutat::getZutat).setHeader("Zutat");
         zutatMengeGrid.addThemeVariants(GridVariant.LUMO_COLUMN_BORDERS);
         zutatMengeGrid.addClassName("rezept-view-grid");
     }

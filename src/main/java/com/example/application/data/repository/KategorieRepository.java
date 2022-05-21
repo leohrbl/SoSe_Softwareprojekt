@@ -44,6 +44,8 @@ public interface KategorieRepository extends JpaRepository<Kategorie, Long> {
 	 */
 	@Query ("delete from Kategorie k where k.name =(:name)")
 	void deleteByName (@Param("name") String name);
+
+	Kategorie findByName(String name);
 	
 
 }

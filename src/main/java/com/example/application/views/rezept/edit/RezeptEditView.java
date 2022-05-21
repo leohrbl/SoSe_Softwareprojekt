@@ -3,12 +3,15 @@ package com.example.application.views.rezept.edit;
 import com.example.application.data.entity.*;
 import com.example.application.data.service.*;
 import com.example.application.views.components.MainLayout;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -17,8 +20,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.router.*;
-import org.apache.commons.lang3.StringUtils;
+
 import javax.swing.JFileChooser;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +30,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.ArrayList;
 import com.example.application.views.components.ViewFrame;
+import com.example.application.views.components.AddZutatDialog;
 
 
 /**
@@ -43,7 +48,6 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
     Button saveButton = new Button("Speichern");
     Button cancelButton = new Button("Abbrechen");
     Button neueZutatButton = new Button("Neue Zutat Erstellen");
-
     RezeptService rezeptService;
     private ZutatService zutatservice;
     private RezeptZutatenService rezeptZutatenService;
@@ -58,12 +62,13 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
     ComboBox[] rezeptZutatNameComboBox = new ComboBox[40];
     Button[] deleteButton = new Button[40];
     Integer identifierTextFieldCounter = 0;
-    //Listen zum speichern aller werte welche nicht gelöscht worden sind
     List<String> remainingMengenWhenSavedList = new ArrayList<String>(); //Sobald gespeichert wird werden alle verbleibenden Mengen der Zutaten in dieser Liste gespeichert
     List<String> remainingNamenWhenSavedList = new ArrayList<String>(); //Sobald gespeichert wird werden alle verbleibenden Namen der Zutaten in dieser Liste gespeichert
     List<String> remainingEinheitenWhenSavedList = new ArrayList<String>(); //Sobald gespeichert wird werden alle verbleibenden Einheiten der Zutaten in dieser Liste gespeichert
     Dialog createNewZutatDialog = new Dialog(); //Dialog zum Erstellen neuer Zutaten
     VerticalLayout contentRezeptZutaten = new VerticalLayout();
+    ComboBox<Kategorie> auswahlKategorieComboBox = new ComboBox<>();
+
 
 
     /**
@@ -123,22 +128,53 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
      */
     public void configureInitialLayout(Rezept rezept)
     {
-        //SeitenTitel und Textfeld mit name
+
+        //HEADER
+        //Seitenname
         H3 seitenName = new H3("Rezept bearbeiten");
+        seitenName.setWidth("100%");
+        seitenName.getElement().getStyle().set("color", "blue");
+
+        //Exit Button
+        Button exitButton = new Button(new Icon(VaadinIcon.CLOSE));
+        exitButton.addClickListener(e -> cancel());
+        exitButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+
+        HorizontalLayout header = new HorizontalLayout(seitenName, exitButton);
+        header.setDefaultVerticalComponentAlignment(Alignment.CENTER);
+
+        //Layouts Einfügen Header
+        setViewHeader(header);
+
+        //CONTENT
+        //Rezept Name und Kategorie + filler
         rezeptNameTextField = new TextField("RezeptName", rezept.getTitel(),"");
+        rezeptNameTextField.setWidth("40%");
 
-        //Drop down für die Kategorie in arbeit, wird fertig sobald Katergorie da ist
-        ComboBox<Kategorie> auswahlKategorie = new ComboBox<>();
-        auswahlKategorie.setLabel("Kategorie");
-        auswahlKategorie.setItems(kategorieService.getKategorien());
+        auswahlKategorieComboBox.setLabel("Kategorie");
+        auswahlKategorieComboBox.setItems(kategorieService.getKategorien());
+        auswahlKategorieComboBox.setValue(rezept.getKategorie());
+        auswahlKategorieComboBox.setAllowCustomValue(false);
 
-        //Bild laden
+        VerticalLayout textFieldLayout = new VerticalLayout(rezeptNameTextField);
+        textFieldLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        textFieldLayout.setPadding(true);
+
+        VerticalLayout auswahlFieldLayout = new VerticalLayout(auswahlKategorieComboBox);
+        auswahlFieldLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        auswahlFieldLayout.setPadding(true);
+
+        //Bild und Hochladen Button
         rezeptBild = rezept.getBild();
-        rezeptBild.setWidth("35%");
-        rezeptBild.setHeight("35%");
+        rezeptBild.setWidth("60%");
+        rezeptBild.setHeight("60%");
         rezeptBild.addClassName("image");
 
-        //fürs angeben der Portionen
+        VerticalLayout contentBild = new VerticalLayout(rezeptBild, fileUploadButton);
+        contentBild.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        contentBild.setPadding(true);
+
+        //Portionen
         Paragraph portionenText1 = new Paragraph("Zutaten für ");
         Paragraph portionenText2 = new Paragraph("Portionen");
         inputPortionenIntegerField = new IntegerField();
@@ -147,61 +183,56 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
         inputPortionenIntegerField.setMax(20);
         inputPortionenIntegerField.setHasControls(true);
 
-        //Text feld für die Zubereitung
-        String zubereitungString = rezept.getZubereitung();
-        zubereitungTextArea = new TextArea("Zubereitung",zubereitungString,"");
-        zubereitungTextArea.setWidth("50%");
-        zubereitungTextArea.setHeight("40%");
-        VerticalLayout zubereitungLayout = new VerticalLayout(zubereitungTextArea);
-        zubereitungLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-        zubereitungLayout.setPadding(true);
-        zubereitungLayout.setSpacing(true);
+        HorizontalLayout contentPortionHorizontal = new HorizontalLayout(portionenText1, inputPortionenIntegerField, portionenText2);
+        VerticalLayout contentPortionVertical = new VerticalLayout(contentPortionHorizontal);
+        contentPortionVertical.setAlignItems(Alignment.CENTER);
 
-        HorizontalLayout contentHeader = new HorizontalLayout(seitenName, auswahlKategorie, rezeptNameTextField);
-        contentHeader.setAlignItems(FlexComponent.Alignment.CENTER);
-        contentHeader.setPadding(true);
-        contentHeader.setSpacing(true);
-
-        VerticalLayout contentBild = new VerticalLayout(rezeptBild, fileUploadButton);
-        contentBild.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-        contentBild.setPadding(true);
-
-        HorizontalLayout contentPortion = new HorizontalLayout(portionenText1, inputPortionenIntegerField, portionenText2);
-        contentPortion.setDefaultVerticalComponentAlignment(Alignment.CENTER);
-        contentPortion.setPadding(true);
-
-        contentRezeptZutaten.setPadding(true);
+        //ZutatenListe
         neueZutatButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-        VerticalLayout zutatHinzufuegenButtonLayout = new VerticalLayout(zutatHinzufuegenButton, neueZutatButton);
-        zutatHinzufuegenButtonLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-        zutatHinzufuegenButtonLayout.setPadding(true);
+        HorizontalLayout zutatenListeLayout = new HorizontalLayout(contentRezeptZutaten);
+        VerticalLayout zutatenListeLayoutVertical = new VerticalLayout(zutatenListeLayout);
+        zutatenListeLayoutVertical.setAlignItems(Alignment.CENTER);
 
+        HorizontalLayout zutatButtonsLayout = new HorizontalLayout(zutatHinzufuegenButton, neueZutatButton);
+        VerticalLayout zutatButtonsLayoutVertical = new VerticalLayout(zutatButtonsLayout);
+        zutatButtonsLayoutVertical.setAlignItems(Alignment.CENTER);
+
+        //TextArea
+        String zubereitungString = rezept.getZubereitung();
+        zubereitungTextArea = new TextArea("Zubereitung",zubereitungString,"");
+        zubereitungTextArea.setWidth("70%");
+        zubereitungTextArea.setHeight("40%");
+        VerticalLayout textAreaLayout = new VerticalLayout(zubereitungTextArea);
+        textAreaLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+
+        //Layouts Einfügen Content
+        setViewContent(textFieldLayout, auswahlFieldLayout, contentBild, contentPortionVertical, zutatenListeLayoutVertical, zutatButtonsLayoutVertical, textAreaLayout);
+
+        //FOOTER
         cancelButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         HorizontalLayout contentFooter = new HorizontalLayout(cancelButton,saveButton);
-        contentHeader.setDefaultVerticalComponentAlignment(Alignment.CENTER);
-        contentHeader.setPadding(true);
-        contentHeader.setSpacing(true);
+        VerticalLayout contentFooterVertical = new VerticalLayout(contentFooter);
+        contentFooterVertical.setAlignItems(Alignment.CENTER);
 
-        setViewHeader(contentHeader);
-        setViewContent(contentBild, contentPortion, contentRezeptZutaten, zutatHinzufuegenButtonLayout, zubereitungLayout);
-        setViewFooter(contentFooter);
+        //Layouts Einfügen Footer
+        setViewFooter(contentFooterVertical);
     }
 
     /**
      * KDie Methode gibt allen Buttons ihre Funktion und wird am Anfang aufgerufen
      */
     private void configureButtons(Rezept rezept){
-        //Buttons
         fileUploadButton.addClickListener(event -> fileUpload());
         zutatHinzufuegenButton.addClickListener(event -> createNewZutat(rezept));
         saveButton.addClickListener(event -> save(rezept));
         cancelButton.addClickListener(event -> cancel());
         neueZutatButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        neueZutatButton.addClickListener(e -> createNewZutatDialog().open());
+        neueZutatButton.addClickListener(e -> createNewZutatDialog());
     }
+
 
     /**
      * Die Methode erstellt die Initalen Zuataten des Rezepts und gibt ihnen ihre InitalWerte
@@ -212,7 +243,8 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
         for(int i = 0; i < rezeptZutatenService.findAllByRezept(rezept).size(); i++)
         {
             //Textfelder mit Initalwert erstellen
-            rezeptZutatMengeTextField[identifierTextFieldCounter]= new TextField("", "1", "");
+
+            rezeptZutatMengeTextField[identifierTextFieldCounter]= new TextField("", Double.toString(rezeptZutatenService.findAllByRezept(rezept).get(i).getMenge()), "");
             rezeptZutatEinheitTextField[identifierTextFieldCounter] = new TextField("", rezeptZutatenService.findAllByRezept(rezept).get(i).getZutat().getEinheit().getEinheit(), "");
             rezeptZutatEinheitTextField[identifierTextFieldCounter].setReadOnly(true);
 
@@ -238,6 +270,7 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
             identifierTextFieldCounter++;
         }
     }
+
 
     /**
      * Die Methode erstellt eine neue Zeile an Textfeld und Comboboxen für die
@@ -278,6 +311,7 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
         identifierTextFieldCounter++;
     }
 
+
     /**
      * Die Methode nimmt Alle zum Zeitpunkt des Drückens des Speichern Buttons entgegen und erstellt damit ein neues Rezept
      * @param newRezept
@@ -294,8 +328,9 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
         {
             //speichern aller Rezept werte
             Image newImage = this.rezeptBild;
-            String newTitel = rezeptNameTextField.getValue();
-            String newZubereitung = zubereitungTextArea.getValue();
+            Kategorie newKategorie = auswahlKategorieComboBox.getValue();
+            String newTitel = rezeptNameTextField.getValue().trim();
+            String newZubereitung = zubereitungTextArea.getValue().trim();
             Integer newPortionen = inputPortionenIntegerField.getValue();
             List<Rezept_Zutat> newRezeptZutatenList = createRezeptZutaten(rezept);
 
@@ -303,16 +338,18 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
             Rezept newRezept = new Rezept(new Image(this.rezeptBild.getSrc(), "Essen"), newTitel, newZubereitung, newPortionen);
             Set<Rezept_Zutat> newSet = new HashSet<>(newRezeptZutatenList);
             newRezept.setZutaten(newSet);
+            newRezept.setKategorie(newKategorie);
 
             //Rezept updaten und zurück zum Menü
             rezeptService.updateRezept(rezept, newRezept);
             returnToRezeptCard();
+            Notification.show("Rezept: " + newRezept.getTitel() + " erfolgreich Gespeichert!").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
         }
         else
         {
             if(checkEintragMenge() == false && checkEintragZutat() == false)
             {
-                Notification.show("Mengen und Zutaten Inkorrekt, Spast").addThemeVariants(NotificationVariant.LUMO_ERROR);
+                Notification.show("Mengen und Zutaten Inkorrekt").addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
             if(checkEintragMenge() == false)
             {
@@ -335,6 +372,8 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
      * Des weiteren werden die Dateninhalte der Menge dieser Zeile auf NULL gesetzt damit sie später als nicht mehr beständig identifiezuert und
      * gelöscht werden können.
      */
+
+
     public void deleteByNumber(Integer selectedCounter, Rezept rezept)
     {
         //entfernen der Textfelder nach dem selected counter
@@ -355,13 +394,16 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
         chooser.showSaveDialog(null);
     }
 
+
     /**
      * Methode die Aufgerufen wird wenn der Abbruch Button betätigt wird, Führt zurück in die RezeptAnsicht
      */
     public void cancel()
     {
         returnToRezeptCard();
+        Notification.show("Rezept Bearbeitung wurde abgebrochen und die Werte wurden zurückgesetz!").addThemeVariants(NotificationVariant.LUMO_ERROR);
     }
+
 
     /**
      * Die Methode nimmt die Listen welche von dem MethodenAufruf
@@ -388,13 +430,14 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
             String zutatName = remainingNamenWhenSavedList.get(i);
 
             //Anlegen neuer Menge und initialisieren mit emtpy wert aus textfeld
-            int newMenge = Integer.parseInt(remainingMengenWhenSavedList.get(i));
+            double newMenge = Double.parseDouble(remainingMengenWhenSavedList.get(i));
             rezeptZutatenService.createRezeptZutaten(rezept, zutatservice.getZutatenByName(zutatName), newMenge);
             Rezept_Zutat newRezeptZutat = new Rezept_Zutat(rezept, zutatservice.getZutatenByName(zutatName), newMenge);
             newRezeptZutatenList.add(newRezeptZutat);
         }
         return newRezeptZutatenList;
     }
+
 
     /**
      * Die Methode überprüft welche Textfelder und Comboboxen der
@@ -424,21 +467,24 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
         }
     }
 
+
     /**
      * Die Methode Navigiert aus dem EditView wieder zurück in die Rezeptansicht
      */
     public void returnToRezeptCard()
     {
-        UI.getCurrent().navigate("display");
+        UI.getCurrent().navigate("display/" + rezeptId);
     }
 
     /**
      * Die Methode überprüft ob alle Mengen Felder ausgefüllt und Korrekt ausgefüllt sind
      * Falls ja gibt sie ein Entsprechenden Wert True zurück
      */
+
+
     public boolean checkEintragMenge()
     {
-        boolean allMengenfilled = true;
+        boolean allMengenChecked = true;
         List<String> newMengenlistForCheck = new ArrayList<String>();
         for(int i = 0; i < identifierTextFieldCounter; i++)
         {
@@ -449,12 +495,25 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
         }
         for(int i = 0; i < newMengenlistForCheck.size(); i++)
         {
-            if(newMengenlistForCheck.get(i) == null || newMengenlistForCheck.get(i) == "" || StringUtils.isNumeric(newMengenlistForCheck.get(i)) == false)
+            if(newMengenlistForCheck.get(i) == null || newMengenlistForCheck.get(i) == "" || newMengenlistForCheck.get(i).contains(",") )
             {
-                allMengenfilled = false;
+                allMengenChecked = false;
             }
+            try
+            {
+                double doubleChecker = Double.parseDouble(newMengenlistForCheck.get(i));
+                if(Double.parseDouble(newMengenlistForCheck.get(i)) <= 0 )
+                {
+                    allMengenChecked = false;
+                }
+            }
+            catch(NumberFormatException e)
+            {
+                allMengenChecked = false;
+            }
+
         }
-        return allMengenfilled;
+        return allMengenChecked;
     }
 
     /**
@@ -462,6 +521,8 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
      * und auf die Ausfüllung
      * Falls ja gibt sie ein Entsprechenden Wert True zurück
      */
+
+
     public boolean checkEintragZutat()
     {
         boolean allZutatenChecked = true;
@@ -503,52 +564,15 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
     }
 
 
-
     /**
      * Methode zum Erstellen neuer Zutaten.
      * Leicht abgeändert aber ursprünglich geschrieben im
      * @ZutatenView von
      * @author Lennard Rummel
      */
-    public Dialog createNewZutatDialog()
+    public void createNewZutatDialog()
     {
-        createNewZutatDialog = new Dialog();
-        createNewZutatDialog.add(new H5("Zutat hinzufügen"));
-
-        TextField bezeichnung = new TextField("Bezeichnung");
-        bezeichnung.setRequired(true);
-        bezeichnung.setErrorMessage("Gib eine Bezeichnung und eine Einheit!");
-
-        ComboBox<Einheit> einheitAuswahl = new ComboBox<>();
-        einheitAuswahl.setLabel("Einheit");
-        einheitAuswahl.setPlaceholder("Einheit auswählen");
-        einheitAuswahl.setRequired(true);
-        bezeichnung.setErrorMessage("Gib eine Bezeichnung und eine Einheit!");
-
-        einheitAuswahl.setItems(einheitService.getEinheiten());
-        createNewZutatDialog.add(new HorizontalLayout(bezeichnung, einheitAuswahl));
-
-        Button speichern = new Button("Speichern");
-        speichern.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        Button abbrechen = new Button("Abbrechen", e-> createNewZutatDialog.close());
-        abbrechen.addThemeVariants(ButtonVariant.LUMO_ERROR);
-
-        speichern.addClickListener(e ->{
-
-            // Neue Zutat wird gespeichert.
-            if(!bezeichnung.isEmpty() && !einheitAuswahl.isEmpty()){
-                if(zutatservice.searchZutatenByFilterText(bezeichnung.getValue()).size() == 0){
-                    createNewZutatDialog.close();
-                    zutatservice.saveZutat(bezeichnung.getValue(), einheitAuswahl.getValue());
-                    Notification.show("Zutat hinzugefügt: " + bezeichnung.getValue() +" in "+ einheitAuswahl.getValue()).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-                }else{
-                    Notification.show("Die Zutat '"+ bezeichnung.getValue()+"' existiert bereits.").addThemeVariants(NotificationVariant.LUMO_ERROR);
-                }
-            }else{
-                Notification.show("Keine Zutat hinzugefügt. Es muss eine Bezeichnung und eine Einheit angegeben werden.").addThemeVariants(NotificationVariant.LUMO_ERROR);
-            }
-        });
-        createNewZutatDialog.add(new HorizontalLayout(speichern, abbrechen));
-        return createNewZutatDialog;
+        AddZutatDialog addZutatDialog = new AddZutatDialog(einheitService, zutatservice);
+        addZutatDialog.open();
     }
 }

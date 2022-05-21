@@ -40,6 +40,11 @@ public interface RezeptZutatenRepository extends JpaRepository<Rezept_Zutat, Lon
      */
     List<Rezept_Zutat> findAllByZutat(Zutat zutat);
 
+    /**
+     * Löscht Rezept_Zutaten Datensätze anhand eines Rezeptes
+     * 
+     * @param rezept
+     */
     @Modifying
     @Transactional
     void deleteAllByRezept(Rezept rezept);

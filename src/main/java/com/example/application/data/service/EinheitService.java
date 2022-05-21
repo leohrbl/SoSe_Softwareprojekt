@@ -3,9 +3,7 @@ package com.example.application.data.service;
 import java.util.List;
 
 import com.example.application.data.entity.Einheit;
-import com.example.application.data.entity.Zutat;
 import com.example.application.data.repository.EinheitenRepository;
-import com.helger.commons.hierarchy.visit.EHierarchyVisitorReturn;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +24,8 @@ public class EinheitService {
     }
 
     /**
-     * Noch nicht getestet
+     * Diese Methode gibt eine Liste mit allen Einheiten, die in der Datenbank
+     * gespeichert sind zurück
      *
      * @return Liste mit allen Einheiten
      */
@@ -40,12 +39,12 @@ public class EinheitService {
      * @param name
      */
     public String createEinheit(String name) {
-        try{
+        try {
             Einheit einheit = new Einheit();
-            einheit.setEinheit(name);
+            einheit.setEinheit(name.trim());
             einheitenRepository.save(einheit);
             return "success";
-        }catch (Exception e){
+        } catch (Exception e) {
             return e.getMessage();
         }
     }
@@ -65,41 +64,55 @@ public class EinheitService {
         }
 
         Einheit einheit = einheitenRepository.findById(id).get();
-        einheit.setEinheit(name);
+        einheit.setEinheit(name.trim());
         einheitenRepository.save(einheit);
 
         return "success";
     }
 
     /**
-     * Diese Methode löscht eine Einheit, ist allerdings noch nicht getestet!!!
-     *
-     * @param einheit
+     * Diese Methode löscht eine Einheit aus der Datenbank
+     * 
+     * @param einheit Einheit die gelöscht werden soll
+     * @return Erfolgsmeldung, bei erfolgreicher Löschung oder Fehlermeldung
      */
     public String deleteEinheit(Einheit einheit) {
         try {
             einheitenRepository.delete(einheit);
             return "success";
-        }catch(Exception e){
+        } catch (Exception e) {
             return e.getMessage();
         }
     }
 
+    /**
+     * Diese Methode sucht nach einem Einheiten-Objekt und gibt dieses zurück
+     * 
+     * @param id Id, der Einheit, nach der gesucht wird
+     * @return Einheit, mit der entsprechenden Id
+     */
     public Einheit findById(Long id) {
         return einheitenRepository.findById(id).get();
     }
 
-    public Einheit findByName(String name){
-        return einheitenRepository.findByEinheit(name);
+    /**
+     * Diese Methode sucht nach einem Einheiten-Objekt und gibt dieses zurück
+     * 
+     * @param name Name, der Einheit, nach der gesucht wird
+     * @return Einheit, mit dem entsprechenden Namen
+     * @return
+     */
+    public Einheit findByName(String name) {
+        return einheitenRepository.findByEinheit(name.trim());
     }
-    
-    /** 
+
+    /**
      * @author Anna Karle
      * @param bezeichnung
      * @return
      */
     public Einheit searchEinheitByBezeichnung(String bezeichnung) {
-    	return this.einheitenRepository.findByEinheit(bezeichnung);
+        return this.einheitenRepository.findByEinheit(bezeichnung);
     }
-    
+
 }

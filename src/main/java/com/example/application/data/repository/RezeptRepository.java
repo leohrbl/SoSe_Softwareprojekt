@@ -3,7 +3,6 @@ package com.example.application.data.repository;
 import java.util.List;
 
 import com.example.application.data.entity.Rezept;
-import com.example.application.data.entity.Zutat;
 import com.example.application.data.service.RezeptService;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -38,7 +37,8 @@ public interface RezeptRepository extends JpaRepository<Rezept, Long> {
     Rezept findByTitel(String Titel);
 
     /**
-     * Sucht anhand eines Strings Datensätze aus der Zutaten Tabelle, welche dem Input String ohne Berücksichtigung der Groß- und Kleinschreibung ähneln.
+     * Sucht anhand eines Strings Datensätze aus der Zutaten Tabelle, welche dem
+     * Input String ohne Berücksichtigung der Groß- und Kleinschreibung ähneln.
      *
      * @param searchTerm
      * @return Das Suchergebnis wird als Liste (Java.Util.Collection) zurückgegeben.
@@ -48,5 +48,11 @@ public interface RezeptRepository extends JpaRepository<Rezept, Long> {
             "where lower(z.titel) like lower(concat('%', :searchTerm, '%')) ")
     List<Rezept> search(@Param("searchTerm") String searchTerm);
 
+    /**
+     * Löscht eine Rezept anhand einer id
+     * 
+     * @param id
+     */
     void deleteById(long id);
+
 }

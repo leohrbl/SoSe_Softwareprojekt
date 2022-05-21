@@ -2,8 +2,6 @@ package com.example.application.views;
 
 import java.util.Set;
 
-import javax.xml.transform.stream.StreamSource;
-
 import com.example.application.data.entity.Rezept;
 import com.example.application.data.entity.Rezept_Zutat;
 import com.example.application.data.service.RezeptService;
@@ -19,12 +17,10 @@ import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 
 @PageTitle("Drucken")
 @Route(value = "print")
@@ -39,50 +35,50 @@ public class drucken extends ViewFrame implements HasUrlParameter<String> {
     }
 
     private void createFrame(Rezept rezept) {
-/*
-        // A user interface for a (trivial) data model from which
-        // the PDF is generated.
-        final TextField name = new TextField("Name");
-        name.setValue("Slartibartfast");
-
-        // This has to be clicked first to create the stream resource
-        final Button ok = new Button("OK");
-
-        // This actually opens the stream resource
-        final Button print = new Button("Open PDF");
-        print.setEnabled(false);
-
-        ok.addClickListener((ClickEvent<Button> ClickEvent) -> {
-            StreamSource source = new MyPdfSource((String) name.getValue());
-
-            // Create the stream resource and give it a file name
-            String filename = "pdf_printing_example.pdf";
-            StreamResource resource = new StreamResource(source, filename);
-
-            // These settings are not usually necessary. MIME type
-            // is detected automatically from the file name, but
-            // setting it explicitly may be necessary if the file
-            // suffix is not ".pdf".
-            resource.setMIMEType("application/pdf");
-            resource.getStream().setParameter(
-                    "Content-Disposition",
-                    "attachment; filename=" + filename);
-
-            // Extend the print button with an opener
-            // for the PDF resource
-            BrowserWindowOpener opener = new BrowserWindowOpener(resource);
-            opener.extend(print);
-
-            name.setEnabled(false);
-            ok.setEnabled(false);
-            print.setEnabled(true);
-
-        });
-
-        layout.addComponent(name);
-        layout.addComponent(ok);
-        layout.addComponent(print);
-*/
+        /*
+         * // A user interface for a (trivial) data model from which
+         * // the PDF is generated.
+         * final TextField name = new TextField("Name");
+         * name.setValue("Slartibartfast");
+         * 
+         * // This has to be clicked first to create the stream resource
+         * final Button ok = new Button("OK");
+         * 
+         * // This actually opens the stream resource
+         * final Button print = new Button("Open PDF");
+         * print.setEnabled(false);
+         * 
+         * ok.addClickListener((ClickEvent<Button> ClickEvent) -> {
+         * StreamSource source = new MyPdfSource((String) name.getValue());
+         * 
+         * // Create the stream resource and give it a file name
+         * String filename = "pdf_printing_example.pdf";
+         * StreamResource resource = new StreamResource(source, filename);
+         * 
+         * // These settings are not usually necessary. MIME type
+         * // is detected automatically from the file name, but
+         * // setting it explicitly may be necessary if the file
+         * // suffix is not ".pdf".
+         * resource.setMIMEType("application/pdf");
+         * resource.getStream().setParameter(
+         * "Content-Disposition",
+         * "attachment; filename=" + filename);
+         * 
+         * // Extend the print button with an opener
+         * // for the PDF resource
+         * BrowserWindowOpener opener = new BrowserWindowOpener(resource);
+         * opener.extend(print);
+         * 
+         * name.setEnabled(false);
+         * ok.setEnabled(false);
+         * print.setEnabled(true);
+         * 
+         * });
+         * 
+         * layout.addComponent(name);
+         * layout.addComponent(ok);
+         * layout.addComponent(print);
+         */
         HorizontalLayout mainLayout = new HorizontalLayout();
         // Zwei Horizontale Layout
         VerticalLayout verticalLayout = new VerticalLayout();

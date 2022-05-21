@@ -52,7 +52,8 @@ public class RezeptCreateView extends ViewFrame {
     private KategorieService kategorieService;
     private EinheitService einheitService;
 
-    public RezeptCreateView(RezeptService rezeptService, RezeptZutatenService rezeptZutatenService, ZutatService zutatService, KategorieService kategorieService, EinheitService einheitService) {
+    public RezeptCreateView(RezeptService rezeptService, RezeptZutatenService rezeptZutatenService,
+            ZutatService zutatService, KategorieService kategorieService, EinheitService einheitService) {
         this.rezeptService = rezeptService;
         this.rezeptZutatenService = rezeptZutatenService;
         this.zutatService = zutatService;
@@ -63,7 +64,7 @@ public class RezeptCreateView extends ViewFrame {
         createViewLayout();
     }
 
-    private void createViewLayout(){
+    private void createViewLayout() {
         title = new TextField("Titel");
 
         kategorie = new Select<>();
@@ -91,7 +92,6 @@ public class RezeptCreateView extends ViewFrame {
         zutatenContainer.setWidth("100%");
         vLayout.add(portionenLayout, zutatenContainer);
 
-
         HorizontalLayout header = new HorizontalLayout(kategorie, title);
         header.setAlignItems(Alignment.BASELINE);
         header.setFlexGrow(1, title);
@@ -108,17 +108,14 @@ public class RezeptCreateView extends ViewFrame {
         image.setHeight("100%");
         image.addClassName("image");
 
+        HorizontalLayout btnLayout = new HorizontalLayout(neueZeileButton, neueZutatButton);
 
-
-        HorizontalLayout btnLayout = new HorizontalLayout(neueZeileButton,neueZutatButton);
-
-        //hier dann auch noch das grid mit den Zutaten/Mengen Objekten zu dem Rezept lul
+        // hier dann auch noch das grid mit den Zutaten/Mengen Objekten zu dem Rezept
+        // lul
         VerticalLayout content = new VerticalLayout(image, vLayout, zutatenContainer, btnLayout, zubereitung);
         content.setPadding(true);
 
-
         setViewContent(content);
-
 
         // Footer
 
@@ -129,22 +126,20 @@ public class RezeptCreateView extends ViewFrame {
 
         setViewFooter(footer);
 
-
-
         addZutatZeile();
 
     }
 
-    public void addZutatZeile(){
+    public void addZutatZeile() {
         HorizontalLayout rowLayout = new HorizontalLayout();
         AddZutatRow row = new AddZutatRow(zutatService);
         zutatenRows.add(row);
-        rowLayout.add(row,createDeleteRowButton());
+        rowLayout.add(row, createDeleteRowButton());
         rowLayout.setAlignItems(Alignment.BASELINE);
         zutatenContainer.add(rowLayout);
     }
 
-    private Button createDeleteRowButton(){
+    private Button createDeleteRowButton() {
         Button delRowButton = new Button(VaadinIcon.MINUS.create());
         delRowButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         delRowButton.addClickListener(e -> {
@@ -158,16 +153,16 @@ public class RezeptCreateView extends ViewFrame {
         Component parent = delRowButton.getParent().get();
         List<Component> componentList = parent.getChildren().collect(Collectors.toList());
         // Löschen der AddZutatRow Instanz in der Liste zutatenRows
-        if(isNotLastRow() && isNotMaxRow()){
-            for(Component component : componentList){
-                if(component instanceof AddZutatRow){
+        if (isNotLastRow() && isNotMaxRow()) {
+            for (Component component : componentList) {
+                if (component instanceof AddZutatRow) {
                     AddZutatRow rowToDelete = null;
-                    for(AddZutatRow row : zutatenRows){
-                        if(component == row){
+                    for (AddZutatRow row : zutatenRows) {
+                        if (component == row) {
                             rowToDelete = row;
                         }
                     }
-                    if(rowToDelete != null){
+                    if (rowToDelete != null) {
                         zutatenRows.remove(rowToDelete);
                     }
                 }
@@ -176,39 +171,46 @@ public class RezeptCreateView extends ViewFrame {
         }
     }
 
-
-
-
-    public void configureButtons(){
-        neueZeileButton.addClickListener(e ->{
+    public void configureButtons() {
+        neueZeileButton.addClickListener(e -> {
             addZutatZeile();
         });
-        neueZutatButton.addClickListener(e ->{
-            AddZutatDialog addZutatDialog = new AddZutatDialog(einheitService,zutatService);
+        neueZutatButton.addClickListener(e -> {
+            AddZutatDialog addZutatDialog = new AddZutatDialog(einheitService, zutatService);
             addZutatDialog.open();
         });
-        speichernButton.addClickListener(e->{
+        speichernButton.addClickListener(e -> {
             rezeptSpeichern();
         });
     }
 
-    public void rezeptSpeichern(){
-        if(isValuesValid()){
+    public void rezeptSpeichern() {
+        if (isValuesValid()) {
             try {
-                Rezept rezept = new Rezept(new Image(
+                // Rezept rezept = new Rezept(new Image(
+                // image.getSrc(),
+                // image.getAlt().toString()), title.getValue(), zubereitung.getValue(),
+                // portionenInput.getValue());
+                // rezept.setKategorie(kategorie.getValue());
+                // Notification.show(rezept.toString());
+                Rezept rezept = rezeptService.createRezept(new Image(
                         image.getSrc(),
-                        image.getAlt().toString()), title.getValue(), zubereitung.getValue(), portionenInput.getValue());
-                rezept.setKategorie(kategorie.getValue());
-                //Notification.show(rezept.toString());
-                rezeptService.createRezept(rezept);
-                for (AddZutatRow row : zutatenRows) {
-                    rezeptZutatenService.createRezeptZutaten(rezept, row.getZutat(), row.getMenge());
+                        image.getAlt().toString()), title.getValue(), zubereitung.getValue(),
+                        portionenInput.getValue(), kategorie.getValue());
+                if (rezept == null) {
+                    Notification.show("Rezept '" + title.getValue() + "' gibt es schon")
+                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                    return;
                 }
-                Notification.show("Rezept '"+title.getValue()+"' gespeichert").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                for (AddZutatRow row : zutatenRows) {
+                    rezeptZutatenService.createRezeptZutatenNew(rezept, row.getZutat(), row.getMenge());
+                }
+                Notification.show("Rezept '" + title.getValue() + "' gespeichert")
+                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                 clearAll();
-            }catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
-                //Notification.show(e.getMessage()).addThemeVariants(NotificationVariant.LUMO_ERROR);
+                // Notification.show(e.getMessage()).addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
 
         }
@@ -217,7 +219,8 @@ public class RezeptCreateView extends ViewFrame {
 
     // TODO: Individuelle Fehlermeldungen
     private boolean isValuesValid() {
-        if(kategorie.isEmpty() || title.isEmpty() || portionenInput.isEmpty() || zubereitung.isEmpty() || !isZutatRowsValid() || checkDuplicateZutaten()){
+        if (kategorie.isEmpty() || title.isEmpty() || portionenInput.isEmpty() || zubereitung.isEmpty()
+                || !isZutatRowsValid() || checkDuplicateZutaten()) {
             Notification.show("Bitte Eingabewerte überprüfen!").addThemeVariants(NotificationVariant.LUMO_ERROR);
             return false;
         }
@@ -225,44 +228,45 @@ public class RezeptCreateView extends ViewFrame {
         return true;
     }
 
-    private boolean isZutatRowsValid(){
-        for(AddZutatRow row : zutatenRows){
-            if(!row.isFilled()){
+    private boolean isZutatRowsValid() {
+        for (AddZutatRow row : zutatenRows) {
+            if (!row.isFilled()) {
                 return false;
             }
         }
         return true;
     }
 
-    private boolean isNotLastRow(){
-        if(zutatenRows.size() > 1) {
+    private boolean isNotLastRow() {
+        if (zutatenRows.size() > 1) {
             return true;
-        }else{
-            Notification.show("Bitte geben Sie mindestens eine Zutat ein!").addThemeVariants(NotificationVariant.LUMO_ERROR);
+        } else {
+            Notification.show("Bitte geben Sie mindestens eine Zutat ein!")
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
             return false;
         }
     }
 
-    private boolean isNotMaxRow(){
-        if(zutatenRows.size() <= 100) {
+    private boolean isNotMaxRow() {
+        if (zutatenRows.size() <= 100) {
             return true;
-        }else{
-            Notification.show("Sie können nicht mehr als 100 Zutaten zu einem Rezept speichern").addThemeVariants(NotificationVariant.LUMO_ERROR);
+        } else {
+            Notification.show("Sie können nicht mehr als 100 Zutaten zu einem Rezept speichern")
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
             return false;
         }
     }
 
-
-    private boolean checkDuplicateZutaten(){
+    private boolean checkDuplicateZutaten() {
         List<String> zutatNameList = new LinkedList<>();
-        for(AddZutatRow row : zutatenRows){
+        for (AddZutatRow row : zutatenRows) {
             zutatNameList.add(row.getZutat().getName());
         }
         Set<String> zutatNameSet = new HashSet<>(zutatNameList);
         return zutatNameSet.size() < zutatNameList.size();
     }
 
-    private void clearAll(){
+    private void clearAll() {
         kategorie.clear();
         title.clear();
         portionenInput.clear();

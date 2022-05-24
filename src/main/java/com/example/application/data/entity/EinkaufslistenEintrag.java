@@ -33,6 +33,19 @@ public class EinkaufslistenEintrag {
 
     }
 
+    /**
+     * Gibt die Menge für das Frontend als Integer oder als Double in einem String zurück
+     * @author Léo Hérubel
+     * @return
+     */
+    public String getMengeString(){
+        if((this.menge % (int) this.menge) == 0){
+            return String.valueOf((int) this.menge);
+        } else {
+            return String.valueOf(this.menge);
+        }
+    }
+
     public double getMenge()
     {
         return this.menge;

@@ -115,6 +115,19 @@ public class Rezept_Zutat {
         return this.getZutat().getEinheit();
     }
 
+    /**
+     * Gibt die Menge für das Frontend als Integer oder als Double in einem String zurück
+     * @author Léo Hérubel
+     * @return
+     */
+    public String getMengeString(){
+        if((this.Menge % (int) this.Menge) == 0){
+            return String.valueOf((int) this.Menge);
+        } else {
+            return String.valueOf(this.Menge);
+        }
+    }
+
     @Override
     public String toString() {
         return "{" +

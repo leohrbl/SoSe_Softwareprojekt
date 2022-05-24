@@ -60,7 +60,7 @@ public class EinkaufslisteView extends VerticalLayout {
     private void configureGrid() {
         einkaufsGrid.setSelectionMode(Grid.SelectionMode.MULTI);
         einkaufsGrid.addColumn(EinkaufslistenEintrag::getZutat).setHeader("Zutat").setAutoWidth(true);
-        einkaufsGrid.addColumn(EinkaufslistenEintrag::getMenge).setHeader("Menge").setAutoWidth(true);
+        einkaufsGrid.addColumn(EinkaufslistenEintrag::getMengeString).setHeader("Menge").setAutoWidth(true);
         einkaufsGrid.addColumn(EinkaufslistenEintrag::getEinheitByZutat).setHeader("Einheit").setAutoWidth(true);
         einkaufsGrid.setWidth("50%");
         einkaufsGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
@@ -162,7 +162,7 @@ public class EinkaufslisteView extends VerticalLayout {
             return;
         }
         List<EinkaufslistenEintrag> printList = getNotSelectedItems();
-        // hier dann die übergabe an den Printservice
+        // hier dann die übergabe an den PrintService
     }
 
     /**

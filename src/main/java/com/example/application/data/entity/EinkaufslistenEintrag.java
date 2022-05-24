@@ -5,6 +5,8 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.text.DecimalFormat;
+
 /**
  * Entität für die Einkaufsliste mit many to many beziehung zu den Zutaten.
  * @author Joscha Cerny
@@ -42,7 +44,7 @@ public class EinkaufslistenEintrag {
         if((this.menge % (int) this.menge) == 0){
             return String.valueOf((int) this.menge);
         } else {
-            return String.valueOf(this.menge);
+            return new DecimalFormat("#.##").format(this.menge);
         }
     }
 

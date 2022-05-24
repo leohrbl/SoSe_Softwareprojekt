@@ -12,6 +12,8 @@ import com.example.application.data.service.RezeptZutatenService;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.text.DecimalFormat;
+
 /**
  * Rezept_Zutat Entität mit einer ManyToOne Beziehung zu der Repzept Entität und
  * einer ManyToOne Beziehung zu der Zutat Entität.
@@ -124,7 +126,7 @@ public class Rezept_Zutat {
         if((this.Menge % (int) this.Menge) == 0){
             return String.valueOf((int) this.Menge);
         } else {
-            return String.valueOf(this.Menge);
+            return new DecimalFormat("#.##").format(this.Menge);
         }
     }
 

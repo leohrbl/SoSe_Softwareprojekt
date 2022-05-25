@@ -223,7 +223,7 @@ public class Druckservice {
     private void addRezeptZuatenToTable(Rezept rezept, PdfPTable table) {
         Set<Rezept_Zutat> rezept_Zutat = rezept.getZutatenFromRezept_Zutaten();
         for (Rezept_Zutat rezept_Zutat2 : rezept_Zutat) {
-            PdfPCell cell1 = new PdfPCell(new Paragraph(String.valueOf(rezept_Zutat2.getMenge()),
+            PdfPCell cell1 = new PdfPCell(new Paragraph(String.valueOf(rezept_Zutat2.getMengeString()),
                     FONT_TABLE_REZEPTZUTATEN));
             PdfPCell cell2 = new PdfPCell(new Paragraph(String.valueOf(rezept_Zutat2.getEinheitFromZutat()),
                     FONT_TABLE_REZEPTZUTATEN));
@@ -280,7 +280,7 @@ public class Druckservice {
 
     private void addRezeptZutat(List<Rezept_Zutat> rezept_Zutat, PdfPTable table) {
         for (Rezept_Zutat rezept_Zutat2 : rezept_Zutat) {
-            PdfPCell cell1 = new PdfPCell(new Paragraph(String.valueOf(rezept_Zutat2.getMenge()),
+            PdfPCell cell1 = new PdfPCell(new Paragraph(String.valueOf(rezept_Zutat2.getMengeString()),
                     FONT_TABLE_REZEPTZUTATEN));
             PdfPCell cell2 = new PdfPCell(new Paragraph(String.valueOf(rezept_Zutat2.getEinheitFromZutat()),
                     FONT_TABLE_REZEPTZUTATEN));

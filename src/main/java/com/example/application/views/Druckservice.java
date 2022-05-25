@@ -40,7 +40,7 @@ public class Druckservice {
     /**
      *
      */
-    private static final Font FONZ_ZUBEREITUNG = FontFactory.getFont(FontFactory.COURIER, 12);
+    private static final Font FONT_ZUBEREITUNG = FontFactory.getFont(FontFactory.TIMES, 12);
     /**
     *
     */
@@ -134,6 +134,12 @@ public class Druckservice {
         }
     }
 
+    /**
+     * Methode wird nicht benötigt und später gelöscht
+     * 
+     * @param service
+     * @return
+     */
     byte[] genertePdftoByte(RezeptService service) {
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -334,9 +340,17 @@ public class Druckservice {
      */
     private PdfPCell getImage(Rezept rezept) throws BadElementException, MalformedURLException, IOException {
         System.out.println(rezept.getBild().getSrc());
+        String src = rezept.getBild().getSrc();
+        Image test;
+        if (src.contains("image-placeholder.png")) {
+            test = Image.getInstance(System.getProperty("user.dir") + "/src/main/resources/META-INF/resources/"
+                    + rezept.getBild().getSrc());
+        } else {
+            test = Image.getInstance(rezept.getBild().getSrc());
+        }
         // Image test = Image.getInstance("src/main/resources/META-INF/resources/" +
         // rezept.getBild().getSrc());
-        Image test = Image.getInstance(rezept.getBild().getSrc());
+
         test.scaleToFit(150f, 150f);
         PdfPCell imageCell = new PdfPCell(test);
         imageCell.setBorder(0);
@@ -366,7 +380,7 @@ public class Druckservice {
      */
     private PdfPCell getZubereitung(Rezept rezept) {
         PdfPCell cellZubereitung = new PdfPCell(new Paragraph(rezept.getZubereitung(),
-                FONZ_ZUBEREITUNG));
+                FONT_ZUBEREITUNG));
         cellZubereitung.setBorderWidth(0);
 
         cellZubereitung.setRowspan(2);
@@ -428,9 +442,9 @@ public class Druckservice {
             caption.setColspan(3);
             caption.setBorder(0);
             table.addCell(caption);
-            PdfPCell cellMenge = new PdfPCell(new Paragraph("Menge", FONZ_ZUBEREITUNG));
-            PdfPCell cellEinheit = new PdfPCell(new Paragraph("Einheit", FONZ_ZUBEREITUNG));
-            PdfPCell cellZutat = new PdfPCell(new Paragraph("Zutat", FONZ_ZUBEREITUNG));
+            PdfPCell cellMenge = new PdfPCell(new Paragraph("Menge", FONT_ZUBEREITUNG));
+            PdfPCell cellEinheit = new PdfPCell(new Paragraph("Einheit", FONT_ZUBEREITUNG));
+            PdfPCell cellZutat = new PdfPCell(new Paragraph("Zutat", FONT_ZUBEREITUNG));
             cellMenge.setBorder(0);
             cellEinheit.setBorder(0);
             cellZutat.setBorder(0);

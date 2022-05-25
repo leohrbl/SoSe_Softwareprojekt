@@ -6,11 +6,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.validation.constraints.NotBlank;
 
+import com.example.application.data.repository.EinheitenRepository;
+import com.example.application.data.service.EinheitService;
+
 /**
  * @author Philipp Laupichler
  *         Entität Einheit, mit zwei Instanzvariablen:
  *         einheit (Name) als String und ID als long, diese wird generiert
  *         Außerdem Kostruktoren, getter und setter
+ * @see EinheitService
+ * @see EinheitenRepository
  */
 @Entity
 public class Einheit {

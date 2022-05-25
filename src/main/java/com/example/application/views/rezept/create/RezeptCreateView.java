@@ -246,7 +246,7 @@ public class RezeptCreateView extends ViewFrame {
                     return;
                 }
                 for (AddZutatRow row : zutatenRows) {
-                    rezeptZutatenService.createRezeptZutatenNew(rezept, row.getZutat(), row.getMenge());
+                    rezeptZutatenService.createRezeptZutatenAndAddToSet(rezept, row.getZutat(), row.getMenge());
                 }
                 Notification.show("Rezept '" + title.getValue() + "' gespeichert")
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);

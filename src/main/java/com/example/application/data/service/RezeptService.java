@@ -96,17 +96,6 @@ public class RezeptService {
         }
     }
 
-    public boolean updateRezept(Rezept rezept) {
-        if (rezept == null) {
-            return false;
-        }
-        /*
-         * Check every Value
-         * Update Values
-         */
-        return true;
-    }
-
     /**
      * Die Methode erstellt eine Ergebnisliste der Zutaten anhand eines Suchtexts.
      * Anschließend wird geprüft, welche Objekte des Suchergebnisses ebenfalls in

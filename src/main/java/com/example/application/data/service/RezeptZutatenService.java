@@ -59,7 +59,17 @@ public class RezeptZutatenService {
         }
     }
 
-    public String createRezeptZutatenNew(Rezept rezept, Zutat zutat, double menge) {
+    /**
+     * Erstellt einen Datensatz RezeptZutat anhand eines Rezeptes, der Zutat und der
+     * entsprechenden Menge und fügt diesen dem Rezept hinzu
+     * 
+     * @param rezept Rezept
+     * @param zutat  Zutat
+     * @param menge  Menge
+     * @return Gibt die Meldung "success" bei Erfolg oder die Fehlermeldung der
+     *         Exception zurück
+     */
+    public String createRezeptZutatenAndAddToSet(Rezept rezept, Zutat zutat, double menge) {
         try {
             rezept.addZutat(rezeptZutatenRepository.save(new Rezept_Zutat(rezept, zutat, menge)));
             return "success";

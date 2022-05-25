@@ -22,38 +22,39 @@ import java.util.*;
 @Route(value = "/einstellungen", layout = MainLayout.class)
 public class EinstellungenView extends VerticalLayout{
 
-    EinheitService einheitService;
-    KategorieService kategorieService;
-    EinheitView einheitV = new EinheitView();
-    KategorieView kategorieV = new KategorieView();
-    final private Map<Tab, Component> tabComponentMap = new LinkedHashMap<>();
+    private final EinheitService einheitService;
+    private final KategorieService kategorieService;
+    private final EinheitView einheitV;
+    private final KategorieView kategorieV;
 
+    private final Div contentContainer;
+    private final Map<Tab, Component> tabComponentMap = new LinkedHashMap<>();
+
+    private final Tabs tabs;
     public EinstellungenView(EinheitService einheitService, KategorieService kategorieService){
         this.einheitService = einheitService;
         this.kategorieService = kategorieService;
-        tabComponentMap.put(new Tab("Einheit"), einheitV.einheitView(einheitService));
-        tabComponentMap.put(new Tab("Kategorie"), kategorieV.kategorieView(kategorieService));
-        Tabs tabs = new Tabs(tabComponentMap.keySet().toArray(new Tab [] {}));
-
-
-        Div contentContainer = new Div();
-
-
+        this.einheitV = new EinheitView();
+        this.kategorieV = new KategorieView();
+        this.contentContainer = new Div();
+        this.tabs = new Tabs();
+        createTab();
+        createView();
         add(tabs, contentContainer);
+    }
 
-
-
+    private void createTab(){
+        tabComponentMap.put(new Tab("Kategorie"), kategorieV.createView(kategorieService));
+        tabComponentMap.put(new Tab("Einheit"), einheitV.einheitView(einheitService));
+        tabs.add(tabComponentMap.keySet().toArray(new Tab [] {}));
         tabs.addSelectedChangeListener(e ->{
             contentContainer.removeAll();
             contentContainer.add(tabComponentMap.get(e.getSelectedTab()));
         });
+    }
+
+    private void createView(){
         contentContainer.add(tabComponentMap.get(tabs.getSelectedTab()));
     }
+
 }
-
-
-
-
-
-
-

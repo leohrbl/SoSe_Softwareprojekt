@@ -23,42 +23,48 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class KategorieView extends VerticalLayout {
-    Grid<Kategorie> gridKategorie = new Grid<>(Kategorie.class, false);
-    Dialog dialogKategorie = new Dialog();
-    DeleteDialog deleteDialogKategorie;
+    private final Grid<Kategorie> gridKategorie;
+    private Dialog dialogKategorie;
+    private  DeleteDialog deleteDialogKategorie;
     private Kategorie draggedItem;
-    Button addKategorie = new Button("Hinzufügen");
-    Button removeKategorie = new Button("Löschen");
-    KategorieService kategorieService;
+    private Button addKategorieButton;
+    private Button removeKategorieButton;
+    private KategorieService kategorieService;
+
+
+    List<Kategorie> kategorieList;
 
     public KategorieView(){
-
+        this.gridKategorie = new Grid<>(Kategorie.class, false);
+        this.dialogKategorie = new Dialog();
     }
 
-    public VerticalLayout kategorieView(KategorieService kategorieService){
+    public VerticalLayout createView(KategorieService kategorieService){
         this.kategorieService = kategorieService;
+        this.kategorieList = new ArrayList<>(kategorieService.getKategorien());
         H3 ueberschrift = new H3("Kategorienverwaltung");
         ueberschrift.getStyle().set("margin", "0");
 
         configureButtonsKategorien();
 
         VerticalLayout verticalLayoutUeberschrift = new VerticalLayout(ueberschrift);
-        VerticalLayout verticalLayoutKategorie = new VerticalLayout(configureGridKategorie(), new HorizontalLayout(addKategorie,removeKategorie));
+        VerticalLayout verticalLayoutKategorie = new VerticalLayout(configureGridKategorie(), new HorizontalLayout(addKategorieButton, removeKategorieButton));
         VerticalLayout verticalLayout = new VerticalLayout();
 
         verticalLayout.add(verticalLayoutUeberschrift);
         verticalLayout.add(verticalLayoutKategorie);
 
         return verticalLayout;
-
     }
 
     private void configureButtonsKategorien(){
-        addKategorie.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        addKategorie.addClickListener(e -> addKategorieDialog().open());
+        this.addKategorieButton  = new Button("Hinzufügen");
+        addKategorieButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        addKategorieButton.addClickListener(e -> addKategorieDialog().open());
 
-        removeKategorie.addThemeVariants(ButtonVariant.LUMO_ERROR);
-        removeKategorie.addClickListener(e -> removeKategorie());
+        this.removeKategorieButton = new Button("Löschen");
+        removeKategorieButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        removeKategorieButton.addClickListener(e -> removeKategorie());
     }
 
     private Dialog addKategorieDialog(){
@@ -94,10 +100,10 @@ public class KategorieView extends VerticalLayout {
     }
 
     private Grid configureGridKategorie(){
-        List<Kategorie> kategorie = new ArrayList<>(kategorieService.getKategorien());
+
         updateGridKategorie();
 
-        GridListDataView<Kategorie> dataView = gridKategorie.setItems(kategorie);
+        GridListDataView<Kategorie> dataView = gridKategorie.setItems(kategorieList);
 
         gridKategorie.setDropMode(GridDropMode.BETWEEN);
         gridKategorie.setRowsDraggable(true);
@@ -122,8 +128,8 @@ public class KategorieView extends VerticalLayout {
 
             }
 
-            for (Kategorie element: kategorie){
-                element.setSequenceNr(kategorie.indexOf(element));
+            for (Kategorie element: kategorieList){
+                element.setSequenceNr(kategorieList.indexOf(element));
                 kategorieService.updateSequenceNr(element);
             }
 
@@ -140,7 +146,6 @@ public class KategorieView extends VerticalLayout {
 
         return gridKategorie;
     }
-
     public void configureDeleteDialogKategorie(Kategorie kategorie){
         deleteDialogKategorie = new DeleteDialog("Kategorie",kategorie.getName(), "Sicher, das die Kategorie gelöscht werden soll?" );
         deleteDialogKategorie.open();
@@ -159,6 +164,13 @@ public class KategorieView extends VerticalLayout {
             Kategorie kategorie = gridKategorie.getSelectionModel().getFirstSelectedItem().get();
             configureDeleteDialogKategorie(kategorie);
             dialogKategorie.close();
+
+            for (Kategorie element: kategorieList){
+                element.setSequenceNr(kategorieList.indexOf(element));
+                kategorieService.updateSequenceNr(element);
+            }
+
+            updateGridKategorie();
 
         }else{
             Notification.show("Löschen nicht möglich, da keine Kategorie ausgewählt wurde.").addThemeVariants(NotificationVariant.LUMO_ERROR);

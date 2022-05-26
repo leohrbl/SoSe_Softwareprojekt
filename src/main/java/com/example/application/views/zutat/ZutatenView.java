@@ -20,8 +20,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 
-
-
 /**
  * Diese Klasse erzeugt die Zutatenmanager-View. Diese besteht aus einer Überschrift, einer Liste von Zutaten
  * mit zugeordneten Einheiten, einem Hinzufügen- und einem Löschen-Button. Mithilfe der View soll der Nutzer
@@ -34,13 +32,12 @@ import com.vaadin.flow.router.Route;
 @Route(value = "/zutaten", layout = MainLayout.class)
 public class ZutatenView extends VerticalLayout {
 
-    Grid<Zutat> grid = new Grid<>(Zutat.class, false);
-    Dialog dialog = new Dialog();
-    Button addZutat = new Button("Hinzufügen");
-    Button removeZutat = new Button("Löschen");
-    DeleteDialog deleteDialog;
-    ZutatService zutatService;
-    EinheitService einheitService;
+    private final Grid<Zutat> grid = new Grid<>(Zutat.class, false);
+    private final Dialog dialog = new Dialog();
+    private final Button addZutat = new Button("Hinzufügen");
+    private final Button removeZutat = new Button("Löschen");
+    private final ZutatService zutatService;
+    private final EinheitService einheitService;
 
 
     /**
@@ -60,7 +57,6 @@ public class ZutatenView extends VerticalLayout {
 
         configureButtons();
 
-
         VerticalLayout verticalLayout = new VerticalLayout(seitenName, configureGrid(), new HorizontalLayout(addZutat,removeZutat));
         add(verticalLayout);
 
@@ -72,81 +68,27 @@ public class ZutatenView extends VerticalLayout {
      * Beim Klick auf Hinzufügen wird mit addZutatDialog.open() aufgerufen und somit der Dialog gestartet.
      * Beim Klick auf Löschen wird die Methode removeZutaten() aufgerufen, um eine ausgewählt Zutat zu löschen.
      */
-    public void configureButtons(){
-        AddZutatDialog addZutatDialog = new AddZutatDialog(einheitService, zutatService);
+    private void configureButtons(){
         addZutat.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         addZutat.addClickListener(e -> {
+            AddZutatDialog addZutatDialog = new AddZutatDialog(einheitService, zutatService);
             addZutatDialog.open();
-        });
-
-        addZutatDialog.addDetachListener(e -> {
-           updateGrid();
+            addZutatDialog.addDetachListener(ev -> {
+                updateGrid();
+            });
         });
 
         removeZutat.addThemeVariants(ButtonVariant.LUMO_ERROR);
         removeZutat.addClickListener(e -> removeZutaten());
     }
 
-    /**
-     * Das Dialogfenster zum Hinzufügen von Zutaten wird erstellt und konfiguriert.
-     *
-     * @return Das konfigurierte Dialogfenster wird zurückgegeben.
 
-
-    private Dialog addZutatDialog(){
-        dialog = new Dialog();
-        dialog.add(new H5("Zutat hinzufügen"));
-
-        TextField bezeichnung = new TextField("Bezeichnung");
-        bezeichnung.setRequired(true);
-        bezeichnung.setErrorMessage("Gib eine Bezeichnung und eine Einheit!");
-
-        ComboBox<Einheit> einheitAuswahl = new ComboBox<>();
-        einheitAuswahl.setLabel("Einheit");
-        einheitAuswahl.setPlaceholder("Einheit auswählen");
-        einheitAuswahl.setRequired(true);
-        bezeichnung.setErrorMessage("Gib eine Bezeichnung und eine Einheit!");
-
-        einheitAuswahl.setItems(einheitService.getEinheiten());
-
-        dialog.add(new HorizontalLayout(bezeichnung, einheitAuswahl));
-
-
-        Button speichern = new Button("Speichern");
-        speichern.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        Button abbrechen = new Button("Abbrechen", e-> dialog.close());
-        abbrechen.addThemeVariants(ButtonVariant.LUMO_ERROR);
-
-        speichern.addClickListener(e ->{
-
-            // Neue Zutat wird gespeichert.
-            if(!bezeichnung.isEmpty() && !einheitAuswahl.isEmpty()){
-                if(zutatService.searchZutatenByFilterText(bezeichnung.getValue()).size() == 0){
-                    dialog.close();
-                    zutatService.saveZutat(bezeichnung.getValue(), einheitAuswahl.getValue());
-                    Notification.show("Zutat hinzugefügt: " + bezeichnung.getValue() +" in "+ einheitAuswahl.getValue()).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-                }else{
-                    Notification.show("Die Zutat '"+ bezeichnung.getValue()+"' existiert bereits.").addThemeVariants(NotificationVariant.LUMO_ERROR);
-                }
-            }else{
-                Notification.show("Keine Zutat hinzugefügt. Es muss eine Bezeichnung und eine Einheit angegeben werden.").addThemeVariants(NotificationVariant.LUMO_ERROR);
-            }
-
-
-
-            updateGrid();
-        });
-        dialog.add(new HorizontalLayout(speichern, abbrechen));
-        return dialog;
-    }
-     */
 
     /**
      * Das Grid / Die Tabelle wird konfiguriert, indem die Spalten, das Theme und die Breite festgelegt werden.
-     *
      * @return Das eingestellte Grid wird zurückgegeben.
      */
-    public Grid configureGrid(){
+    private Grid configureGrid(){
         grid.addColumn(Zutat::getName).setHeader("Bezeichnung");
         grid.addColumn(Zutat::getEinheit).setHeader("Einheit");
 
@@ -182,8 +124,8 @@ public class ZutatenView extends VerticalLayout {
      * Ebenfalls werden die Clicklistener des DeleteDialog konfiguriert.
      * @param zutat wird in der removeZutaten() Methode übergeben. Und enthält die ausgewählte Zutat.
      */
-    public void configureDeleteDialog(Zutat zutat){
-        deleteDialog = new DeleteDialog("Zutat ", zutat.getName(), "Sicher, dass du die Zutat wirklich löschen willst?");
+    private void configureDeleteDialog(Zutat zutat){
+        DeleteDialog deleteDialog = new DeleteDialog("Zutat ", zutat.getName(), "Sicher, dass du die Zutat wirklich löschen willst? Sie wird aus allen Rezepten entfernt!");
         deleteDialog.open();
         deleteDialog.getDeleteButton().addClickListener( e -> {
             zutatService.deleteZutat(zutat);

@@ -3,7 +3,6 @@ package com.example.application.views.rezept.edit;
 import com.example.application.data.entity.*;
 import com.example.application.data.service.*;
 import com.example.application.views.components.MainLayout;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -14,13 +13,11 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.router.*;
 
 import javax.swing.JFileChooser;
@@ -43,11 +40,12 @@ import com.example.application.views.components.AddZutatDialog;
 public class RezeptEditView extends ViewFrame implements HasUrlParameter<String> {
 
     private static long rezeptId;
-    Button fileUploadButton = new Button("Bild Hochladen");
+    Button fileUploadButton = new Button("Bild hochladen");
     Button zutatHinzufuegenButton = new Button("Weitere Zutat anlegen");
     Button saveButton = new Button("Speichern");
     Button cancelButton = new Button("Abbrechen");
-    Button neueZutatButton = new Button("Neue Zutat Erstellen");
+    Button neueZutatButton = new Button("Neue Zutat erstellen");
+    Button rezeptDeleteButton = new Button("Rezept löschen");
     RezeptService rezeptService;
     private ZutatService zutatservice;
     private RezeptZutatenService rezeptZutatenService;
@@ -212,8 +210,9 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
         //FOOTER
         cancelButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        rezeptDeleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
-        HorizontalLayout contentFooter = new HorizontalLayout(cancelButton,saveButton);
+        HorizontalLayout contentFooter = new HorizontalLayout(cancelButton,saveButton,rezeptDeleteButton);
         VerticalLayout contentFooterVertical = new VerticalLayout(contentFooter);
         contentFooterVertical.setAlignItems(Alignment.CENTER);
 
@@ -231,6 +230,7 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
         cancelButton.addClickListener(event -> cancel());
         neueZutatButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         neueZutatButton.addClickListener(e -> createNewZutatDialog());
+        rezeptDeleteButton.addClickListener(e -> deleteRezept(rezept));
     }
 
 
@@ -349,11 +349,11 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
         {
             if(checkEintragMenge() == false && checkEintragZutat() == false)
             {
-                Notification.show("Mengen und Zutaten Inkorrekt").addThemeVariants(NotificationVariant.LUMO_ERROR);
+                Notification.show("Mengen und Zutaten inkorrekt").addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
             if(checkEintragMenge() == false)
             {
-                Notification.show("Bitte Mengen überprüfen und Korrekt ausfüllen").addThemeVariants(NotificationVariant.LUMO_ERROR);
+                Notification.show("Bitte Mengen überprüfen und korrekt ausfüllen").addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
             if(checkEintragZutat() == false)
             {
@@ -574,5 +574,25 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
     {
         AddZutatDialog addZutatDialog = new AddZutatDialog(einheitService, zutatservice);
         addZutatDialog.open();
+    }
+
+
+    /**
+     * Methode löschen eines Rezepts
+     */
+    public void deleteRezept(Rezept rezept)
+    {
+        rezeptService.delete(rezept.getId());
+        returnToRezeptAnsicht();
+        Notification.show("Rezept wurde gelöscht").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+    }
+
+    /**
+     * Methode die in die Rezept card zurück führt
+     * nicht die gleiche wie oben!
+     */
+    public void returnToRezeptAnsicht()
+    {
+        UI.getCurrent().navigate("display");
     }
 }

@@ -28,6 +28,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
+ * Die Klasse erzeugt die View für das Hinzufügen eines Rezeptes. Ein Rezept kann mit einer Kategorie,
+ * einem Titel, der Portionenanzahl, mindestens einer Zutat und einer Zubereitungsbeschreibung angelegt werden.
+ *
  * @author Lennart Rummel & Leo Herubel
  */
 
@@ -35,23 +38,33 @@ import java.util.stream.Collectors;
 @Route(value = "create", layout = MainLayout.class)
 public class RezeptCreateView extends ViewFrame {
 
-    private List<AddZutatRow> zutatenRows = new LinkedList<>();
-    private VerticalLayout zutatenContainer = new VerticalLayout();
-    private Button neueZeileButton = new Button("Neue Zeile");
-    private Button neueZutatButton = new Button("Neue Zutat anlegen");
-    private Button speichernButton = new Button("Speichern");
+    private final List<AddZutatRow> zutatenRows = new LinkedList<>();
+    private final VerticalLayout zutatenContainer = new VerticalLayout();
+    private final Button neueZeileButton = new Button("Neue Zeile");
+    private final Button neueZutatButton = new Button("Neue Zutat anlegen");
+    private final Button speichernButton = new Button("Speichern");
     private TextField title;
     private Select<Kategorie> kategorie;
     private IntegerField portionenInput;
     private Image image;
     private TextArea zubereitung;
 
-    private RezeptService rezeptService;
-    private RezeptZutatenService rezeptZutatenService;
-    private ZutatService zutatService;
-    private KategorieService kategorieService;
-    private EinheitService einheitService;
+    private final RezeptService rezeptService;
+    private final RezeptZutatenService rezeptZutatenService;
+    private final ZutatService zutatService;
+    private final KategorieService kategorieService;
+    private final EinheitService einheitService;
 
+    /**
+     * Der Konstruktor bekommt die benötigten Serviceklassen übergeben und weist diese den Instanzvariablen zu.
+     * Darauffolgend werden die Methoden aufgerufen, also die Buttons konfiguriert und die View erzeugt.
+     *
+     * @param rezeptService
+     * @param rezeptZutatenService
+     * @param zutatService
+     * @param kategorieService
+     * @param einheitService
+     */
     public RezeptCreateView(RezeptService rezeptService, RezeptZutatenService rezeptZutatenService,
             ZutatService zutatService, KategorieService kategorieService, EinheitService einheitService) {
         this.rezeptService = rezeptService;
@@ -64,6 +77,10 @@ public class RezeptCreateView extends ViewFrame {
         createViewLayout();
     }
 
+    /**
+     * Die Klasse createViewLayout erzeugt die View der Rezeptansicht. Die einzelnen Elemente werden hier
+     * konfiguriert und dem entsprechenden Layout zugeordnet.
+     */
     private void createViewLayout() {
         title = new TextField("Titel");
 
@@ -130,6 +147,13 @@ public class RezeptCreateView extends ViewFrame {
 
     }
 
+    /**
+     * Die Methode addZutatZeile fügt eine neue Zeile zum Hinzufügen von Zutaten mit Menge und Einheit hinzu.
+     * Das Erzeugen der einzelnen Vaadin Komponenten ist in der Klasse AddZutatRow ausgelagert.
+     * Daher werden Objekte der Klasse AddZutatRow erzeugt und dem Layout hinzugefügt.
+     *
+     * @see AddZutatRow
+     */
     public void addZutatZeile() {
         HorizontalLayout rowLayout = new HorizontalLayout();
         AddZutatRow row = new AddZutatRow(zutatService);
@@ -139,6 +163,13 @@ public class RezeptCreateView extends ViewFrame {
         zutatenContainer.add(rowLayout);
     }
 
+    /**
+     * Die Methode createDeleteRowButton erzeugt einen Button,
+     * mit dem die einzelnen AddZutatRow Elemente aus dem Layout entfernt werden können.
+     * Dazu mehr in der Methode deleteZutatRow.
+     *
+     * @return Der erzeugte Löschen-Button wird zurückgegeben.
+     */
     private Button createDeleteRowButton() {
         Button delRowButton = new Button(VaadinIcon.MINUS.create());
         delRowButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -149,6 +180,13 @@ public class RezeptCreateView extends ViewFrame {
         return delRowButton;
     }
 
+    /**
+     *  Die Methode ermöglicht das Löschen der Zutat Zeile, die mithilfe der Klasse AddZutatRow erzeugt wird.
+     *  Dazu muss das darüberstehende Layout gelöscht werden (Parent), da der Löschen-Button der Zeile ebenfalls in
+     *  dem Layout enthalten ist und auch gelöscht werden soll.
+     *
+     * @param delRowButton
+     */
     private void deleteZutatRow(Button delRowButton) {
         Component parent = delRowButton.getParent().get();
         List<Component> componentList = parent.getChildren().collect(Collectors.toList());
@@ -171,6 +209,9 @@ public class RezeptCreateView extends ViewFrame {
         }
     }
 
+    /**
+     * Die Buttons "Neue Zeile", "Neue Zutat" und "Soeichern" werden mit dem Clicklistener konfiguriert.
+     */
     public void configureButtons() {
         neueZeileButton.addClickListener(e -> {
             addZutatZeile();
@@ -184,15 +225,17 @@ public class RezeptCreateView extends ViewFrame {
         });
     }
 
+    /**
+     * In dieser Methode wird das Rezept gespeichert.
+     * Dazu werden das Bild, der Titel, die Zubereitung, die Portionenanzahl und die Kategorie.
+     * Die Objekte der Klasse AddZutatRow, die in der Liste zutatenRows zwischengespeichert sind, werden iteriert
+     * und anschließend ebenfalls dem Rezept zugeordnet.
+     * Sollte das Rezept bereits existieren wird abgebrochen.
+     *
+     */
     public void rezeptSpeichern() {
         if (isValuesValid()) {
             try {
-                // Rezept rezept = new Rezept(new Image(
-                // image.getSrc(),
-                // image.getAlt().toString()), title.getValue(), zubereitung.getValue(),
-                // portionenInput.getValue());
-                // rezept.setKategorie(kategorie.getValue());
-                // Notification.show(rezept.toString());
                 Rezept rezept = rezeptService.createRezept(new Image(
                         image.getSrc(),
                         image.getAlt().toString()), title.getValue(), zubereitung.getValue(),
@@ -210,33 +253,58 @@ public class RezeptCreateView extends ViewFrame {
                 clearAll();
             } catch (Exception e) {
                 e.printStackTrace();
-                // Notification.show(e.getMessage()).addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
 
         }
 
     }
 
+    /**
+     * Die Methode prüft, ob die Werte gespeichert werden können.
+     * Die Kategorie, der Titel, die Portionenanzahl und die Zubereitung dürfen nicht leer sein.
+     * Des Weiteren müssen die Werte der ZutatRows geprüft werden, damit diese nicht leer sind
+     * und nicht mehrfach auftreten.
+     *
+     * @return Es wird der Wahrheitswert zurückgegeben, wenn die Daten nicht so vorliegen,
+     * dass diese gespeichert werden können.
+     */
     // TODO: Individuelle Fehlermeldungen
     private boolean isValuesValid() {
         if (kategorie.isEmpty() || title.isEmpty() || portionenInput.isEmpty() || zubereitung.isEmpty()
                 || !isZutatRowsValid() || checkDuplicateZutaten()) {
             Notification.show("Bitte Eingabewerte überprüfen!").addThemeVariants(NotificationVariant.LUMO_ERROR);
+            Notification.show(getErrorString()).addThemeVariants(NotificationVariant.LUMO_ERROR);
             return false;
         }
 
         return true;
     }
 
+    /**
+     * Es wird geprüft, ob die Eingaben in der Zutatenzeile valide sind.
+     *
+     * @return Es wird der Wahrheitswert zurückgegeben, ob die Eingaben in der ZutatZeile valide sind.
+     */
     private boolean isZutatRowsValid() {
         for (AddZutatRow row : zutatenRows) {
             if (!row.isFilled()) {
+                Notification.show("Nicht alle Zutat-Zeilen sind gefüllt.").addThemeVariants(NotificationVariant.LUMO_ERROR);
+                return false;
+            }
+            if(row.getMenge() < 0){
+                Notification.show("Die Menge von Zutat '"+row.getZutat().toString()+"' darf nicht negativ sein!").addThemeVariants(NotificationVariant.LUMO_ERROR);
                 return false;
             }
         }
         return true;
     }
 
+    /**
+     * Diese Methode ist für das Löschen der Zutatzeilen relevant, da hier geprüft wird,
+     * ob es sich nicht um die letzte Zeile handelt.
+     *
+     * @return Es wird der Wahrheitswert zurückgegeben, ob es sich nicht um die letzte Zeile handelt.
+     */
     private boolean isNotLastRow() {
         if (zutatenRows.size() > 1) {
             return true;
@@ -247,8 +315,14 @@ public class RezeptCreateView extends ViewFrame {
         }
     }
 
+    /**
+     *  Die Methode prüft, ob das Limit der Zutaten für ein Rezept bereits erreicht ist.
+     *
+     * @return Gibt den Wahrheitswert zurück, ob die maximale Anzahl an Zutaten für ein Rezept bereits vorliegt.
+     */
+
     private boolean isNotMaxRow() {
-        if (zutatenRows.size() <= 100) {
+        if (zutatenRows.size() <= 30) {
             return true;
         } else {
             Notification.show("Sie können nicht mehr als 100 Zutaten zu einem Rezept speichern")
@@ -257,6 +331,12 @@ public class RezeptCreateView extends ViewFrame {
         }
     }
 
+    /**
+     * In dieser Methode wird geprüft, ob in den Zutatenzeile Duplikate vorliegen.
+     * Da eine Zutat in einem Rezept maximal ein mal vorkommen darf.
+     *
+     * @return Gibt den Wahrheitswert zurück, ob Duplikate vorhanden sind.
+     */
     private boolean checkDuplicateZutaten() {
         List<String> zutatNameList = new LinkedList<>();
         for (AddZutatRow row : zutatenRows) {
@@ -266,6 +346,9 @@ public class RezeptCreateView extends ViewFrame {
         return zutatNameSet.size() < zutatNameList.size();
     }
 
+    /**
+     * Alle Listen und Felder werden geleert und anschließend eine neue ZutatenZeile hinzugefügt.
+     */
     private void clearAll() {
         kategorie.clear();
         title.clear();
@@ -275,6 +358,29 @@ public class RezeptCreateView extends ViewFrame {
         zutatenRows.clear();
         addZutatZeile();
 
+    }
+
+    private String getErrorString(){
+        String error = "Bitte prüfe: ";
+        if(kategorie.isEmpty()){
+            error += " [Kategorie]";
+        }
+        if(title.isEmpty()){
+            error += " [Titel]";
+        }
+        if(portionenInput.isEmpty()){
+            error += " [Portionen]";
+        }
+        if(zubereitung.isEmpty()){
+            error += " [Zubereitung]";
+        }
+        if(!isZutatRowsValid()){
+            error += " [Zutaten-Zeile nicht valide]";
+        }
+        if(checkDuplicateZutaten()){
+            error += " [Zutaten mehrfach vorhanden]";
+        }
+        return error;
     }
 
 }

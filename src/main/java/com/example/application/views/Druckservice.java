@@ -43,6 +43,14 @@ public class Druckservice {
      * Variale, die die Schriftart und Größe für die Tabelle Rezeptzutaten enthält
      */
     private static final Font FONT_TABLE_REZEPTZUTATEN = FontFactory.getFont(FontFactory.COURIER, 10);
+    //
+    // FontFactory.getFont(FontFactory.COURIER, 10);
+    // FontFactory.getFont(FontFactory.HELVETICA, 10);
+    // FontFactory.getFont(FontFactory.SYMBOL, 10);
+    // FontFactory.getFont(FontFactory.TIMES, 10);
+    // FontFactory.getFont(FontFactory.TIMES_ROMAN, 10);
+    // FontFactory.getFont(FontFactory.ZAPFDINGBATS, 10);
+    //
     /**
      * Variale, die die Schriftart und Größe für die Zubereitung enthält
      */

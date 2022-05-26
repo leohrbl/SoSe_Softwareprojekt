@@ -1,8 +1,6 @@
 package com.example.application.data.service;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import com.example.application.data.entity.Rezept;
 import com.example.application.data.entity.Rezept_Zutat;
@@ -28,7 +26,7 @@ public class RezeptZutatenService {
     /**
      * Konstruktor, welcher die Instanzvariablen, rezeptService und
      * rezeptZutatenRepository initialisiert
-     * 
+     *
      * @param rezeptZutatenRepository Repository wird als Instanzvariable der Klasse
      *                                initialisiert, damit man auf dessen Methoden
      *                                zugreifen kann.
@@ -45,12 +43,12 @@ public class RezeptZutatenService {
     /**
      * Erstellt einen Datensatz RezeptZutat anhand eines Rezeptes, der Zutat und der
      * entsprechenden Menge
-     * 
+     *
      * @param rezept Rezept
      * @param zutat  Zutat
      * @param menge  Menge
      * @return Gibt die Meldung "success" bei Erfolg oder die Fehlermeldung der
-     *         Exception zurück
+     * Exception zurück
      */
     public String createRezeptZutaten(Rezept rezept, Zutat zutat, double menge) {
         try {
@@ -73,7 +71,7 @@ public class RezeptZutatenService {
     /**
      * In dieser Methode wird eine Liste zurückgegeben, die alle Datensätze enthält,
      * die zu einem Rezept gespeichert wurden
-     * 
+     *
      * @param rezept Rezept, nach dem gesucht wird
      * @return Liste mit allen Rezept_Zuatat Datensätzen
      */
@@ -84,7 +82,7 @@ public class RezeptZutatenService {
     /**
      * In dieser Methode wird eine Liste zurückgegeben, die alle Zutaten enthält,
      * die zu einem Rezept gespeichert wurden
-     * 
+     *
      * @param rezept Rezept, nach dem gesucht wird
      * @return Liste mit allen Zuaten
      */
@@ -99,7 +97,7 @@ public class RezeptZutatenService {
     /**
      * In dieser Methode wird eine Liste zurückgegeben, die alle Rezepte enthält,
      * in der eine bestimmte Zutat enthalten ist
-     * 
+     *
      * @param zutat Zutat nach der gesucht wird
      * @return Liste mit Rezepten
      */
@@ -112,10 +110,11 @@ public class RezeptZutatenService {
     }
 
     // DelteById
+
     /**
      * Diese Methode löscht alle Einträge in dem Set der Zutat und speichert dieses
      * dann
-     * 
+     *
      * @param rezept Rezept, bei dem die Rezept_Zutat Einträge gelöscht werden
      *               sollen
      */
@@ -124,4 +123,30 @@ public class RezeptZutatenService {
         rezeptService.createRezept(rezept);
         // rezeptZutatenRepository.deleteAllByRezept(rezept);
     }
+
+    /**
+     * Sucht anhand von mehreren gefilterten Zutaten Rezepte.
+     *
+     * @param zutatSet Set welches aus dem ZutatFilterDialog übergeben wird
+     * @return Gibt eine Liste von Rezepten zurück, welche im Frontend angezeigt werden können.
+     * @author Léo Hérubel
+     */
+    public List<Rezept> findAllRezepteByZutaten(Set<Zutat> zutatSet) {
+        List<Rezept> filteredRezeptByZutaten = new LinkedList<>();
+        for (Zutat zutat : zutatSet) {
+            for (Rezept rezept : findAllRezepteByZutat(zutat)) {
+                boolean isInRezeptList = false;
+                for (Rezept filteredRezept : filteredRezeptByZutaten) {
+                    if (filteredRezept.getTitel().equals(rezept.getTitel())) {
+                        isInRezeptList = true;
+                    }
+                }
+                if (!isInRezeptList) {
+                    filteredRezeptByZutaten.add(rezept);
+                }
+            }
+        }
+        return filteredRezeptByZutaten;
+    }
+
 }

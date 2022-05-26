@@ -11,7 +11,14 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.selection.MultiSelect;
+import com.vaadin.flow.data.selection.MultiSelectionEvent;
 import com.vaadin.flow.data.value.ValueChangeMode;
+
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Der ZutatFilterDialog wird genutzt, damit der Nutzer nach einer Zutat filtern kann. Der Dialog wird aus der RezeptuebersichtView gesteuert. Innerhalb des Dialoges kann der Nutzer den Filter entfernen
@@ -28,6 +35,9 @@ public class ZutatFilterDialog extends Dialog {
     private final ZutatService zutatService;
     private final Button filterButton;
     private final Button removeFilterButton;
+    private List<Zutat> displayedItems;
+    private Set<Zutat> selectedItems;
+    private boolean gridDataLoad;
 
     /**
      * Der Konstruktor initialisiert die Instanzvariablen der Klasse. Zudem wird der Dialog im Konstruktor konfiguriert.
@@ -39,7 +49,9 @@ public class ZutatFilterDialog extends Dialog {
         this.grid = new Grid<>(Zutat.class, false);
         this.filterButton = new Button("Filtern");
         this.zutatService = zutatService;
-        this.removeFilterButton = new Button("Filter entfernen");
+        this.removeFilterButton = new Button("Abbrechen");
+        this.selectedItems = new HashSet<>();
+        this.gridDataLoad = false;
         configureDialog();
     }
 
@@ -60,9 +72,8 @@ public class ZutatFilterDialog extends Dialog {
      * @return Gibt das HeaderLayout zurück, damit es im Dialog hinzugefügt werden kann.
      */
     private HorizontalLayout createHeaderLayout() {
-        HorizontalLayout header = new HorizontalLayout(searchField, createAbbrechenButton());
+        HorizontalLayout header = new HorizontalLayout(searchField);
         header.setAlignItems(FlexComponent.Alignment.CENTER);
-        header.setFlexGrow(1, searchField);
         header.setPadding(true);
         header.setSpacing(true);
         return header;
@@ -92,18 +103,6 @@ public class ZutatFilterDialog extends Dialog {
     }
 
     /**
-     * Methode zum Erstellen des AbbrechenButtons.
-     *
-     * @return Gibt den Button zurück, damit dieser in ein Layout hinzugefügt werden kann.
-     */
-    private Button createAbbrechenButton() {
-        Button abbrechenButton = new Button(VaadinIcon.CLOSE.create());
-        abbrechenButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
-        abbrechenButton.addClickListener(e -> this.close());
-        return abbrechenButton;
-    }
-
-    /**
      * Methode zum Konfigurieren des Suchfeldes.
      */
     private void configureSearchField() {
@@ -120,9 +119,64 @@ public class ZutatFilterDialog extends Dialog {
      */
     private void configureGrid() {
         grid.addColumn(Zutat::getName).setHeader("Bezeichnung");
-        grid.addColumn(Zutat::getEinheit).setHeader("Einheit");
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        grid.setSelectionMode(Grid.SelectionMode.MULTI);
+        MultiSelect<Grid<Zutat>, Zutat> multiSelect =
+                grid.asMultiSelect();
+        multiSelect.addSelectionListener(e -> handleSelectionChange(e));
         updateGrid();
+    }
+
+    /**
+     * Methode, welche (sofern keine neue Ergebnisliste aus dem Backend durch die Textsuche geladen wurde) das Hinzufügen oder Entfernen der selektierten Zutaten delegiert.
+     *
+     * @param e Event, welches die Selection Changes verfolgt
+     */
+    private void handleSelectionChange(MultiSelectionEvent<Grid<Zutat>, Zutat> e) {
+        if (!gridDataLoad) {
+            removeSelectedItems(e);
+            addSelectedItems(e);
+        }
+    }
+
+    /**
+     * Methode zum Entfernen der deselektierten Zutaten aus der Instanzvariable selectedItems.
+     *
+     * @param e Event, welches die Selection Changes verfolgt
+     */
+    private void removeSelectedItems(MultiSelectionEvent<Grid<Zutat>, Zutat> e) {
+        for (Zutat zutat : e.getRemovedSelection()) {
+            if (!selectedItems.isEmpty()) {
+                List<Zutat> toRemove = new LinkedList<>();
+                for (Zutat selectedZutat : selectedItems) {
+                    if (!zutat.getName().equals(selectedZutat.getName())) {
+                        toRemove.add(zutat);
+                    }
+                }
+                selectedItems.removeAll(toRemove);
+            }
+        }
+    }
+
+    /**
+     * Methode zum Speichern der selektierten Zutaten in der Instanzvariable selectedItems.
+     *
+     * @param e Event, welches die Selection Changes verfolgt
+     */
+    private void addSelectedItems(MultiSelectionEvent<Grid<Zutat>, Zutat> e) {
+        for (Zutat zutat : e.getAddedSelection()) {
+            if (selectedItems.isEmpty()) {
+                selectedItems.add(zutat);
+            } else {
+                List<Zutat> toAdd = new LinkedList<>();
+                for (Zutat selectedZutat : selectedItems) {
+                    if (!zutat.getName().equals(selectedZutat.getName())) {
+                        toAdd.add(zutat);
+                    }
+                }
+                selectedItems.addAll(toAdd);
+            }
+        }
     }
 
     /**
@@ -130,9 +184,26 @@ public class ZutatFilterDialog extends Dialog {
      */
     private void updateGrid() {
         if (searchField.isEmpty()) {
-            grid.setItems(zutatService.getZutaten());
+            displayedItems = zutatService.getZutaten();
         } else {
-            grid.setItems(zutatService.searchZutatenByFilterText(searchField.getValue()));
+            displayedItems = zutatService.searchZutatenByFilterText(searchField.getValue());
+        }
+        gridDataLoad = true;
+        grid.setItems(displayedItems);
+        selectItemsInGrid();
+        gridDataLoad = false;
+    }
+
+    /**
+     * Methode, welche die Zutaten, welche in der Instanzvariable selectedItems vorhanden sind im Frontend aus der aktuellen Ergebnisliste selektiert.
+     */
+    private void selectItemsInGrid() {
+        for (Zutat zutat : selectedItems) {
+            for (Zutat displayedZutat : displayedItems) {
+                if (zutat.getName().equals(displayedZutat.getName())) {
+                    grid.select(displayedZutat);
+                }
+            }
         }
     }
 
@@ -143,9 +214,16 @@ public class ZutatFilterDialog extends Dialog {
         updateGrid();
     }
 
+    public Set<Zutat> getSelectedItems() {
+        return selectedItems;
+    }
 
     public Button getFilterButton() {
         return this.filterButton;
+    }
+
+    public Grid<Zutat> getGrid() {
+        return grid;
     }
 
     public Button getRemoveFilterButton() {
@@ -153,13 +231,13 @@ public class ZutatFilterDialog extends Dialog {
     }
 
     /**
-     * Methode, mit der sich andere Klassen die aktuell selektierte Zutat aus dem Grid des Dialoges holen können.
+     * Methode, mit der sich andere Klassen die aktuell selektierten Zutaten aus dem Grid des Dialoges holen können.
      *
-     * @return Gibt das Zutat-Objekt zurück
+     * @return Gibt das Zutaten-Set zurück
      */
-    public Zutat getFilteredItem() {
+    public Set<Zutat> getFilteredItems() {
         if (!grid.getSelectedItems().isEmpty()) {
-            return grid.getSelectionModel().getFirstSelectedItem().get();
+            return grid.getSelectionModel().getSelectedItems();
         } else {
             return null;
         }

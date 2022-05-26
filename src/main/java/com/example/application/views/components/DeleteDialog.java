@@ -14,11 +14,11 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
  */
 public class DeleteDialog extends Dialog {
 
-    H5 title;
-    Button deleteButton;
-    Button cancelButton;
-    Label textfield;
-    String delName;
+    private final H5 title;
+    private final Label textfield;
+    private final String delName;
+    private final Button deleteButton = new Button("Löschen");
+    private final Button cancelButton = new Button("Abbrechen");
 
     /**
      * Der DeleteDialog wird erzeugt.
@@ -38,7 +38,7 @@ public class DeleteDialog extends Dialog {
     }
 
     /**
-     * Der Dialog wird zusammengebaut einem Layout zugeordnet.
+     * Der Dialog wird zusammengebaut und einem Layout zugeordnet.
      */
     private void buildDialog() {
         add(this.title,this.textfield);
@@ -49,17 +49,26 @@ public class DeleteDialog extends Dialog {
      * Die Buttons innerhalb des Dialogfensters werden benannt und ihnen wird ein Theme zugeordnet.
      */
     private void configureButtons(){
-        this.deleteButton = new Button("Löschen");
-        this.cancelButton = new Button("Abbrechen");
-
         this.deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         this.cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
     }
 
+    /**
+     * Hierbei handelt es sich um eine Getter-Methode, die den Löschen-Button zurückgibt.
+     *
+     * @return Der Löschen-Button wird zurückgegeben, da der Clicklistener erst später in der aufrufenden
+     * Klasse implementiert wird.
+     */
     public Button getDeleteButton() {
         return deleteButton;
     }
 
+    /**
+     * Hierbei handelt es sich um eine Getter-Methode, die den Abbrechen-Button zurückgibt.
+     *
+     * @return Der Abbrechen-Button wird zurückgegeben, da der Clicklistener erst später in der aufrufenden
+     * Klasse implementiert wird.
+     */
     public Button getCancelButton() {
         return cancelButton;
     }

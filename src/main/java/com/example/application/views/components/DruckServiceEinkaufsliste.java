@@ -85,7 +85,6 @@ public class DruckServiceEinkaufsliste {
         PdfPCell tableCell = new PdfPCell(table);
         tableCell.setBorder(0);
 
-        clearList();
         return tableCell;
     }
 
@@ -144,7 +143,7 @@ public class DruckServiceEinkaufsliste {
             document.add(maintable);
 
             document.close();
-
+            clearList();
         } catch (Exception e) {
             e.printStackTrace();
         }

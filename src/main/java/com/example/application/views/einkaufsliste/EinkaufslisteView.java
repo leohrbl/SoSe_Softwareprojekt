@@ -169,12 +169,15 @@ public class EinkaufslisteView extends VerticalLayout {
      * Methode zum Drucken der aktuellen Daten in der EinkaufslisteView.
      */
     private void printEinkaufsliste() throws DocumentException, FileNotFoundException {
+        List<EinkaufslistenEintrag> printList = getNotSelectedItems();
         if (displayedItems.isEmpty()) {
             Notification.show("Keine Einkaufslisteneinträge vorhanden").addThemeVariants(NotificationVariant.LUMO_ERROR);
             return;
+        }else if(printList.size() == 0){
+            druckservice.createPDF(displayedItems);
+        }else {
+            druckservice.createPDF(printList);
         }
-        List<EinkaufslistenEintrag> printList = getNotSelectedItems();
-        druckservice.createPDF(printList);
     }
 
     /**

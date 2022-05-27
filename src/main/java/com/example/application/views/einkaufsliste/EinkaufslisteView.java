@@ -180,8 +180,10 @@ public class EinkaufslisteView extends VerticalLayout {
         Set<EinkaufslistenEintrag> gridSelectedItems = einkaufsGrid.getSelectedItems();
 
         for (EinkaufslistenEintrag eintrag : gridSelectedItems) {
-            if (!displayedItems.contains(eintrag)) {
-                printList.add(eintrag);
+            for (EinkaufslistenEintrag displayedEintrag : displayedItems) {
+                if (eintrag.getId() != displayedEintrag.getId()) {
+                    printList.add(displayedEintrag);
+                }
             }
         }
         return printList;

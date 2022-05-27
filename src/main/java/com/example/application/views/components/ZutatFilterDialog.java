@@ -49,7 +49,7 @@ public class ZutatFilterDialog extends Dialog {
         this.grid = new Grid<>(Zutat.class, false);
         this.filterButton = new Button("Filtern");
         this.zutatService = zutatService;
-        this.removeFilterButton = new Button("Abbrechen");
+        this.removeFilterButton = new Button("Filter entfernen");
         this.selectedItems = new HashSet<>();
         this.gridDataLoad = false;
         configureDialog();
@@ -72,8 +72,9 @@ public class ZutatFilterDialog extends Dialog {
      * @return Gibt das HeaderLayout zurück, damit es im Dialog hinzugefügt werden kann.
      */
     private HorizontalLayout createHeaderLayout() {
-        HorizontalLayout header = new HorizontalLayout(searchField);
+        HorizontalLayout header = new HorizontalLayout(searchField, createAbbrechenButton());
         header.setAlignItems(FlexComponent.Alignment.CENTER);
+        header.setFlexGrow(1, searchField);
         header.setPadding(true);
         header.setSpacing(true);
         return header;
@@ -85,7 +86,10 @@ public class ZutatFilterDialog extends Dialog {
      * @return Gibt den Footer als HorizontalLayout zurück.
      */
     private HorizontalLayout createFooterLayout() {
-        return new HorizontalLayout(filterButton, removeFilterButton);
+        HorizontalLayout footerLayout = new HorizontalLayout(filterButton, removeFilterButton);
+        footerLayout.setWidthFull();
+        footerLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        return footerLayout;
     }
 
     /**
@@ -156,6 +160,21 @@ public class ZutatFilterDialog extends Dialog {
                 selectedItems.removeAll(toRemove);
             }
         }
+    }
+
+    /**
+     * Methode zum Erstellen des AbbrechenButtons.
+     *
+     * @return Gibt den Button zurück, damit dieser in ein Layout hinzugefügt werden kann.
+     */
+    private Button createAbbrechenButton() {
+        Button abbrechenButton = new Button(VaadinIcon.CLOSE.create());
+        abbrechenButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        abbrechenButton.addClickListener(e -> {
+            this.close();
+        });
+        abbrechenButton.addClickListener(e -> this.close());
+        return abbrechenButton;
     }
 
     /**

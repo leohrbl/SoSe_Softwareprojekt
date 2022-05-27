@@ -213,7 +213,6 @@ public class KategorieView extends VerticalLayout {
                 Notification.show("Kategorie konnte nicht gelöscht werden, da diese noch mit Rezepten verknüpft ist!")
                         .addThemeVariants((NotificationVariant.LUMO_ERROR));
             }
-            UI.getCurrent().getPage().reload();
             updateGridKategorie();
             deleteDialogKategorie.close();
             gridKategorie.getDataProvider().refreshAll();

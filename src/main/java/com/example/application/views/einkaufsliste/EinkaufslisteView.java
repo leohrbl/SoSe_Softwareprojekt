@@ -3,12 +3,15 @@ package com.example.application.views.einkaufsliste;
 import com.example.application.data.entity.EinkaufslistenEintrag;
 import com.example.application.data.service.EinkaufslistenService;
 import com.example.application.views.components.DeleteDialog;
+import com.example.application.views.components.DruckServiceEinkaufsliste;
 import com.example.application.views.components.MainLayout;
+import com.itextpdf.text.DocumentException;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -17,7 +20,13 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.InputStreamFactory;
+import com.vaadin.flow.server.StreamResource;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -40,6 +49,8 @@ public class EinkaufslisteView extends VerticalLayout {
     private final DeleteDialog deleteDialog;
     private final List<EinkaufslistenEintrag> displayedItems;
 
+    private final DruckServiceEinkaufsliste druckservice;
+
     /**
      * Konstruktor zum Initialisieren der Instanzvariablen. Zudem wird das Grid konfiguriert und die View erstellt.
      *
@@ -50,6 +61,7 @@ public class EinkaufslisteView extends VerticalLayout {
         this.displayedItems = einkaufslistenService.getAllEintrag();
         this.einkaufsGrid = new Grid<>(EinkaufslistenEintrag.class, false);
         this.deleteDialog = createDeleteDialog();
+        this.druckservice = DruckServiceEinkaufsliste.getInstance();
         configureGrid();
         add(createView());
     }
@@ -75,7 +87,7 @@ public class EinkaufslisteView extends VerticalLayout {
      * @return gibt ein VerticalLayout zurück, damit das Layout mit der add Methode im Konstruktor im Frontend angezeigt werden kann.
      */
     private VerticalLayout createView() {
-        return new VerticalLayout(createHeading(), einkaufsGrid, new HorizontalLayout(createPrintEinkaufslisteBtn(), createDeleteEinkaufslisteBtn()));
+        return new VerticalLayout(createHeading(), einkaufsGrid, new HorizontalLayout(printButton(), createDeleteEinkaufslisteBtn()));
     }
 
     /**
@@ -98,7 +110,7 @@ public class EinkaufslisteView extends VerticalLayout {
     private Button createPrintEinkaufslisteBtn() {
         Button printEinkaufslisteBtn = new Button("Drucken", VaadinIcon.PRINT.create());
         printEinkaufslisteBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        printEinkaufslisteBtn.addClickListener(e -> printEinkaufsliste());
+        //printEinkaufslisteBtn.addClickListener(e -> printEinkaufsliste());
         return printEinkaufslisteBtn;
     }
 
@@ -156,13 +168,13 @@ public class EinkaufslisteView extends VerticalLayout {
     /**
      * Methode zum Drucken der aktuellen Daten in der EinkaufslisteView.
      */
-    private void printEinkaufsliste() {
+    private void printEinkaufsliste() throws DocumentException, FileNotFoundException {
         if (displayedItems.isEmpty()) {
             Notification.show("Keine Einkaufslisteneinträge vorhanden").addThemeVariants(NotificationVariant.LUMO_ERROR);
             return;
         }
         List<EinkaufslistenEintrag> printList = getNotSelectedItems();
-        // hier dann die übergabe an den PrintService
+        druckservice.createPDF(printList);
     }
 
     /**
@@ -176,6 +188,7 @@ public class EinkaufslisteView extends VerticalLayout {
             Notification.show("Keine Einkaufslisteneinträge vorhanden").addThemeVariants(NotificationVariant.LUMO_ERROR);
             return null;
         }
+
         List<EinkaufslistenEintrag> printList = new LinkedList<>();
         Set<EinkaufslistenEintrag> gridSelectedItems = einkaufsGrid.getSelectedItems();
 
@@ -188,4 +201,43 @@ public class EinkaufslisteView extends VerticalLayout {
         }
         return printList;
     }
+
+    /**
+     * Die Methode printButton() erzeugt einen Anchor mit einem Button um die Einkaufsliste als PDF zu generieren.
+     * Der ClickListener verweist direkt auf die erzeugte PDF.
+     * @author Edwin Polle
+     */
+
+    private Anchor printButton(){
+
+        Anchor anchor = new Anchor(new StreamResource("Einkaufsliste.pdf", new InputStreamFactory() {
+            @Override
+            public InputStream createInputStream() {
+                File file = new File("Einkaufsliste.pdf");
+
+                try{
+                    return new FileInputStream(file);
+                }catch(FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }),"");
+
+        Button printButton = new Button("Drucken", VaadinIcon.PRINT.create());
+        printButton.addClickListener(e -> {
+            try {
+                printEinkaufsliste();
+            } catch (DocumentException ex) {
+                throw new RuntimeException(ex);
+            } catch (FileNotFoundException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        anchor.setTarget("_blank");
+        anchor.add(printButton);
+
+        return anchor;
+    }
+
+
 }

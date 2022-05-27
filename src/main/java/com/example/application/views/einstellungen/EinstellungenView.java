@@ -59,7 +59,7 @@ public class EinstellungenView extends VerticalLayout {
      */
     private void createTab() {
         tabComponentMap.put(new Tab("Kategorien"), kategorieV.createView(kategorieService));
-        tabComponentMap.put(new Tab("Einheiten"), einheitV.createView(einheitService));
+        tabComponentMap.put(new Tab("Einheiten"), einheitV.einheitView(einheitService));
         tabs.add(tabComponentMap.keySet().toArray(new Tab[]{}));
         tabs.setSizeFull();
         tabs.addSelectedChangeListener(e -> {

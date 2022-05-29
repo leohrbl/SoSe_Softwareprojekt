@@ -270,13 +270,11 @@ public class RezeptCreateView extends ViewFrame {
      */
     // TODO: Individuelle Fehlermeldungen
     private boolean isValuesValid() {
-        if (kategorie.isEmpty() || title.isEmpty() || portionenInput.isEmpty() || zubereitung.isEmpty()
+        if (kategorie.isEmpty() || !titleValid() || portionenInput.isEmpty() || zubereitung.isEmpty()
                 || !isZutatRowsValid() || checkDuplicateZutaten()) {
-            Notification.show("Bitte Eingabewerte überprüfen!").addThemeVariants(NotificationVariant.LUMO_ERROR);
             Notification.show(getErrorString()).addThemeVariants(NotificationVariant.LUMO_ERROR);
             return false;
         }
-
         return true;
     }
 
@@ -288,11 +286,9 @@ public class RezeptCreateView extends ViewFrame {
     private boolean isZutatRowsValid() {
         for (AddZutatRow row : zutatenRows) {
             if (!row.isFilled()) {
-                Notification.show("Nicht alle Zutat-Zeilen sind gefüllt.").addThemeVariants(NotificationVariant.LUMO_ERROR);
                 return false;
             }
             if(row.getMenge() < 0){
-                Notification.show("Die Menge von Zutat '"+row.getZutat().toString()+"' darf nicht negativ sein!").addThemeVariants(NotificationVariant.LUMO_ERROR);
                 return false;
             }
         }
@@ -340,7 +336,9 @@ public class RezeptCreateView extends ViewFrame {
     private boolean checkDuplicateZutaten() {
         List<String> zutatNameList = new LinkedList<>();
         for (AddZutatRow row : zutatenRows) {
-            zutatNameList.add(row.getZutat().getName());
+            if(row.isFilled()){
+                zutatNameList.add(row.getZutat().getName());
+            }
         }
         Set<String> zutatNameSet = new HashSet<>(zutatNameList);
         return zutatNameSet.size() < zutatNameList.size();
@@ -360,12 +358,20 @@ public class RezeptCreateView extends ViewFrame {
 
     }
 
+    /**
+     * Die Methode erzeugt einen String und gibt diesen zurück. Der String enthält welche Eingabefelder vom
+     * Anwender geprüft werden sollen.
+     *
+     * @return Es wird ein String zurückgegeben, der enthält welche Eingabefelder gepüft werden müssen.
+     */
+
     private String getErrorString(){
         String error = "Bitte prüfe: ";
+
         if(kategorie.isEmpty()){
             error += " [Kategorie]";
         }
-        if(title.isEmpty()){
+        if(!titleValid()){
             error += " [Titel]";
         }
         if(portionenInput.isEmpty()){
@@ -374,13 +380,27 @@ public class RezeptCreateView extends ViewFrame {
         if(zubereitung.isEmpty()){
             error += " [Zubereitung]";
         }
+
         if(!isZutatRowsValid()){
             error += " [Zutaten-Zeile nicht valide]";
         }
+
         if(checkDuplicateZutaten()){
-            error += " [Zutaten mehrfach vorhanden]";
+            error += " [Zutaten Duplikate vorhanden]";
         }
+
         return error;
+    }
+
+    /**
+     * Die Methode prüft, ob der Titel valide ist. Der Titel darf nicht leer und auch nicht nur Leerzeichen enthalten.
+     * @return Der Wahrheitswert, ob der Titel valide ist.
+     */
+    public boolean titleValid(){
+        if(title.isEmpty() || title.getValue().trim().length() == 0){
+            return false;
+        }
+        return true;
     }
 
 }

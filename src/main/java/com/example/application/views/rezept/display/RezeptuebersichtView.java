@@ -32,6 +32,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Die RezeptansichtView-Klasse ist die Main View der Applikation. Sie bietet
@@ -71,7 +72,7 @@ public class RezeptuebersichtView extends VerticalLayout {
      * @param rezeptZutatenService Datenbankservice für Rezept_Zutat Entitäten
      */
     public RezeptuebersichtView(RezeptService rezeptService, ZutatService zutatService,
-            RezeptZutatenService rezeptZutatenService) {
+                                RezeptZutatenService rezeptZutatenService) {
         this.rezeptService = rezeptService;
         this.rezeptZutatenService = rezeptZutatenService;
         this.displayedItems = rezeptService.getAllRezepte();
@@ -132,13 +133,13 @@ public class RezeptuebersichtView extends VerticalLayout {
      * und die gefilterten Rezepte werden verarbeitet.
      */
     private void handleZutatFilterButtonClick() {
-        if (zutatFilterDialog.getFilteredItem() == null) {
+        if (zutatFilterDialog.getFilteredItems() == null) {
             Notification.show("Keine Zutat zum Filtern ausgewählt!").addThemeVariants(NotificationVariant.LUMO_ERROR);
         } else {
             isFilterActive = true;
             zutatFilterButton.removeThemeVariants(ButtonVariant.LUMO_CONTRAST);
             zutatFilterButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
-            handleZutatFilter(zutatFilterDialog.getFilteredItem());
+            handleZutatFilter(zutatFilterDialog.getFilteredItems());
             zutatFilterDialog.close();
         }
     }
@@ -152,6 +153,8 @@ public class RezeptuebersichtView extends VerticalLayout {
         zutatFilterButton.removeThemeVariants(ButtonVariant.LUMO_SUCCESS);
         zutatFilterButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
         zutatFilterDialog.close();
+        zutatFilterDialog.getGrid().deselectAll();
+        zutatFilterDialog.getSelectedItems().clear();
         handleSearch();
     }
 
@@ -222,7 +225,7 @@ public class RezeptuebersichtView extends VerticalLayout {
      * anhand der aktuellen Datensätze von Rezepten.
      *
      * @return gibt ein Layout zum Ersetzen des bereits existierenden cardLayouts
-     *         zurück.
+     * zurück.
      * @see RezeptCard
      */
     private FlexLayout loadCards() {
@@ -253,12 +256,12 @@ public class RezeptuebersichtView extends VerticalLayout {
      * damit diese die Kombination der Suchtext-Ergebnisliste und den gefilterten
      * Rezepten verarbeiten kann.
      */
-    private void handleZutatFilter(Zutat zutat) {
+    private void handleZutatFilter(Set<Zutat> filteredZutaten) {
         if (isSearching()) {
-            filteredItemsByZutat = rezeptZutatenService.findAllRezepteByZutat(zutat);
+            filteredItemsByZutat = rezeptZutatenService.findAllRezepteByZutaten(filteredZutaten);
             handleSearch();
         } else {
-            filteredItemsByZutat = rezeptZutatenService.findAllRezepteByZutat(zutat);
+            filteredItemsByZutat = rezeptZutatenService.findAllRezepteByZutaten(filteredZutaten);
             displayedItems = filteredItemsByZutat;
         }
         updateCardLayout();
@@ -268,7 +271,7 @@ public class RezeptuebersichtView extends VerticalLayout {
      * Methode welche zurückgibt, ob nach einem Rezept in der View gesucht wurde.
      *
      * @return gibt einen Boolean zurück. Ist die eine Suche aktiv, ist der Wert =
-     *         true
+     * true
      */
     private boolean isSearching() {
         return !searchField.getValue().isEmpty();

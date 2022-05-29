@@ -200,4 +200,8 @@ public class RezeptService {
         }
     }
 
+    public List<Rezept> findAllbyKategorie() {
+        return rezeptRepository.findAllByKategorieSequenceNr();
+    }
+
 }

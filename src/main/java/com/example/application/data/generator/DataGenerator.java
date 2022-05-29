@@ -287,7 +287,7 @@ public class DataGenerator {
             }
             logger.info(rezeptZutatenService.findAllZutatenByRezept(rezept).toString());
             logger.info(rezeptZutatenService.findAllRezepteByZutat(zutatService.getZutaten().get(1)).toString());
-
+            System.out.println(service.findAllbyKategorie());
             // logger.info(service.findByTitel("Test").toString());
             // logger.info("Test");
             // logger.info(service.findByTitel("Test").getZutatenFromZutat().toString());

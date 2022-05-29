@@ -55,4 +55,12 @@ public interface RezeptRepository extends JpaRepository<Rezept, Long> {
      */
     void deleteById(long id);
 
+    /**
+     * Sucht nach allen vorhanden Rezepten und gibt diese sortiert zurück
+     * 
+     * @return Gibt eine Liste mit Rezepten zurück, die anhand der
+     *         Kategorie.sequence_nr sortiert wurden
+     */
+    @Query(value = "Select * from Rezept INNER JOIN Kategorie ON Rezept.kategorie_id=Kategorie.id  order by Kategorie.sequence_nr asc", nativeQuery = true)
+    List<Rezept> findAllByKategorieSequenceNr();
 }

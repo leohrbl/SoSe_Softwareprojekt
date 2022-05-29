@@ -72,10 +72,10 @@ public class RezeptuebersichtView extends VerticalLayout {
      * @param rezeptZutatenService Datenbankservice für Rezept_Zutat Entitäten
      */
     public RezeptuebersichtView(RezeptService rezeptService, ZutatService zutatService,
-                                RezeptZutatenService rezeptZutatenService) {
+            RezeptZutatenService rezeptZutatenService) {
         this.rezeptService = rezeptService;
         this.rezeptZutatenService = rezeptZutatenService;
-        this.displayedItems = rezeptService.getAllRezepte();
+        this.displayedItems = rezeptService.findAllbyKategorie();
         this.cardLayout = loadCards();
         this.filteredItemsByZutat = new LinkedList<>();
         this.zutatFilterDialog = new ZutatFilterDialog(zutatService);
@@ -225,7 +225,7 @@ public class RezeptuebersichtView extends VerticalLayout {
      * anhand der aktuellen Datensätze von Rezepten.
      *
      * @return gibt ein Layout zum Ersetzen des bereits existierenden cardLayouts
-     * zurück.
+     *         zurück.
      * @see RezeptCard
      */
     private FlexLayout loadCards() {
@@ -271,7 +271,7 @@ public class RezeptuebersichtView extends VerticalLayout {
      * Methode welche zurückgibt, ob nach einem Rezept in der View gesucht wurde.
      *
      * @return gibt einen Boolean zurück. Ist die eine Suche aktiv, ist der Wert =
-     * true
+     *         true
      */
     private boolean isSearching() {
         return !searchField.getValue().isEmpty();

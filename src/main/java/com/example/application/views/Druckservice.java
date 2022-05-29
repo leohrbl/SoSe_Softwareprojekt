@@ -91,7 +91,7 @@ public class Druckservice {
         FileOutputStream file = null;
         try {
             file = new FileOutputStream(REZEPT_PDF);
-            Document document = PAGE;
+            Document document = new Document(PageSize.A4, 25.0F, 25.0f, 10.0F, 10.0F);
             PdfWriter writer = PdfWriter.getInstance(document, file);
             document.open();
 
@@ -129,7 +129,7 @@ public class Druckservice {
         FileOutputStream file = null;
         try {
             file = new FileOutputStream(REZEPTLISTE_PDF);
-            Document document = PAGE;
+            Document document = new Document(PageSize.A4, 50.0F, 50.0f, 30.0F, 30.0F);
             PdfWriter writer = PdfWriter.getInstance(document, file);
             document.open();
 

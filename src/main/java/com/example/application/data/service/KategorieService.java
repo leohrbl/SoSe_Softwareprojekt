@@ -59,6 +59,7 @@ public class KategorieService {
         return "success";
     }
 
+
     public void updateSequenceNr(Kategorie kategorie) {
         kategorieRepository.save(kategorie);
     }

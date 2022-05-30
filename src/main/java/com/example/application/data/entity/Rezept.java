@@ -30,7 +30,7 @@ import com.vaadin.flow.component.html.Image;
  * @see RezeptService
  */
 @Entity
-public class Rezept {
+public class Rezept implements Comparable<Rezept> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -244,4 +244,14 @@ public class Rezept {
                 "}";
     }
 
+    /**
+     * Implementierung des Comparable Interfaces zum sortierten Ausgeben der Rezepte anhand der Kategorie
+     * @author Léo Hérubel
+     * @param rezept
+     * @return
+     */
+    @Override
+    public int compareTo(Rezept rezept) {
+        return (int) this.getKategorie().getSequenceNr() - (int) rezept.getKategorie().getSequenceNr();
+    }
 }

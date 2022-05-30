@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -75,7 +76,8 @@ public class RezeptuebersichtView extends VerticalLayout {
             RezeptZutatenService rezeptZutatenService) {
         this.rezeptService = rezeptService;
         this.rezeptZutatenService = rezeptZutatenService;
-        this.displayedItems = rezeptService.findAllbyKategorie();
+        this.displayedItems = rezeptService.getAllRezepte();
+        Collections.sort(displayedItems);
         this.cardLayout = loadCards();
         this.filteredItemsByZutat = new LinkedList<>();
         this.zutatFilterDialog = new ZutatFilterDialog(zutatService);
@@ -264,6 +266,7 @@ public class RezeptuebersichtView extends VerticalLayout {
             filteredItemsByZutat = rezeptZutatenService.findAllRezepteByZutaten(filteredZutaten);
             displayedItems = filteredItemsByZutat;
         }
+        Collections.sort(displayedItems);
         updateCardLayout();
     }
 
@@ -294,6 +297,7 @@ public class RezeptuebersichtView extends VerticalLayout {
         } else {
             displayedItems = rezeptService.searchRezeptByFilterText(value);
         }
+        Collections.sort(displayedItems);
         updateCardLayout();
     }
 

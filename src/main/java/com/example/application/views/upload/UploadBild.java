@@ -1,5 +1,7 @@
 package com.example.application.views.upload;
 
+
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,14 +14,21 @@ import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.server.StreamResource;
 
+/**
+ * 
+ * @author Anna Karle
+ *
+ */
 
 public class UploadBild extends Div {
 	
 	private Button uploadButton;
-	private Image image = new Image();
+	private Image image ;
 	 byte[] bytes;
 	
-	public UploadBild(Button uploadButton) {
+	public UploadBild(Button uploadButton, Image image ) {
+		this.image = image;
+        
 		MemoryBuffer buffer = new MemoryBuffer();
         Upload upload = new Upload(buffer);
         upload.setAcceptedFileTypes("image/jpeg", "image/png", "image/gif");
@@ -35,7 +44,8 @@ public class UploadBild extends Div {
         		byte[] bytes = IOUtils.toByteArray(fileData);
 				image.getElement().setAttribute("src", new StreamResource(fileName,
 						() -> new ByteArrayInputStream(bytes)));
-			} catch (IOException e) {
+				
+            } catch (IOException e) {
 				
 				e.printStackTrace();
 			}
@@ -48,14 +58,14 @@ public class UploadBild extends Div {
 	}
 	
 	
-	private byte[] getImageAsByteArray() {
-        try {
-            return IOUtils.toByteArray(this.image.getClass().getResourceAsStream(this.image.getSrc()));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+//	private byte[] getImageAsByteArray() {
+//        try {
+//            return IOUtils.toByteArray(this.image.getClass().getResourceAsStream(this.image.getSrc()));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 
 
 	public Image getImage() {

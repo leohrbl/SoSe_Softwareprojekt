@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.ArrayList;
 import com.example.application.views.components.ViewFrame;
+import com.example.application.views.upload.UploadBild;
 import com.example.application.views.components.AddZutatDialog;
 
 
@@ -66,6 +67,7 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
     Dialog createNewZutatDialog = new Dialog(); //Dialog zum Erstellen neuer Zutaten
     VerticalLayout contentRezeptZutaten = new VerticalLayout();
     ComboBox<Kategorie> auswahlKategorieComboBox = new ComboBox<>();
+    VerticalLayout contentBild ;
 
 
 
@@ -80,6 +82,8 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
         this.rezeptZutatenService = rezeptZutatenService;
         this.einheitService = einheitService;
         this.kategorieService = kategorieService;
+        
+        
     }
 
     /**
@@ -119,6 +123,7 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
     {
         configureInitialLayout(rezept);
         createList(rezept);
+        fileUpload();
     }
 
     /**
@@ -168,7 +173,7 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
         rezeptBild.setHeight("60%");
         rezeptBild.addClassName("image");
 
-        VerticalLayout contentBild = new VerticalLayout(rezeptBild, fileUploadButton);
+        contentBild = new VerticalLayout(rezeptBild, fileUploadButton);
         contentBild.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         contentBild.setPadding(true);
 
@@ -224,7 +229,7 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
      * KDie Methode gibt allen Buttons ihre Funktion und wird am Anfang aufgerufen
      */
     private void configureButtons(Rezept rezept){
-        fileUploadButton.addClickListener(event -> fileUpload());
+       
         zutatHinzufuegenButton.addClickListener(event -> createNewZutat(rezept));
         saveButton.addClickListener(event -> save(rezept));
         cancelButton.addClickListener(event -> cancel());
@@ -388,11 +393,7 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
      * Methode die für das auswählen eines neuen Bildes genutz werden Soll
      * IST NOCH IN ARBEIT
      */
-    private void fileUpload()
-    {
-        JFileChooser chooser = new JFileChooser();
-        chooser.showSaveDialog(null);
-    }
+
 
 
     /**
@@ -594,5 +595,18 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
     public void returnToRezeptAnsicht()
     {
         UI.getCurrent().navigate("display");
+    }
+    
+    /**
+     * @author Anna Karle
+     */
+    private void fileUpload()
+    {
+        UploadBild bild = new UploadBild(fileUploadButton, rezeptBild);
+        contentBild.add(bild);
+        if(bild.getImage() != null) {
+    		contentBild.replace(rezeptBild, bild.getImage());
+        	this.rezeptBild = bild.getImage();
+    	}
     }
 }

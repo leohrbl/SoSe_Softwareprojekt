@@ -1,5 +1,6 @@
 package com.example.application.data.entity;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
+import org.apache.commons.io.IOUtils;
 
 import com.example.application.data.repository.RezeptRepository;
 import com.example.application.data.service.RezeptService;
@@ -254,4 +257,14 @@ public class Rezept implements Comparable<Rezept> {
     public int compareTo(Rezept rezept) {
         return (int) this.getKategorie().getSequenceNr() - (int) rezept.getKategorie().getSequenceNr();
     }
+    
+    private byte[] getImageAsByteArray() {
+        try {
+            return IOUtils.toByteArray(this.bild.getClass().getResourceAsStream(this.bild.getSrc()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

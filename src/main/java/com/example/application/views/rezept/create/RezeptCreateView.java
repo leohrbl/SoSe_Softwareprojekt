@@ -6,6 +6,7 @@ import com.example.application.views.components.AddZutatDialog;
 import com.example.application.views.components.AddZutatRow;
 import com.example.application.views.components.MainLayout;
 import com.example.application.views.components.ViewFrame;
+import com.example.application.views.upload.UploadBild;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -46,8 +47,12 @@ public class RezeptCreateView extends ViewFrame {
     private TextField title;
     private Select<Kategorie> kategorie;
     private IntegerField portionenInput;
-    private Image image;
+    private Image image ;
     private TextArea zubereitung;
+    private Button upload = new Button("Bild hochladen ...");
+    private VerticalLayout vLayout;
+    private VerticalLayout content;
+    private UploadBild bild;
 
     private final RezeptService rezeptService;
     private final RezeptZutatenService rezeptZutatenService;
@@ -72,9 +77,12 @@ public class RezeptCreateView extends ViewFrame {
         this.zutatService = zutatService;
         this.kategorieService = kategorieService;
         this.einheitService = einheitService;
-
+        
+        
         configureButtons();
         createViewLayout();
+        bildUploader();
+        
     }
 
     /**
@@ -96,13 +104,11 @@ public class RezeptCreateView extends ViewFrame {
         portionenInput.setMax(20);
         portionenInput.setHasControls(true);
 
-        VerticalLayout vLayout = new VerticalLayout();
+        vLayout = new VerticalLayout();
         vLayout.setWidth("100%");
         vLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 
-        Button upload = new Button("Bild hochladen ...");
-        vLayout.add(upload);
-
+        
         HorizontalLayout portionenLayout = new HorizontalLayout(portionen, portionenInput, portionen2);
         portionenLayout.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
         zutatenContainer.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
@@ -124,13 +130,15 @@ public class RezeptCreateView extends ViewFrame {
         image.setWidth("100%");
         image.setHeight("100%");
         image.addClassName("image");
+//        
 
         HorizontalLayout btnLayout = new HorizontalLayout(neueZeileButton, neueZutatButton);
 
         // hier dann auch noch das grid mit den Zutaten/Mengen Objekten zu dem Rezept
         // lul
-        VerticalLayout content = new VerticalLayout(image, vLayout, zutatenContainer, btnLayout, zubereitung);
+        content = new VerticalLayout(this.image, vLayout, zutatenContainer, btnLayout, zubereitung);
         content.setPadding(true);
+        
 
         setViewContent(content);
 
@@ -236,9 +244,7 @@ public class RezeptCreateView extends ViewFrame {
     public void rezeptSpeichern() {
         if (isValuesValid()) {
             try {
-                Rezept rezept = rezeptService.createRezept(new Image(
-                        image.getSrc(),
-                        image.getAlt().toString()), title.getValue(), zubereitung.getValue(),
+                Rezept rezept = rezeptService.createRezept(new Image (image.getSrc(),image.getAlt().toString()), title.getValue(), zubereitung.getValue(),
                         portionenInput.getValue(), kategorie.getValue());
                 if (rezept == null) {
                     Notification.show("Rezept '" + title.getValue() + "' gibt es schon")
@@ -390,6 +396,22 @@ public class RezeptCreateView extends ViewFrame {
         }
 
         return error;
+    }
+    
+    /**
+     * @author Anna Karle
+     */
+    
+    private void bildUploader() {
+    	
+        bild = new UploadBild(upload, image);
+    	vLayout.add(bild);
+    	if(bild.getImage() != null) {
+    		content.replace(image, bild.getImage());
+        	this.image = bild.getImage();
+    	}
+    	
+    	
     }
 
     /**

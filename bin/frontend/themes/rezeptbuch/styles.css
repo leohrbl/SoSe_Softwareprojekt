@@ -1,0 +1,70 @@
+@import url('line-awesome/dist/line-awesome/css/line-awesome.min.css');
+
+/* Author: Léo Hérubel */
+.card-heading {
+    border-bottom: 2px solid var(--lumo-contrast-20pct);
+    margin-bottom: 0px;
+    padding: 0px;
+}
+
+.card-border {
+    border: 2px solid var(--lumo-contrast-20pct);
+    border-radius: 5px;
+}
+
+.card-category p {
+    background-color: #305c79;
+    border: 4px solid #305c79;
+    border-radius: 10px;
+    color: white;
+}
+
+
+#card {
+    padding: 0px;
+    margin-bottom: 1em;
+    margin-right: 1em;
+    background-color: var(--lumo-contrast-5pct);
+}
+
+
+#card:hover {
+     box-shadow: 5px 6px 6px 2px #e9ecef;
+     transform: scale(1.03)
+}
+
+.card-text {
+    font-size: 1.1rem;
+}
+
+.image-layout {
+    margin: 0px;
+}
+
+
+.image {
+    display: flex;
+    object-fit: cover;
+    height: 100%;
+}
+
+.view-frame{
+    width: 1000px;
+}
+
+.viewframe-max-width{
+    width: 1000px;
+    background-color: var(--lumo-contrast-5pct);
+}
+
+.rezept-kategorie-view {
+    background-color: #305c79;
+    border: 4px solid #305c79;
+    border-radius: 10px;
+    color: white;
+}
+
+.rezept-view-grid{
+    margin-right: 5rem;
+    margin-left: 5rem;
+}

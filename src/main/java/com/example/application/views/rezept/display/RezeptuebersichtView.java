@@ -25,6 +25,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.InputStreamFactory;
 import com.vaadin.flow.server.StreamResource;
+import org.aspectj.weaver.ast.Not;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -313,6 +314,10 @@ public class RezeptuebersichtView extends VerticalLayout {
      * Methode zum Drucken der aktuell angezeigten Rezepte.
      */
     private void printErgebnisliste() {
+        if(displayedItems.isEmpty()) {
+            Notification.show("Keine Rezepte zum Drucken verfügbar!").addThemeVariants(NotificationVariant.LUMO_ERROR);
+            return;
+        }
         druckservice.createRezept(displayedItems);
     }
 

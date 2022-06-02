@@ -87,7 +87,9 @@ public class RezeptCard extends VerticalLayout {
      * @return gibt den ggf. gekürzten Titel zurück.
      */
     private String trimTitel(String titel) {
-        if (titel.length() >= 60) {
+        if (!titel.contains(" ") && titel.length() >= 30) {
+            return titel.substring(0, 29);
+        } else if (titel.length() >= 60) {
             return titel.substring(0, 59);
         }
         return titel;

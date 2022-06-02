@@ -1,14 +1,22 @@
 package com.example.application.data.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.transaction.Transactional;
 
 import com.example.application.data.entity.Kategorie;
 import com.example.application.data.entity.Rezept;
 import com.example.application.data.repository.RezeptRepository;
 import com.example.application.views.rezept.display.RezeptuebersichtView;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.server.StreamResource;
 
+import org.hibernate.annotations.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +51,7 @@ public class RezeptService {
      * 
      * @return Liste mit Rezepten
      */
+    @Transactional
     public List<Rezept> getAllRezepte() {
         return rezeptRepository.findAll();
     }
@@ -59,7 +68,8 @@ public class RezeptService {
      * @return Bei einem Fehler wird null zurückgegeben, wenn das Rezept erfolgreich
      *         gespeichert wird, wird dieses zurückgegeben
      */
-    public Rezept createRezept(Image bild, String titel, String zubereitung, int portionen, Kategorie kategorie) {
+    @Transactional
+    public Rezept createRezept(byte[] bild, String titel, String zubereitung, int portionen, Kategorie kategorie) {
         System.out.println(titel.trim());
         System.out.println(titel.trim().length() == 0);
         if (findByTitel(titel) != null) {
@@ -110,6 +120,7 @@ public class RezeptService {
      * @param filteredItemsByZutat
      * @return Liste (Java.Util.Collection) von den kombinierten Ergebnislisten
      */
+    @Transactional
     public List<Rezept> getRezeptByFilterAndSearchText(String searchText, List<Rezept> filteredItemsByZutat) {
         List<Rezept> filteredItemsByText = searchRezeptByFilterText(searchText);
         List<Rezept> filteredItemsByTextAndZutat = new LinkedList<>();
@@ -145,6 +156,7 @@ public class RezeptService {
      * @param titel Titel des Rezeptes
      * @return Rezept, welches den Titel hat
      */
+    @Transactional
     public Rezept findByTitel(String titel) {
         return rezeptRepository.findByTitel(titel.trim());
     }
@@ -155,10 +167,12 @@ public class RezeptService {
      * @param id Id des Rezeptes
      * @return Rezept, welches die Id hat
      */
+    @Transactional
     public Rezept findById(long id) {
         return rezeptRepository.findById(id);
     }
 
+    @Transactional
     public List<Rezept> searchRezeptByFilterText(String filterText) {
         if (filterText == null || filterText.isEmpty()) {
             return null;
@@ -200,8 +214,34 @@ public class RezeptService {
         }
     }
 
+    @Transactional
     public List<Rezept> findAllbyKategorie() {
         return rezeptRepository.findAllByKategorieSequenceNr();
     }
 
+    public Image generateImage(Rezept rezept) {
+        Long id = rezept.getId();
+        StreamResource sr = new StreamResource("rezept", () -> {
+            Rezept attached = rezeptRepository.findById(id).get();
+            return new ByteArrayInputStream(attached.getBild());
+        });
+        sr.setContentType("image/png");
+        Image image = new Image(sr, "image");
+        return image;
+
+    }
+
+    /**
+     * Read file into byte array
+     *
+     * @param imagePath
+     *                  path to a file
+     * @return byte array out of file
+     * @throws IOException
+     *                     File not found or could not be read
+     */
+    public static byte[] getBytesFromFile(String imagePath) throws IOException {
+        File file = new File(imagePath);
+        return Files.readAllBytes(file.toPath());
+    }
 }

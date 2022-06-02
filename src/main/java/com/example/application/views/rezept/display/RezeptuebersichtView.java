@@ -15,7 +15,6 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
-import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -24,12 +23,14 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.InputStreamFactory;
+import com.vaadin.flow.server.StreamRegistration;
 import com.vaadin.flow.server.StreamResource;
 import org.aspectj.weaver.ast.Not;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import com.vaadin.flow.server.VaadinSession;
+
+import java.io.ByteArrayInputStream;
+
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -187,28 +188,30 @@ public class RezeptuebersichtView extends VerticalLayout {
      *
      * @return gibt den Button zum Hinzufügen ein einem Layout zurück
      */
-    private Anchor createPrintDisplayedRezepteBtn() {
+    private Button createPrintDisplayedRezepteBtn() {
         Button printDisplayedRezepteBtn = new Button(VaadinIcon.PRINT.create());
         printDisplayedRezepteBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        Anchor anchor = new Anchor(new StreamResource("Rezeptliste.pdf", new InputStreamFactory() {
-            @Override
-            public InputStream createInputStream() {
 
-                File file = new File("Rezeptliste.pdf");
+        printDisplayedRezepteBtn.addClickListener(e -> {
+            if (displayedItems.isEmpty())
+                return;
+            byte[] byteArray = druckservice.createRezeptByte(this.displayedItems);
 
-                try {
-                    return new FileInputStream(file);
-                } catch (FileNotFoundException e) {
-                    // TODO: handle FileNotFoundException somehow
-                    throw new RuntimeException(e);
+            StreamResource resource = new StreamResource("Rezeptliste", new InputStreamFactory() {
+                @Override
+                public InputStream createInputStream() {
+
+                    return new ByteArrayInputStream(byteArray);
+
                 }
-            }
-        }), "");
-        anchor.setTarget("_rezeptlisteDrucken");
-        anchor.add(printDisplayedRezepteBtn);
+            });
+            resource.setContentType("application/pdf");
+            final StreamRegistration registration = VaadinSession.getCurrent().getResourceRegistry()
+                    .registerResource(resource);
 
-        printDisplayedRezepteBtn.addClickListener(e -> printErgebnisliste());
-        return anchor;
+            UI.getCurrent().getPage().open(registration.getResourceUri().toString(), "Rezeptliste drucken");
+        });
+        return printDisplayedRezepteBtn;
     }
 
     /**
@@ -236,7 +239,7 @@ public class RezeptuebersichtView extends VerticalLayout {
         cardLayout.setFlexWrap(FlexLayout.FlexWrap.WRAP);
         for (Rezept rezept : displayedItems) {
             RezeptCard card = new RezeptCard(rezept.getTitel(), rezept.getKategorie().getName(), rezept.getId(),
-                    rezept.getBild());
+                    rezeptService.generateImage(rezept));
             cardLayout.add(card);
         }
         return cardLayout;
@@ -314,11 +317,12 @@ public class RezeptuebersichtView extends VerticalLayout {
      * Methode zum Drucken der aktuell angezeigten Rezepte.
      */
     private void printErgebnisliste() {
-        if(displayedItems.isEmpty()) {
+        if (displayedItems.isEmpty()) {
             Notification.show("Keine Rezepte zum Drucken verfügbar!").addThemeVariants(NotificationVariant.LUMO_ERROR);
             return;
         }
         druckservice.createRezept(displayedItems);
+
     }
 
     /**

@@ -63,4 +63,5 @@ public interface RezeptRepository extends JpaRepository<Rezept, Long> {
      */
     @Query(value = "Select * from Rezept INNER JOIN Kategorie ON Rezept.kategorie_id=Kategorie.id  order by Kategorie.sequence_nr asc", nativeQuery = true)
     List<Rezept> findAllByKategorieSequenceNr();
+
 }

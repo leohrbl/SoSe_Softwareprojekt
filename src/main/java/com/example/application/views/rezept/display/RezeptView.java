@@ -1,5 +1,11 @@
 package com.example.application.views.rezept.display;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
 import com.example.application.data.entity.Rezept;
 import com.example.application.data.entity.Rezept_Zutat;
 import com.example.application.data.service.EinkaufslistenService;
@@ -13,7 +19,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Paragraph;
@@ -25,16 +30,18 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
-import com.vaadin.flow.router.*;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.ErrorParameter;
+import com.vaadin.flow.router.HasErrorParameter;
+import com.vaadin.flow.router.HasUrlParameter;
+import com.vaadin.flow.router.NotFoundException;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.InputStreamFactory;
+import com.vaadin.flow.server.StreamRegistration;
 import com.vaadin.flow.server.StreamResource;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.List;
+import com.vaadin.flow.server.VaadinSession;
 
 /**
  * Die Klasse RezeptView ist für das erweiterte Anzeigen der Informationen eines
@@ -252,7 +259,7 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
      * @return Gibt das Bild zurück, damit es einem Layout hinzugefügt werden kann.
      */
     private Image createImage(Rezept rezept) {
-        Image image = rezept.getBild();
+        Image image = rezeptService.generateImage(rezept);
         image.setWidth("100%");
         image.setHeight("100%");
         image.addClassName("image");
@@ -296,27 +303,30 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
      *         werden kann.
      * @author Phillip Laupichler
      */
-    private Anchor createPrintBtn() {
-        Anchor anchor = new Anchor(new StreamResource("Rezept.pdf", new InputStreamFactory() {
-            @Override
-            public InputStream createInputStream() {
+    private Button createPrintBtn() {
+        Button printDisplayedRezepteBtn = new Button(VaadinIcon.PRINT.create());
+        printDisplayedRezepteBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-                File file = new File("Rezept.pdf");
+        printDisplayedRezepteBtn.addClickListener(e -> {
 
-                try {
-                    return new FileInputStream(file);
-                } catch (FileNotFoundException e) {
-                    // TODO: handle FileNotFoundException somehow
-                    throw new RuntimeException(e);
+            byte[] byteArray = druckservice.createRezeptByteArray(this.rezeptService.findById(rezeptId), displayedItems,
+                    portionenInput.getValue());
+
+            StreamResource resource = new StreamResource("Rezept.pdf", new InputStreamFactory() {
+                @Override
+                public InputStream createInputStream() {
+
+                    return new ByteArrayInputStream(byteArray);
+
                 }
-            }
-        }), "");
-        Button printBtn = new Button("Drucken", VaadinIcon.PRINT.create());
-        anchor.setTarget("_rezeptDrucken");
-        anchor.add(printBtn);
+            });
+            resource.setContentType("application/pdf");
+            final StreamRegistration registration = VaadinSession.getCurrent().getResourceRegistry()
+                    .registerResource(resource);
+            UI.getCurrent().getPage().open(registration.getResourceUri().toString(), "Rezept drucken");
+        });
+        return printDisplayedRezepteBtn;
 
-        printBtn.addClickListener(e -> printRezept(rezeptService.findById(rezeptId)));
-        return anchor;
     }
 
     /**

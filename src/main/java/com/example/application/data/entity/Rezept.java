@@ -1,9 +1,10 @@
 package com.example.application.data.entity;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Basic;
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,14 +13,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import org.apache.commons.io.IOUtils;
+import org.hibernate.annotations.Cache;
 
 import com.example.application.data.repository.RezeptRepository;
 import com.example.application.data.service.RezeptService;
-import com.vaadin.flow.component.html.Image;
 
 /**
  * Rezept Entität mit einer OneToMany Beziehung zu der Repzept_Zutaten Entität.
@@ -38,7 +39,9 @@ public class Rezept implements Comparable<Rezept> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    private Image bild;
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    private byte[] bild;
     @Column(unique = true)
     private String titel;
     @Column(columnDefinition = "TEXT")
@@ -55,7 +58,7 @@ public class Rezept implements Comparable<Rezept> {
     public Rezept() {
     }
 
-    public Rezept(long id, Image bild, String titel, String zubereitung, int portionen, Set<Rezept_Zutat> zutaten) {
+    public Rezept(long id, byte[] bild, String titel, String zubereitung, int portionen, Set<Rezept_Zutat> zutaten) {
         this.id = id;
         this.bild = bild;
         this.titel = titel;
@@ -64,7 +67,7 @@ public class Rezept implements Comparable<Rezept> {
         this.zutaten = zutaten;
     }
 
-    public Rezept(Image bild, String titel, String zubereitung, int portionen) {
+    public Rezept(byte[] bild, String titel, String zubereitung, int portionen) {
         this.bild = bild;
         this.titel = titel;
         this.zubereitung = zubereitung;
@@ -83,7 +86,7 @@ public class Rezept implements Comparable<Rezept> {
      * @param kategorie
      * @author Anna Karle
      */
-    public Rezept(long id, Image bild, String titel, String zubereitung, int portionen, Set<Rezept_Zutat> zutaten,
+    public Rezept(long id, byte[] bild, String titel, String zubereitung, int portionen, Set<Rezept_Zutat> zutaten,
             Kategorie kategorie) {
         this.id = id;
         this.bild = bild;
@@ -102,11 +105,11 @@ public class Rezept implements Comparable<Rezept> {
         this.id = id;
     }
 
-    public Image getBild() {
+    public byte[] getBild() {
         return this.bild;
     }
 
-    public void setBild(Image bild) {
+    public void setBild(byte[] bild) {
         this.bild = bild;
     }
 
@@ -151,7 +154,7 @@ public class Rezept implements Comparable<Rezept> {
         return this;
     }
 
-    public Rezept bild(Image bild) {
+    public Rezept bild(byte[] bild) {
         setBild(bild);
         return this;
     }
@@ -248,7 +251,9 @@ public class Rezept implements Comparable<Rezept> {
     }
 
     /**
-     * Implementierung des Comparable Interfaces zum sortierten Ausgeben der Rezepte anhand der Kategorie
+     * Implementierung des Comparable Interfaces zum sortierten Ausgeben der Rezepte
+     * anhand der Kategorie
+     * 
      * @author Léo Hérubel
      * @param rezept
      * @return
@@ -257,14 +262,15 @@ public class Rezept implements Comparable<Rezept> {
     public int compareTo(Rezept rezept) {
         return (int) this.getKategorie().getSequenceNr() - (int) rezept.getKategorie().getSequenceNr();
     }
-    
-    private byte[] getImageAsByteArray() {
-        try {
-            return IOUtils.toByteArray(this.bild.getClass().getResourceAsStream(this.bild.getSrc()));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+
+    // private byte[] getImageAsByteArray() {
+    // try {
+    // return
+    // IOUtils.toByteArray(this.bild.getClass().getResourceAsStream(this.bild.getSrc()));
+    // } catch (IOException e) {
+    // e.printStackTrace();
+    // return null;
+    // }
+    // }
 
 }

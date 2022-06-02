@@ -92,10 +92,10 @@ public class drucken extends ViewFrame implements HasUrlParameter<String> {
 
         VerticalLayout verticalLayout2 = new VerticalLayout();
 
-        Image image = rezept.getBild();
-        image.setMaxWidth("100%");
-        image.setMaxHeight("50%");
-        image.getStyle().set("border-radius", "10px");
+        // Image image = rezept.getBild();
+        // image.setMaxWidth("100%");
+        // image.setMaxHeight("50%");
+        // image.getStyle().set("border-radius", "10px");
         Paragraph portionen = new Paragraph("Zutaten für " + rezept.getPortionen() + " Portionen:");
         portionen.getStyle().set("font-weigth", "bold");
         Grid<Rezept_Zutat> grid = new Grid<>(Rezept_Zutat.class, false);
@@ -106,7 +106,7 @@ public class drucken extends ViewFrame implements HasUrlParameter<String> {
         grid.getStyle().set("border-style", "none");
         grid.setItems(rezept_zutatSet);
 
-        verticalLayout2.add(image, portionen, grid);
+        // verticalLayout2.add(image, portionen, grid);
 
         mainLayout.add(verticalLayout, verticalLayout2);
         mainLayout.setPadding(true);

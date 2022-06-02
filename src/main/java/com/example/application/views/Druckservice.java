@@ -1,10 +1,13 @@
 package com.example.application.views;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Set;
+
+import javax.swing.event.TreeExpansionEvent;
 
 import com.example.application.data.entity.Rezept;
 import com.example.application.data.entity.Rezept_Zutat;
@@ -36,10 +39,6 @@ public class Druckservice {
      */
     private static final String REZEPT_PDF = "Rezept.pdf";
     /**
-     * Variable, die die Seitengröße und den Margin definiert
-     */
-    private static final Document PAGE = new Document(PageSize.A4, 25.0F, 25.0f, 10.0F, 10.0F);
-    /**
      * Variale, die die Schriftart und Größe für die Tabelle Rezeptzutaten enthält
      */
     private static final Font FONT_TABLE_REZEPTZUTATEN = FontFactory.getFont(FontFactory.COURIER, 10);
@@ -54,7 +53,7 @@ public class Druckservice {
     /**
      * Variale, die die Schriftart und Größe für die Zubereitung enthält
      */
-    private static final Font FONT_ZUBEREITUNG = FontFactory.getFont(FontFactory.TIMES, 12);
+    private static final Font FONT_ZUBEREITUNG = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
     /**
      * Variale, die die Schriftart und Größe für die Portionen enthält
      */
@@ -91,7 +90,7 @@ public class Druckservice {
         FileOutputStream file = null;
         try {
             file = new FileOutputStream(REZEPT_PDF);
-            Document document = new Document(PageSize.A4, 25.0F, 25.0f, 10.0F, 10.0F);
+            Document document = new Document(PageSize.A4, 30.0F, 30.0f, 20.0F, 20.0F);
             PdfWriter writer = PdfWriter.getInstance(document, file);
             document.open();
 
@@ -120,6 +119,47 @@ public class Druckservice {
     }
 
     /**
+     * Diese Methode erstellt die PDF "Rezept.pdf"
+     * 
+     * @param rezept       Rezept, dass gedruckt werden soll
+     * @param rezept_Zutat Rezeptzutaten, die gedruckt werden sollen
+     * @param portionen    Anzahl der Portionen
+     */
+    public byte[] createRezeptByteArray(Rezept rezept, List<Rezept_Zutat> rezept_Zutat, int portionen) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try {
+
+            Document document = new Document(PageSize.A4, 30.0F, 30.0f, 20.0F, 20.0F);
+            PdfWriter writer = PdfWriter.getInstance(document, byteArrayOutputStream);
+            document.open();
+
+            PdfPTable mainTable = createMainTable();
+
+            PdfPCell titleTable = createTitle(rezept);
+
+            mainTable.addCell(titleTable);
+
+            PdfPCell cellZubereitung = getZubereitung(rezept);
+            mainTable.addCell(cellZubereitung);
+
+            PdfPCell imageCell = getImage(rezept);
+            mainTable.addCell(imageCell);
+
+            PdfPCell tableCell = addRezeptZuatenToTable(rezept, rezept_Zutat, portionen);
+            mainTable.addCell(tableCell);
+            document.add(mainTable);
+
+            document.close();
+            writer.close();
+            return byteArrayOutputStream.toByteArray();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    /**
      * Diese Methode generiert die PDF "Rezeptliste.pdf" anhand einer Menge von
      * Rezepten
      * 
@@ -129,9 +169,12 @@ public class Druckservice {
         FileOutputStream file = null;
         try {
             file = new FileOutputStream(REZEPTLISTE_PDF);
-            Document document = new Document(PageSize.A4, 50.0F, 50.0f, 30.0F, 30.0F);
+            Document document = new Document(PageSize.A4, 30.0F, 30.0f, 20.0F, 20.0F);
             PdfWriter writer = PdfWriter.getInstance(document, file);
             document.open();
+            if (rezeptListe.size() == 0) {
+                document.add(new Paragraph("Es sind keine Rezept verhanden"));
+            }
 
             for (int i = 0; i < rezeptListe.size(); i++) {
 
@@ -161,6 +204,48 @@ public class Druckservice {
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public byte[] createRezeptByte(List<Rezept> rezeptListe) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        Document document = new Document(PageSize.A4, 30.0F, 30.0f, 20.0F, 20.0F);
+        try {
+
+            PdfWriter writer = PdfWriter.getInstance(document, byteArrayOutputStream);
+            document.open();
+            if (rezeptListe.size() == 0) {
+                document.add(new Paragraph("Es sind keine Rezept verhanden"));
+            }
+
+            for (int i = 0; i < rezeptListe.size(); i++) {
+
+                Rezept rezept = rezeptListe.get(i);
+                PdfPTable mainTable = createMainTable();
+
+                PdfPCell titleTable = createTitle(rezept);
+
+                mainTable.addCell(titleTable);
+
+                PdfPCell cellZubereitung = getZubereitung(rezept);
+                mainTable.addCell(cellZubereitung);
+
+                PdfPCell imageCell = getImage(rezept);
+                mainTable.addCell(imageCell);
+
+                PdfPCell tableCell = getRezeptZutaten(rezept);
+                mainTable.addCell(tableCell);
+                document.add(mainTable);
+
+                if (i + 1 != rezeptListe.size()) {
+                    document.newPage();
+                }
+            }
+            document.close();
+            writer.close();
+            return byteArrayOutputStream.toByteArray();
+        } catch (Exception e) {
+            return null;
         }
     }
 
@@ -214,12 +299,18 @@ public class Druckservice {
     private void addRezeptZuatenToTable(Rezept rezept, PdfPTable table) {
         Set<Rezept_Zutat> rezept_Zutat = rezept.getZutatenFromRezept_Zutaten();
         for (Rezept_Zutat rezept_Zutat2 : rezept_Zutat) {
-            PdfPCell cell1 = new PdfPCell(new Paragraph(String.valueOf(rezept_Zutat2.getMengeString()),
+            PdfPCell cell1 = new PdfPCell(new Paragraph((rezept_Zutat2.getMengeString()),
                     FONT_TABLE_REZEPTZUTATEN));
+            cell1.setBorder(0);
+            cell1.setBorderWidthTop(0.3f);
             PdfPCell cell2 = new PdfPCell(new Paragraph(String.valueOf(rezept_Zutat2.getEinheitFromZutat()),
                     FONT_TABLE_REZEPTZUTATEN));
+            cell2.setBorder(0);
+            cell2.setBorderWidthTop(0.3f);
             PdfPCell cell3 = new PdfPCell(new Paragraph(String.valueOf(rezept_Zutat2.getZutat()),
                     FONT_TABLE_REZEPTZUTATEN));
+            cell3.setBorder(0);
+            cell3.setBorderWidthTop(0.3f);
             table.addCell(cell1);
             table.addCell(cell2);
             table.addCell(cell3);
@@ -283,10 +374,16 @@ public class Druckservice {
         for (Rezept_Zutat rezept_Zutat2 : rezept_Zutat) {
             PdfPCell cell1 = new PdfPCell(new Paragraph(String.valueOf(rezept_Zutat2.getMengeString()),
                     FONT_TABLE_REZEPTZUTATEN));
+            cell1.setBorder(0);
+            cell1.setBorderWidthTop(0.3f);
             PdfPCell cell2 = new PdfPCell(new Paragraph(String.valueOf(rezept_Zutat2.getEinheitFromZutat()),
                     FONT_TABLE_REZEPTZUTATEN));
+            cell2.setBorder(0);
+            cell2.setBorderWidthTop(0.3f);
             PdfPCell cell3 = new PdfPCell(new Paragraph(String.valueOf(rezept_Zutat2.getZutat()),
                     FONT_TABLE_REZEPTZUTATEN));
+            cell3.setBorder(0);
+            cell3.setBorderWidthTop(0.3f);
             table.addCell(cell1);
             table.addCell(cell2);
             table.addCell(cell3);
@@ -340,7 +437,7 @@ public class Druckservice {
                 FONT_PORTIONEN));
         captionTable.setColspan(3);
         captionTable.setBorder(0);
-        captionTable.setPaddingLeft(0f);
+        captionTable.setHorizontalAlignment(Element.ALIGN_CENTER);
         return captionTable;
     }
 
@@ -368,22 +465,19 @@ public class Druckservice {
      * @throws IOException
      */
     private PdfPCell getImage(Rezept rezept) throws BadElementException, MalformedURLException, IOException {
-        System.out.println(rezept.getBild().getSrc());
-        String src = rezept.getBild().getSrc();
-        Image test;
-        if (src.contains("image-placeholder.png")) {
-            test = Image.getInstance(System.getProperty("user.dir") + "/src/main/resources/META-INF/resources/"
-                    + rezept.getBild().getSrc());
-        } else {
-            test = Image.getInstance(rezept.getBild().getSrc());
+        Image bild;
+        try {
+            bild = Image.getInstance(rezept.getBild());
+        } catch (Exception e) {
+            bild = Image.getInstance(
+                    System.getProperty("user.dir")
+                            + "/src/main/resources/META-INF/resources/images/image-placeholder.png");
         }
-        // Image test = Image.getInstance("src/main/resources/META-INF/resources/" +
-        // rezept.getBild().getSrc());
-
-        test.scaleToFit(150f, 150f);
-        PdfPCell imageCell = new PdfPCell(test);
+        bild.scaleToFit(200f, 300f);
+        PdfPCell imageCell = new PdfPCell(bild);
         imageCell.setBorder(0);
         imageCell.setPaddingTop(5f);
+        imageCell.setPaddingBottom(10f);
         imageCell.setHorizontalAlignment(Element.ALIGN_CENTER);
         return imageCell;
     }
@@ -401,7 +495,8 @@ public class Druckservice {
         cellZubereitung.setBorderWidth(0);
 
         cellZubereitung.setRowspan(2);
-        cellZubereitung.setPaddingRight(5f);
+        cellZubereitung.setPaddingRight(10f);
+        cellZubereitung.setSpaceCharRatio(20f);
         return cellZubereitung;
     }
 
@@ -420,6 +515,7 @@ public class Druckservice {
         titleTable.setHorizontalAlignment(Element.ALIGN_CENTER);
         titleTable.setBorder(0);
         titleTable.setColspan(2);
+        titleTable.setPaddingBottom(15f);
         return titleTable;
     }
 

@@ -25,12 +25,15 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Die Klasse erzeugt die View für das Hinzufügen eines Rezeptes. Ein Rezept kann mit einer Kategorie,
- * einem Titel, der Portionenanzahl, mindestens einer Zutat und einer Zubereitungsbeschreibung angelegt werden.
+ * Die Klasse erzeugt die View für das Hinzufügen eines Rezeptes. Ein Rezept
+ * kann mit einer Kategorie,
+ * einem Titel, der Portionenanzahl, mindestens einer Zutat und einer
+ * Zubereitungsbeschreibung angelegt werden.
  *
  * @author Lennart Rummel & Leo Herubel
  */
@@ -47,12 +50,13 @@ public class RezeptCreateView extends ViewFrame {
     private TextField title;
     private Select<Kategorie> kategorie;
     private IntegerField portionenInput;
-    private Image image ;
+    private Image image;
     private TextArea zubereitung;
     private Button upload = new Button("Bild hochladen ...");
     private VerticalLayout vLayout;
     private VerticalLayout content;
-    private UploadBild bild;
+    private byte[] byteArray;
+    private byte[] initialByteArray;
 
     private final RezeptService rezeptService;
     private final RezeptZutatenService rezeptZutatenService;
@@ -61,8 +65,10 @@ public class RezeptCreateView extends ViewFrame {
     private final EinheitService einheitService;
 
     /**
-     * Der Konstruktor bekommt die benötigten Serviceklassen übergeben und weist diese den Instanzvariablen zu.
-     * Darauffolgend werden die Methoden aufgerufen, also die Buttons konfiguriert und die View erzeugt.
+     * Der Konstruktor bekommt die benötigten Serviceklassen übergeben und weist
+     * diese den Instanzvariablen zu.
+     * Darauffolgend werden die Methoden aufgerufen, also die Buttons konfiguriert
+     * und die View erzeugt.
      *
      * @param rezeptService
      * @param rezeptZutatenService
@@ -77,16 +83,16 @@ public class RezeptCreateView extends ViewFrame {
         this.zutatService = zutatService;
         this.kategorieService = kategorieService;
         this.einheitService = einheitService;
-        
-        
+
         configureButtons();
         createViewLayout();
         bildUploader();
-        
+
     }
 
     /**
-     * Die Klasse createViewLayout erzeugt die View der Rezeptansicht. Die einzelnen Elemente werden hier
+     * Die Klasse createViewLayout erzeugt die View der Rezeptansicht. Die einzelnen
+     * Elemente werden hier
      * konfiguriert und dem entsprechenden Layout zugeordnet.
      */
     private void createViewLayout() {
@@ -108,7 +114,6 @@ public class RezeptCreateView extends ViewFrame {
         vLayout.setWidth("100%");
         vLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 
-        
         HorizontalLayout portionenLayout = new HorizontalLayout(portionen, portionenInput, portionen2);
         portionenLayout.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
         zutatenContainer.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
@@ -130,7 +135,14 @@ public class RezeptCreateView extends ViewFrame {
         image.setWidth("100%");
         image.setHeight("100%");
         image.addClassName("image");
-//        
+        try {
+            initialByteArray = RezeptService
+                    .getBytesFromFile("src/main/resources/META-INF/resources/images/image-placeholder.png");
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        //
 
         HorizontalLayout btnLayout = new HorizontalLayout(neueZeileButton, neueZutatButton);
 
@@ -138,7 +150,6 @@ public class RezeptCreateView extends ViewFrame {
         // lul
         content = new VerticalLayout(this.image, vLayout, zutatenContainer, btnLayout, zubereitung);
         content.setPadding(true);
-        
 
         setViewContent(content);
 
@@ -155,10 +166,17 @@ public class RezeptCreateView extends ViewFrame {
 
     }
 
+    public void setBytes(byte[] bytes) {
+        this.byteArray = bytes;
+    }
+
     /**
-     * Die Methode addZutatZeile fügt eine neue Zeile zum Hinzufügen von Zutaten mit Menge und Einheit hinzu.
-     * Das Erzeugen der einzelnen Vaadin Komponenten ist in der Klasse AddZutatRow ausgelagert.
-     * Daher werden Objekte der Klasse AddZutatRow erzeugt und dem Layout hinzugefügt.
+     * Die Methode addZutatZeile fügt eine neue Zeile zum Hinzufügen von Zutaten mit
+     * Menge und Einheit hinzu.
+     * Das Erzeugen der einzelnen Vaadin Komponenten ist in der Klasse AddZutatRow
+     * ausgelagert.
+     * Daher werden Objekte der Klasse AddZutatRow erzeugt und dem Layout
+     * hinzugefügt.
      *
      * @see AddZutatRow
      */
@@ -173,7 +191,8 @@ public class RezeptCreateView extends ViewFrame {
 
     /**
      * Die Methode createDeleteRowButton erzeugt einen Button,
-     * mit dem die einzelnen AddZutatRow Elemente aus dem Layout entfernt werden können.
+     * mit dem die einzelnen AddZutatRow Elemente aus dem Layout entfernt werden
+     * können.
      * Dazu mehr in der Methode deleteZutatRow.
      *
      * @return Der erzeugte Löschen-Button wird zurückgegeben.
@@ -189,9 +208,11 @@ public class RezeptCreateView extends ViewFrame {
     }
 
     /**
-     *  Die Methode ermöglicht das Löschen der Zutat Zeile, die mithilfe der Klasse AddZutatRow erzeugt wird.
-     *  Dazu muss das darüberstehende Layout gelöscht werden (Parent), da der Löschen-Button der Zeile ebenfalls in
-     *  dem Layout enthalten ist und auch gelöscht werden soll.
+     * Die Methode ermöglicht das Löschen der Zutat Zeile, die mithilfe der Klasse
+     * AddZutatRow erzeugt wird.
+     * Dazu muss das darüberstehende Layout gelöscht werden (Parent), da der
+     * Löschen-Button der Zeile ebenfalls in
+     * dem Layout enthalten ist und auch gelöscht werden soll.
      *
      * @param delRowButton
      */
@@ -218,7 +239,8 @@ public class RezeptCreateView extends ViewFrame {
     }
 
     /**
-     * Die Buttons "Neue Zeile", "Neue Zutat" und "Soeichern" werden mit dem Clicklistener konfiguriert.
+     * Die Buttons "Neue Zeile", "Neue Zutat" und "Soeichern" werden mit dem
+     * Clicklistener konfiguriert.
      */
     public void configureButtons() {
         neueZeileButton.addClickListener(e -> {
@@ -235,8 +257,10 @@ public class RezeptCreateView extends ViewFrame {
 
     /**
      * In dieser Methode wird das Rezept gespeichert.
-     * Dazu werden das Bild, der Titel, die Zubereitung, die Portionenanzahl und die Kategorie.
-     * Die Objekte der Klasse AddZutatRow, die in der Liste zutatenRows zwischengespeichert sind, werden iteriert
+     * Dazu werden das Bild, der Titel, die Zubereitung, die Portionenanzahl und die
+     * Kategorie.
+     * Die Objekte der Klasse AddZutatRow, die in der Liste zutatenRows
+     * zwischengespeichert sind, werden iteriert
      * und anschließend ebenfalls dem Rezept zugeordnet.
      * Sollte das Rezept bereits existieren wird abgebrochen.
      *
@@ -244,7 +268,11 @@ public class RezeptCreateView extends ViewFrame {
     public void rezeptSpeichern() {
         if (isValuesValid()) {
             try {
-                Rezept rezept = rezeptService.createRezept(new Image (image.getSrc(),image.getAlt().toString()), title.getValue(), zubereitung.getValue(),
+                if (byteArray == null) {
+                    byteArray = initialByteArray;
+                }
+                Rezept rezept = rezeptService.createRezept(byteArray, title.getValue(),
+                        zubereitung.getValue(),
                         portionenInput.getValue(), kategorie.getValue());
                 if (rezept == null) {
                     Notification.show("Rezept '" + title.getValue() + "' gibt es schon")
@@ -252,7 +280,8 @@ public class RezeptCreateView extends ViewFrame {
                     return;
                 }
                 for (AddZutatRow row : zutatenRows) {
-                    rezeptZutatenService.createRezeptZutatenAndAddToSet(rezept, row.getZutat(), row.getMenge());
+                    rezeptZutatenService.createRezeptZutatenAndAddToSet(rezept, row.getZutat(),
+                            row.getMenge());
                 }
                 Notification.show("Rezept '" + title.getValue() + "' gespeichert")
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
@@ -267,12 +296,15 @@ public class RezeptCreateView extends ViewFrame {
 
     /**
      * Die Methode prüft, ob die Werte gespeichert werden können.
-     * Die Kategorie, der Titel, die Portionenanzahl und die Zubereitung dürfen nicht leer sein.
-     * Des Weiteren müssen die Werte der ZutatRows geprüft werden, damit diese nicht leer sind
+     * Die Kategorie, der Titel, die Portionenanzahl und die Zubereitung dürfen
+     * nicht leer sein.
+     * Des Weiteren müssen die Werte der ZutatRows geprüft werden, damit diese nicht
+     * leer sind
      * und nicht mehrfach auftreten.
      *
-     * @return Es wird der Wahrheitswert zurückgegeben, wenn die Daten nicht so vorliegen,
-     * dass diese gespeichert werden können.
+     * @return Es wird der Wahrheitswert zurückgegeben, wenn die Daten nicht so
+     *         vorliegen,
+     *         dass diese gespeichert werden können.
      */
     // TODO: Individuelle Fehlermeldungen
     private boolean isValuesValid() {
@@ -287,14 +319,15 @@ public class RezeptCreateView extends ViewFrame {
     /**
      * Es wird geprüft, ob die Eingaben in der Zutatenzeile valide sind.
      *
-     * @return Es wird der Wahrheitswert zurückgegeben, ob die Eingaben in der ZutatZeile valide sind.
+     * @return Es wird der Wahrheitswert zurückgegeben, ob die Eingaben in der
+     *         ZutatZeile valide sind.
      */
     private boolean isZutatRowsValid() {
         for (AddZutatRow row : zutatenRows) {
             if (!row.isFilled()) {
                 return false;
             }
-            if(row.getMenge() < 0){
+            if (row.getMenge() < 0) {
                 return false;
             }
         }
@@ -302,10 +335,12 @@ public class RezeptCreateView extends ViewFrame {
     }
 
     /**
-     * Diese Methode ist für das Löschen der Zutatzeilen relevant, da hier geprüft wird,
+     * Diese Methode ist für das Löschen der Zutatzeilen relevant, da hier geprüft
+     * wird,
      * ob es sich nicht um die letzte Zeile handelt.
      *
-     * @return Es wird der Wahrheitswert zurückgegeben, ob es sich nicht um die letzte Zeile handelt.
+     * @return Es wird der Wahrheitswert zurückgegeben, ob es sich nicht um die
+     *         letzte Zeile handelt.
      */
     private boolean isNotLastRow() {
         if (zutatenRows.size() > 1) {
@@ -318,9 +353,11 @@ public class RezeptCreateView extends ViewFrame {
     }
 
     /**
-     *  Die Methode prüft, ob das Limit der Zutaten für ein Rezept bereits erreicht ist.
+     * Die Methode prüft, ob das Limit der Zutaten für ein Rezept bereits erreicht
+     * ist.
      *
-     * @return Gibt den Wahrheitswert zurück, ob die maximale Anzahl an Zutaten für ein Rezept bereits vorliegt.
+     * @return Gibt den Wahrheitswert zurück, ob die maximale Anzahl an Zutaten für
+     *         ein Rezept bereits vorliegt.
      */
 
     private boolean isNotMaxRow() {
@@ -342,7 +379,7 @@ public class RezeptCreateView extends ViewFrame {
     private boolean checkDuplicateZutaten() {
         List<String> zutatNameList = new LinkedList<>();
         for (AddZutatRow row : zutatenRows) {
-            if(row.isFilled()){
+            if (row.isFilled()) {
                 zutatNameList.add(row.getZutat().getName());
             }
         }
@@ -351,7 +388,8 @@ public class RezeptCreateView extends ViewFrame {
     }
 
     /**
-     * Alle Listen und Felder werden geleert und anschließend eine neue ZutatenZeile hinzugefügt.
+     * Alle Listen und Felder werden geleert und anschließend eine neue ZutatenZeile
+     * hinzugefügt.
      */
     private void clearAll() {
         kategorie.clear();
@@ -365,61 +403,60 @@ public class RezeptCreateView extends ViewFrame {
     }
 
     /**
-     * Die Methode erzeugt einen String und gibt diesen zurück. Der String enthält welche Eingabefelder vom
+     * Die Methode erzeugt einen String und gibt diesen zurück. Der String enthält
+     * welche Eingabefelder vom
      * Anwender geprüft werden sollen.
      *
-     * @return Es wird ein String zurückgegeben, der enthält welche Eingabefelder gepüft werden müssen.
+     * @return Es wird ein String zurückgegeben, der enthält welche Eingabefelder
+     *         gepüft werden müssen.
      */
 
-    private String getErrorString(){
+    private String getErrorString() {
         String error = "Bitte prüfe: ";
 
-        if(kategorie.isEmpty()){
+        if (kategorie.isEmpty()) {
             error += " [Kategorie]";
         }
-        if(!titleValid()){
+        if (!titleValid()) {
             error += " [Titel]";
         }
-        if(portionenInput.isEmpty()){
+        if (portionenInput.isEmpty()) {
             error += " [Portionen]";
         }
-        if(zubereitung.isEmpty()){
+        if (zubereitung.isEmpty()) {
             error += " [Zubereitung]";
         }
 
-        if(!isZutatRowsValid()){
+        if (!isZutatRowsValid()) {
             error += " [Zutaten-Zeile nicht valide]";
         }
 
-        if(checkDuplicateZutaten()){
+        if (checkDuplicateZutaten()) {
             error += " [Zutaten Duplikate vorhanden]";
         }
 
         return error;
     }
-    
+
     /**
      * @author Anna Karle
      */
-    
+
     private void bildUploader() {
-    	
-        bild = new UploadBild(upload, image);
-    	vLayout.add(bild);
-    	if(bild.getImage() != null) {
-    		content.replace(image, bild.getImage());
-        	this.image = bild.getImage();
-    	}
-    	
-    	
+
+        UploadBild bild = new UploadBild(this, upload, image, initialByteArray);
+        vLayout.add(bild);
+
     }
 
     /**
-     * Die Methode prüft, ob der Titel valide ist. Der Titel darf nicht leer und auch nicht nur Leerzeichen enthalten.
+     * Die Methode prüft, ob der Titel valide ist. Der Titel darf nicht leer und
+     * auch nicht nur Leerzeichen enthalten.
+     * 
      * @return Der Wahrheitswert, ob der Titel valide ist.
      */
-    public boolean titleValid(){
-        if(title.isEmpty() || title.getValue().trim().length() == 0){
+    public boolean titleValid() {
+        if (title.isEmpty() || title.getValue().trim().length() == 0) {
             return false;
         }
         return true;

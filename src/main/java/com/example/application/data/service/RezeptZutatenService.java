@@ -2,6 +2,8 @@ package com.example.application.data.service;
 
 import java.util.*;
 
+import javax.transaction.Transactional;
+
 import com.example.application.data.entity.Rezept;
 import com.example.application.data.entity.Rezept_Zutat;
 import com.example.application.data.entity.Zutat;
@@ -48,7 +50,7 @@ public class RezeptZutatenService {
      * @param zutat  Zutat
      * @param menge  Menge
      * @return Gibt die Meldung "success" bei Erfolg oder die Fehlermeldung der
-     * Exception zurück
+     *         Exception zurück
      */
     public String createRezeptZutaten(Rezept rezept, Zutat zutat, double menge) {
         try {
@@ -85,6 +87,7 @@ public class RezeptZutatenService {
      * @param rezept Rezept, nach dem gesucht wird
      * @return Liste mit allen Rezept_Zuatat Datensätzen
      */
+    @Transactional
     public List<Rezept_Zutat> findAllByRezept(Rezept rezept) {
         return rezeptZutatenRepository.findAllByRezept(rezept);
     }
@@ -96,6 +99,7 @@ public class RezeptZutatenService {
      * @param rezept Rezept, nach dem gesucht wird
      * @return Liste mit allen Zuaten
      */
+    @Transactional
     public List<Zutat> findAllZutatenByRezept(Rezept rezept) {
         List<Zutat> liste = new LinkedList<>();
         for (Rezept_Zutat zutat : rezeptZutatenRepository.findAllByRezept(rezept)) {
@@ -138,9 +142,11 @@ public class RezeptZutatenService {
      * Sucht anhand von mehreren gefilterten Zutaten Rezepte.
      *
      * @param zutatSet Set welches aus dem ZutatFilterDialog übergeben wird
-     * @return Gibt eine Liste von Rezepten zurück, welche im Frontend angezeigt werden können.
+     * @return Gibt eine Liste von Rezepten zurück, welche im Frontend angezeigt
+     *         werden können.
      * @author Léo Hérubel
      */
+    @Transactional
     public List<Rezept> findAllRezepteByZutaten(Set<Zutat> zutatSet) {
         List<Rezept> filteredRezeptByZutaten = new LinkedList<>();
         for (Zutat zutat : zutatSet) {

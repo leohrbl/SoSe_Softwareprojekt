@@ -36,7 +36,7 @@ public class UploadBild extends Div {
 		this.image = image;
 		MemoryBuffer buffer = new MemoryBuffer();
 		Upload upload = new Upload(buffer);
-		upload.setAcceptedFileTypes("image/jpeg", "image/png", "image/gif");
+		upload.setAcceptedFileTypes("image/jpeg", "image/gif");
 
 		this.uploadButton = uploadButton;
 		uploadButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -90,7 +90,7 @@ public class UploadBild extends Div {
 		image = rezeptBild;
 		MemoryBuffer buffer = new MemoryBuffer();
 		Upload upload = new Upload(buffer);
-		upload.setAcceptedFileTypes("image/jpeg", "image/png", "image/gif");
+		upload.setAcceptedFileTypes("image/jpeg", "image/gif");
 
 		this.uploadButton = uploadButton;
 		uploadButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);

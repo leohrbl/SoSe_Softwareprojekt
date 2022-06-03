@@ -2,6 +2,7 @@ package com.example.application.views.rezept.edit;
 
 import com.example.application.data.entity.*;
 import com.example.application.data.service.*;
+import com.example.application.views.components.DeleteDialog;
 import com.example.application.views.components.MainLayout;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import com.example.application.views.components.ViewFrame;
 import com.example.application.views.upload.UploadBild;
 import com.example.application.views.components.AddZutatDialog;
+import com.example.application.views.components.DeleteDialog;
 
 /**
  * @author Joscha Cerny
@@ -596,12 +598,21 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
     }
 
     /**
-     * Methode löschen eines Rezepts
+     * Methode zum Löschen eines Rezepts, öffnet den Delete Dialog von
+     * @Lennard Rummel und löscht das rezept nach bestätigen
+     * Kann abgebrochen werden, falls nicht wird Notification gezeigt und
+     * zur RezeptCard zurückgekehrt
      */
     public void deleteRezept(Rezept rezept) {
-        rezeptService.delete(rezept.getId());
-        returnToRezeptAnsicht();
-        Notification.show("Rezept wurde gelöscht").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        DeleteDialog newDeletedialog = new DeleteDialog("Rezept: ",rezept.getTitel(),"Wirklich löschen?");
+        newDeletedialog.open();
+        newDeletedialog.getCancelButton().addClickListener( e -> {newDeletedialog.close();});
+        newDeletedialog.getDeleteButton().addClickListener( e -> {
+            rezeptService.delete(rezept.getId());
+            returnToRezeptAnsicht();
+            Notification.show("Rezept wurde gelöscht").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            newDeletedialog.close();
+        });
     }
 
     /**

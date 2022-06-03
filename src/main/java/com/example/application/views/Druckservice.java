@@ -303,6 +303,7 @@ public class Druckservice {
                     FONT_TABLE_REZEPTZUTATEN));
             cell1.setBorder(0);
             cell1.setBorderWidthTop(0.3f);
+            cell1.setHorizontalAlignment(Element.ALIGN_RIGHT);
             PdfPCell cell2 = new PdfPCell(new Paragraph(String.valueOf(rezept_Zutat2.getEinheitFromZutat()),
                     FONT_TABLE_REZEPTZUTATEN));
             cell2.setBorder(0);
@@ -376,6 +377,7 @@ public class Druckservice {
                     FONT_TABLE_REZEPTZUTATEN));
             cell1.setBorder(0);
             cell1.setBorderWidthTop(0.3f);
+            cell1.setHorizontalAlignment(Element.ALIGN_RIGHT);
             PdfPCell cell2 = new PdfPCell(new Paragraph(String.valueOf(rezept_Zutat2.getEinheitFromZutat()),
                     FONT_TABLE_REZEPTZUTATEN));
             cell2.setBorder(0);

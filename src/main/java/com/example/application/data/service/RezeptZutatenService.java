@@ -115,6 +115,7 @@ public class RezeptZutatenService {
      * @param zutat Zutat nach der gesucht wird
      * @return Liste mit Rezepten
      */
+    @Transactional
     public List<Rezept> findAllRezepteByZutat(Zutat zutat) {
         List<Rezept> liste = new LinkedList<>();
         for (Rezept_Zutat rezept : rezeptZutatenRepository.findAllByZutat(zutat)) {

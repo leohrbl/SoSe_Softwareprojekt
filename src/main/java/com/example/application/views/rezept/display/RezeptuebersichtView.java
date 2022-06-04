@@ -25,7 +25,6 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.InputStreamFactory;
 import com.vaadin.flow.server.StreamRegistration;
 import com.vaadin.flow.server.StreamResource;
-import org.aspectj.weaver.ast.Not;
 
 import com.vaadin.flow.server.VaadinSession;
 
@@ -54,7 +53,7 @@ import java.util.Set;
 public class RezeptuebersichtView extends VerticalLayout {
 
     private List<Rezept> displayedItems;
-    private List<Rezept> filteredItemsByZutat;
+    private List<Rezept> filteredItemsByZutaten;
     private FlexLayout cardLayout;
     private final RezeptService rezeptService;
     private final RezeptZutatenService rezeptZutatenService;
@@ -81,7 +80,7 @@ public class RezeptuebersichtView extends VerticalLayout {
         this.displayedItems = rezeptService.getAllRezepte();
         Collections.sort(displayedItems);
         this.cardLayout = loadCards();
-        this.filteredItemsByZutat = new LinkedList<>();
+        this.filteredItemsByZutaten = new LinkedList<>();
         this.zutatFilterDialog = new ZutatFilterDialog(zutatService);
         this.isFilterActive = false;
         this.searchField = new TextField();
@@ -264,11 +263,11 @@ public class RezeptuebersichtView extends VerticalLayout {
      */
     private void handleZutatFilter(Set<Zutat> filteredZutaten) {
         if (isSearching()) {
-            filteredItemsByZutat = rezeptZutatenService.findAllRezepteByZutaten(filteredZutaten);
+            filteredItemsByZutaten = rezeptZutatenService.findAllRezepteByZutaten(filteredZutaten);
             handleSearch();
         } else {
-            filteredItemsByZutat = rezeptZutatenService.findAllRezepteByZutaten(filteredZutaten);
-            displayedItems = filteredItemsByZutat;
+            filteredItemsByZutaten = rezeptZutatenService.findAllRezepteByZutaten(filteredZutaten);
+            displayedItems = filteredItemsByZutaten;
         }
         Collections.sort(displayedItems);
         updateCardLayout();
@@ -292,14 +291,14 @@ public class RezeptuebersichtView extends VerticalLayout {
     private void handleSearch() {
         String value = searchField.getValue();
 
-        if (value.isEmpty() && !isFilterActive) {
+        if (!isSearching() && !isFilterActive) {
             displayedItems = rezeptService.getAllRezepte();
-        } else if (value.isEmpty() && isFilterActive) {
-            displayedItems = filteredItemsByZutat;
-        } else if (isFilterActive && !value.isEmpty()) {
-            displayedItems = rezeptService.getRezeptByFilterAndSearchText(value, filteredItemsByZutat);
+        } else if (!isSearching() && isFilterActive) {
+            displayedItems = filteredItemsByZutaten;
+        } else if (isFilterActive && isSearching()) {
+            displayedItems = rezeptService.getRezepteByFilterAndSearchText(value, filteredItemsByZutaten);
         } else {
-            displayedItems = rezeptService.searchRezeptByFilterText(value);
+            displayedItems = rezeptService.searchRezepteByFilterText(value);
         }
         Collections.sort(displayedItems);
         updateCardLayout();

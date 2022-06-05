@@ -5,7 +5,7 @@ import com.example.application.data.entity.Zutat;
 import com.example.application.data.service.RezeptService;
 import com.example.application.data.service.RezeptZutatenService;
 import com.example.application.data.service.ZutatService;
-import com.example.application.views.Druckservice;
+import com.example.application.views.DruckserviceRezept;
 import com.example.application.views.components.MainLayout;
 import com.example.application.views.components.RezeptCard;
 import com.example.application.views.components.ZutatFilterDialog;
@@ -46,7 +46,7 @@ import java.util.Set;
  * @see RezeptView
  * @see RezeptService
  * @see ZutatFilterDialog
- * @see Druckservice
+ * @see DruckserviceRezept
  */
 @PageTitle("Rezeptbuch")
 @Route(value = "", layout = MainLayout.class)
@@ -62,7 +62,7 @@ public class RezeptuebersichtView extends VerticalLayout {
     private final ZutatFilterDialog zutatFilterDialog;
     private final VerticalLayout mainLayout;
     private boolean isFilterActive;
-    private final Druckservice druckservice = Druckservice.getInstance();
+    private final DruckserviceRezept druckservice = DruckserviceRezept.getInstance();
 
     /**
      * Der Konstruktor initialisiert die unterschiedlichen Services. Zudem werden
@@ -192,25 +192,39 @@ public class RezeptuebersichtView extends VerticalLayout {
         printDisplayedRezepteBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         printDisplayedRezepteBtn.addClickListener(e -> {
-            if (displayedItems.isEmpty())
+            if (displayedItems.isEmpty()) {
+                Notification.show("Keine Rezepte zum Drucken verfügbar!")
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 return;
-            byte[] byteArray = druckservice.createRezeptByte(this.displayedItems);
+            }
+            StreamResource resource = generatePDF();
 
-            StreamResource resource = new StreamResource("Rezeptliste", new InputStreamFactory() {
-                @Override
-                public InputStream createInputStream() {
-
-                    return new ByteArrayInputStream(byteArray);
-
-                }
-            });
-            resource.setContentType("application/pdf");
+            if (resource == null) {
+                Notification.show("PDF konnte nicht erstellt werden!")
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                return;
+            }
             final StreamRegistration registration = VaadinSession.getCurrent().getResourceRegistry()
                     .registerResource(resource);
 
             UI.getCurrent().getPage().open(registration.getResourceUri().toString(), "Rezeptliste drucken");
         });
         return printDisplayedRezepteBtn;
+    }
+
+    private StreamResource generatePDF() {
+        byte[] byteArray = druckservice.createRezeptByte(this.displayedItems);
+
+        StreamResource resource = new StreamResource("Rezeptliste", new InputStreamFactory() {
+            @Override
+            public InputStream createInputStream() {
+
+                return new ByteArrayInputStream(byteArray);
+
+            }
+        });
+        resource.setContentType("application/pdf");
+        return resource;
     }
 
     /**
@@ -310,18 +324,6 @@ public class RezeptuebersichtView extends VerticalLayout {
      */
     private void editKategorien() {
         UI.getCurrent().navigate("/einstellungen");
-    }
-
-    /**
-     * Methode zum Drucken der aktuell angezeigten Rezepte.
-     */
-    private void printErgebnisliste() {
-        if (displayedItems.isEmpty()) {
-            Notification.show("Keine Rezepte zum Drucken verfügbar!").addThemeVariants(NotificationVariant.LUMO_ERROR);
-            return;
-        }
-        druckservice.createRezept(displayedItems);
-
     }
 
     /**

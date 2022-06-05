@@ -11,7 +11,7 @@ import com.example.application.data.entity.Rezept_Zutat;
 import com.example.application.data.service.EinkaufslistenService;
 import com.example.application.data.service.RezeptService;
 import com.example.application.data.service.RezeptZutatenService;
-import com.example.application.views.Druckservice;
+import com.example.application.views.DruckserviceRezept;
 import com.example.application.views.components.MainLayout;
 import com.example.application.views.components.ViewFrame;
 import com.vaadin.flow.component.UI;
@@ -54,7 +54,7 @@ import com.vaadin.flow.server.VaadinSession;
  *
  * @author Léo Hérubel
  * @see EinkaufslistenService
- * @see Druckservice
+ * @see DruckserviceRezept
  * @see RezeptService
  * @see RezeptZutatenService
  */
@@ -70,7 +70,7 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
     private final EinkaufslistenService einkaufslistenService;
     private List<Rezept_Zutat> displayedItems;
     private final IntegerField portionenInput;
-    private final Druckservice druckservice;
+    private final DruckserviceRezept druckservice;
 
     /**
      * Der Konstruktor initialisiert die Instanzvariablen. Zudem wird das Grid
@@ -88,7 +88,7 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
         this.einkaufslistenService = einkaufslistenService;
         this.rezeptZutatenService = rezeptZutatenService;
         this.portionenInput = new IntegerField();
-        this.druckservice = Druckservice.getInstance();
+        this.druckservice = DruckserviceRezept.getInstance();
         configureGrid();
     }
 
@@ -309,18 +309,12 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
 
         printDisplayedRezepteBtn.addClickListener(e -> {
 
-            byte[] byteArray = druckservice.createRezeptByteArray(this.rezeptService.findById(rezeptId), displayedItems,
-                    portionenInput.getValue());
+            StreamResource resource = generateRezept();
+            if (resource == null) {
+                Notification.show("PDF konnte nicht erzeugt werden!").addThemeVariants(NotificationVariant.LUMO_ERROR);
+                return;
+            }
 
-            StreamResource resource = new StreamResource("Rezept.pdf", new InputStreamFactory() {
-                @Override
-                public InputStream createInputStream() {
-
-                    return new ByteArrayInputStream(byteArray);
-
-                }
-            });
-            resource.setContentType("application/pdf");
             final StreamRegistration registration = VaadinSession.getCurrent().getResourceRegistry()
                     .registerResource(resource);
             UI.getCurrent().getPage().open(registration.getResourceUri().toString(), "Rezept drucken");
@@ -358,14 +352,23 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
     }
 
     /**
-     * Methode zum Drucken des Rezeptes.
-     *
-     * @param rezept Rezept, welches aus dieser View an den Druckservice übergeben
-     *               wird
+     * Methode zum Erzeugen der PDF, diese wird als StreamResource zurückgegeben
+     * 
      */
-    private void printRezept(Rezept rezept) {
-        // Portion auch übergeben
-        druckservice.createRezept(rezept, displayedItems, portionenInput.getValue());
+    private StreamResource generateRezept() {
+        byte[] byteArray = druckservice.createRezeptByteArray(this.rezeptService.findById(rezeptId), displayedItems,
+                portionenInput.getValue());
+
+        StreamResource resource = new StreamResource("Rezept", new InputStreamFactory() {
+            @Override
+            public InputStream createInputStream() {
+
+                return new ByteArrayInputStream(byteArray);
+
+            }
+        });
+        resource.setContentType("application/pdf");
+        return resource;
     }
 
     /**

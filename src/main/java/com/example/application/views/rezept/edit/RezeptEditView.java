@@ -358,7 +358,7 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
      */
     public void save(Rezept rezept) {
         checkEintragZutat();
-        if (checkEintragMenge() == true && checkEintragZutat() == true) {
+        if (checkEintragMenge() == true && checkEintragZutat() == true && checkAnzahlRezeptZutaten() == true) {
             // speichern aller Rezept werte
             if (byteArray == null)
                 byteArray = initialByteArray;
@@ -393,6 +393,11 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
                 Notification.show("Bitte Zutaten auf Doppelung und Korrektheit Überprüfen")
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
+            if(checkAnzahlRezeptZutaten() == false){
+                Notification.show("Bitte nicht die Maximale RezeptZutatenMenge von 40 überschreiten")
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
+
         }
     }
 
@@ -542,6 +547,24 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
 
         }
         return allMengenChecked;
+    }
+
+    /**
+     * Die Methode überprüft ob die maximale anzahl an Rezeptzutaten eingehalten wird
+     * Falls ja gibt sie ein Entsprechenden Wert True zurück
+     */
+    public boolean checkAnzahlRezeptZutaten() {
+        List<String> newMengenlistForCheck = new ArrayList<String>();
+        for (int i = 0; i < identifierTextFieldCounter; i++) {
+            if (rezeptZutatMengeTextField[i] != null) {
+                newMengenlistForCheck.add(rezeptZutatMengeTextField[i].getValue());
+            }
+        }
+        if(newMengenlistForCheck.size() >= 40)
+        {
+            return false;
+        }
+        return true;
     }
 
     /**

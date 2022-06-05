@@ -55,7 +55,7 @@ public class UploadBild extends Div {
 
 		/**
 		 * SuccededListener
-		 * Das Bild wird eingelesen und als Buffered Image eingelesen, danach in ein als
+		 * Das Bild wird eingelesen und als Buffered Image eingelesen, danach als
 		 * *jpg* in einem Byte Array gespeichert und die Bytes der View werden neu
 		 * gesetzt. Des Weiteren wird das Bild in der View geupdatet
 		 */
@@ -135,7 +135,7 @@ public class UploadBild extends Div {
 		configureUpload(uploadButton, rezeptBild, upload);
 		/**
 		 * SuccededListener
-		 * Das Bild wird eingelesen und als Buffered Image eingelesen, danach in ein als
+		 * Das Bild wird eingelesen und als Buffered Image eingelesen, danach als
 		 * *jpg* in einem Byte Array gespeichert und die Bytes der View werden neu
 		 * gesetzt. Des Weiteren wird das Bild in der View geupdatet
 		 */

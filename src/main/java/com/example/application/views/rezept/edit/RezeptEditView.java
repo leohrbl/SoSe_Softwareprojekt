@@ -2,6 +2,7 @@ package com.example.application.views.rezept.edit;
 
 import com.example.application.data.entity.*;
 import com.example.application.data.service.*;
+import com.example.application.views.components.DeleteDialog;
 import com.example.application.views.components.MainLayout;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import com.example.application.views.components.ViewFrame;
 import com.example.application.views.upload.UploadBild;
 import com.example.application.views.components.AddZutatDialog;
+import com.example.application.views.components.DeleteDialog;
 
 /**
  * @author Joscha Cerny
@@ -356,7 +358,7 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
      */
     public void save(Rezept rezept) {
         checkEintragZutat();
-        if (checkEintragMenge() == true && checkEintragZutat() == true) {
+        if (checkEintragMenge() == true && checkEintragZutat() == true && checkAnzahlRezeptZutaten() == true) {
             // speichern aller Rezept werte
             if (byteArray == null)
                 byteArray = initialByteArray;
@@ -391,6 +393,11 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
                 Notification.show("Bitte Zutaten auf Doppelung und Korrektheit Überprüfen")
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
+            if(checkAnzahlRezeptZutaten() == false){
+                Notification.show("Bitte nicht die Maximale RezeptZutatenMenge von 40 überschreiten")
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
+
         }
     }
 
@@ -543,6 +550,24 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
     }
 
     /**
+     * Die Methode überprüft ob die maximale anzahl an Rezeptzutaten eingehalten wird
+     * Falls ja gibt sie ein Entsprechenden Wert True zurück
+     */
+    public boolean checkAnzahlRezeptZutaten() {
+        List<String> newMengenlistForCheck = new ArrayList<String>();
+        for (int i = 0; i < identifierTextFieldCounter; i++) {
+            if (rezeptZutatMengeTextField[i] != null) {
+                newMengenlistForCheck.add(rezeptZutatMengeTextField[i].getValue());
+            }
+        }
+        if(newMengenlistForCheck.size() >= 40)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Die Methode überprüft ob alle Zutaten felder auf einzigartigkeit
      * und auf die Ausfüllung
      * Falls ja gibt sie ein Entsprechenden Wert True zurück
@@ -596,12 +621,21 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
     }
 
     /**
-     * Methode löschen eines Rezepts
+     * Methode zum Löschen eines Rezepts, öffnet den Delete Dialog von
+     * @Lennard Rummel und löscht das rezept nach bestätigen
+     * Kann abgebrochen werden, falls nicht wird Notification gezeigt und
+     * zur RezeptCard zurückgekehrt
      */
     public void deleteRezept(Rezept rezept) {
-        rezeptService.delete(rezept.getId());
-        returnToRezeptAnsicht();
-        Notification.show("Rezept wurde gelöscht").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        DeleteDialog newDeletedialog = new DeleteDialog("Rezept: ",rezept.getTitel(),"Wirklich löschen?");
+        newDeletedialog.open();
+        newDeletedialog.getCancelButton().addClickListener( e -> {newDeletedialog.close();});
+        newDeletedialog.getDeleteButton().addClickListener( e -> {
+            rezeptService.delete(rezept.getId());
+            returnToRezeptAnsicht();
+            Notification.show("Rezept wurde gelöscht").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            newDeletedialog.close();
+        });
     }
 
     /**

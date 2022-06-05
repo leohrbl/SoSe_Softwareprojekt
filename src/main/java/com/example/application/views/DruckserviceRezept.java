@@ -1,13 +1,11 @@
 package com.example.application.views;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
-import javax.swing.event.TreeExpansionEvent;
 
 import com.example.application.data.entity.Rezept;
 import com.example.application.data.entity.Rezept_Zutat;
@@ -29,19 +27,26 @@ import com.itextpdf.text.pdf.PdfWriter;
  *         DruckService für Rezepte, dieser generiert eine PDF für ein einzeles
  *         Rezeptz oder eine Menge von Rezepten
  */
-public class Druckservice {
+public class DruckserviceRezept {
     /**
-     * Name der PDF, für die Generierung einer PDF von einer Menge an Rezepten
+     * Margin des Dokuments unten und oben
      */
-    private static final String REZEPTLISTE_PDF = "Rezeptliste.pdf";
+    private static final float MARGIN_BOTTOM_TOP = 20.0F;
     /**
-     * Name der PDF, für die Generierung einer PDF von einem Rezept
+     * Margin des Dokuments an den Seiten
+     * Falls das gedruckte Dokument gelocht werden soll, wird dies nicht den Text
+     * betreffen
      */
-    private static final String REZEPT_PDF = "Rezept.pdf";
+    private static final float MARGIN_SIDES = 50.0F;
+    /**
+     * Breite des Bildes, berechnet über die Breite des Dokuments 595 (A4), davon
+     * wird der Margin abgezogen und durch zwei geteilt
+     */
+    private static final float imageWidt = (595.0f - MARGIN_SIDES * 2) / 2;
     /**
      * Variale, die die Schriftart und Größe für die Tabelle Rezeptzutaten enthält
      */
-    private static final Font FONT_TABLE_REZEPTZUTATEN = FontFactory.getFont(FontFactory.COURIER, 10);
+    private static final Font FONT_TABLE_REZEPTZUTATEN = FontFactory.getFont(FontFactory.TIMES, 14);
     //
     // FontFactory.getFont(FontFactory.COURIER, 10);
     // FontFactory.getFont(FontFactory.HELVETICA, 10);
@@ -53,69 +58,30 @@ public class Druckservice {
     /**
      * Variale, die die Schriftart und Größe für die Zubereitung enthält
      */
-    private static final Font FONT_ZUBEREITUNG = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
+    private static final Font FONT_ZUBEREITUNG = FontFactory.getFont(FontFactory.TIMES, 16);
     /**
      * Variale, die die Schriftart und Größe für die Portionen enthält
      */
-    private static final Font FONT_PORTIONEN = FontFactory.getFont(FontFactory.COURIER, 14);
+    private static final Font FONT_PORTIONEN = FontFactory.getFont(FontFactory.TIMES, 16);
     /**
      * Variale, die die Schriftart und Größe für den Titel enthält
      */
-    private static final Font FONT_TITLE = FontFactory.getFont(FontFactory.COURIER, 16);
+    private static final Font FONT_TITLE = FontFactory.getFont(FontFactory.TIMES, 16);
 
     /**
      * Der Druckservice wurde nach dem Singleton-Pattern implmentiert
      */
-    static Druckservice druckservice;
+    static DruckserviceRezept druckservice;
 
-    private Druckservice() {
+    private DruckserviceRezept() {
 
     }
 
-    public static Druckservice getInstance() {
+    public static DruckserviceRezept getInstance() {
         if (druckservice == null) {
-            druckservice = new Druckservice();
+            druckservice = new DruckserviceRezept();
         }
         return druckservice;
-    }
-
-    /**
-     * Diese Methode erstellt die PDF "Rezept.pdf"
-     * 
-     * @param rezept       Rezept, dass gedruckt werden soll
-     * @param rezept_Zutat Rezeptzutaten, die gedruckt werden sollen
-     * @param portionen    Anzahl der Portionen
-     */
-    public void createRezept(Rezept rezept, List<Rezept_Zutat> rezept_Zutat, int portionen) {
-        FileOutputStream file = null;
-        try {
-            file = new FileOutputStream(REZEPT_PDF);
-            Document document = new Document(PageSize.A4, 30.0F, 30.0f, 20.0F, 20.0F);
-            PdfWriter writer = PdfWriter.getInstance(document, file);
-            document.open();
-
-            PdfPTable mainTable = createMainTable();
-
-            PdfPCell titleTable = createTitle(rezept);
-
-            mainTable.addCell(titleTable);
-
-            PdfPCell cellZubereitung = getZubereitung(rezept);
-            mainTable.addCell(cellZubereitung);
-
-            PdfPCell imageCell = getImage(rezept);
-            mainTable.addCell(imageCell);
-
-            PdfPCell tableCell = addRezeptZuatenToTable(rezept, rezept_Zutat, portionen);
-            mainTable.addCell(tableCell);
-            document.add(mainTable);
-
-            document.close();
-            writer.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -129,7 +95,8 @@ public class Druckservice {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try {
 
-            Document document = new Document(PageSize.A4, 30.0F, 30.0f, 20.0F, 20.0F);
+            Document document = new Document(PageSize.A4, MARGIN_SIDES, MARGIN_SIDES, MARGIN_BOTTOM_TOP,
+                    MARGIN_BOTTOM_TOP);
             PdfWriter writer = PdfWriter.getInstance(document, byteArrayOutputStream);
             document.open();
 
@@ -159,57 +126,9 @@ public class Druckservice {
 
     }
 
-    /**
-     * Diese Methode generiert die PDF "Rezeptliste.pdf" anhand einer Menge von
-     * Rezepten
-     * 
-     * @param rezeptListe Liste mit Rezepten, die gedruckt werden sollen
-     */
-    public void createRezept(List<Rezept> rezeptListe) {
-        FileOutputStream file = null;
-        try {
-            file = new FileOutputStream(REZEPTLISTE_PDF);
-            Document document = new Document(PageSize.A4, 30.0F, 30.0f, 20.0F, 20.0F);
-            PdfWriter writer = PdfWriter.getInstance(document, file);
-            document.open();
-            if (rezeptListe.size() == 0) {
-                document.add(new Paragraph("Es sind keine Rezept verhanden"));
-            }
-
-            for (int i = 0; i < rezeptListe.size(); i++) {
-
-                Rezept rezept = rezeptListe.get(i);
-                PdfPTable mainTable = createMainTable();
-
-                PdfPCell titleTable = createTitle(rezept);
-
-                mainTable.addCell(titleTable);
-
-                PdfPCell cellZubereitung = getZubereitung(rezept);
-                mainTable.addCell(cellZubereitung);
-
-                PdfPCell imageCell = getImage(rezept);
-                mainTable.addCell(imageCell);
-
-                PdfPCell tableCell = getRezeptZutaten(rezept);
-                mainTable.addCell(tableCell);
-                document.add(mainTable);
-
-                if (i + 1 != rezeptListe.size()) {
-                    document.newPage();
-                }
-            }
-            document.close();
-            writer.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public byte[] createRezeptByte(List<Rezept> rezeptListe) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        Document document = new Document(PageSize.A4, 30.0F, 30.0f, 20.0F, 20.0F);
+        Document document = new Document(PageSize.A4, MARGIN_SIDES, MARGIN_SIDES, MARGIN_BOTTOM_TOP, MARGIN_BOTTOM_TOP);
         try {
 
             PdfWriter writer = PdfWriter.getInstance(document, byteArrayOutputStream);
@@ -233,7 +152,7 @@ public class Druckservice {
                 PdfPCell imageCell = getImage(rezept);
                 mainTable.addCell(imageCell);
 
-                PdfPCell tableCell = getRezeptZutaten(rezept);
+                PdfPCell tableCell = getRezeptZutatenTable(rezept);
                 mainTable.addCell(tableCell);
                 document.add(mainTable);
 
@@ -269,20 +188,20 @@ public class Druckservice {
      * @return PdfPCell in der sich die Tabelle der Zutaten befinden
      * @throws DocumentException
      */
-    private PdfPCell getRezeptZutaten(Rezept rezept) throws DocumentException {
+    private PdfPCell getRezeptZutatenTable(Rezept rezept) throws DocumentException {
         PdfPTable table = createTableRezeptZutaten();
 
         PdfPCell captionTable = createCaptionTable(rezept.getPortionen());
         table.addCell(captionTable);
 
-        PdfPCell cellMenge = createCellMenge();
-        PdfPCell cellEinheit = createCellEinheit();
-        PdfPCell cellZutat = createCellZutat();
-        table.addCell(cellMenge);
-        table.addCell(cellEinheit);
-        table.addCell(cellZutat);
+        // PdfPCell cellMenge = createCellMenge();
+        // PdfPCell cellEinheit = createCellEinheit();
+        // PdfPCell cellZutat = createCellZutat();
+        // table.addCell(cellMenge);
+        // table.addCell(cellEinheit);
+        // table.addCell(cellZutat);
 
-        addRezeptZuatenToTable(rezept, table);
+        getRezeptZutatandAddToTable(rezept, table);
         cleanTable(table);
 
         PdfPCell tableCellTableRezeptZutat = new PdfPCell(table);
@@ -291,30 +210,25 @@ public class Druckservice {
     }
 
     /**
-     * Diese Methode fügt der Tabelle die Rezeptzuaten hinzu
+     * Diese Methode wandelt speichert die RezeptZutaten in einer Liste und übergibt
+     * diese der Methode "addRezeptZutat"
      * 
      * @param rezept Rezept, aus dem die Rezeptzutaten stammen
      * @param table  Tabelle, in den die Rezeptzutaten eingefügt werden sollen
      */
-    private void addRezeptZuatenToTable(Rezept rezept, PdfPTable table) {
-        Set<Rezept_Zutat> rezept_Zutat = rezept.getZutatenFromRezept_Zutaten();
-        for (Rezept_Zutat rezept_Zutat2 : rezept_Zutat) {
-            PdfPCell cell1 = new PdfPCell(new Paragraph((rezept_Zutat2.getMengeString()),
-                    FONT_TABLE_REZEPTZUTATEN));
-            cell1.setBorder(0);
-            cell1.setBorderWidthTop(0.3f);
-            PdfPCell cell2 = new PdfPCell(new Paragraph(String.valueOf(rezept_Zutat2.getEinheitFromZutat()),
-                    FONT_TABLE_REZEPTZUTATEN));
-            cell2.setBorder(0);
-            cell2.setBorderWidthTop(0.3f);
-            PdfPCell cell3 = new PdfPCell(new Paragraph(String.valueOf(rezept_Zutat2.getZutat()),
-                    FONT_TABLE_REZEPTZUTATEN));
-            cell3.setBorder(0);
-            cell3.setBorderWidthTop(0.3f);
-            table.addCell(cell1);
-            table.addCell(cell2);
-            table.addCell(cell3);
-        }
+    private void getRezeptZutatandAddToTable(Rezept rezept, PdfPTable table) {
+        Set<Rezept_Zutat> rezept_ZutatSet = rezept.getZutatenFromRezept_Zutaten();
+        List<Rezept_Zutat> rezept_zutatList = new LinkedList<>();
+        rezept_zutatList.addAll(rezept_ZutatSet);
+        addRezeptZutat(rezept_zutatList, table);
+    }
+
+    private PdfPCell stylingCell(PdfPCell cell) {
+        cell.setBorder(0);
+        cell.setBorderWidthTop(0.3f);
+        cell.setPaddingTop(5f);
+        cell.setPaddingBottom(5f);
+        return cell;
     }
 
     /**
@@ -332,12 +246,12 @@ public class Druckservice {
         PdfPCell captionTable = createCaptionTable(portionen);
         table.addCell(captionTable);
 
-        PdfPCell cellMenge = createCellMenge();
-        PdfPCell cellEinheit = createCellEinheit();
-        PdfPCell cellZutat = createCellZutat();
-        table.addCell(cellMenge);
-        table.addCell(cellEinheit);
-        table.addCell(cellZutat);
+        // PdfPCell cellMenge = createCellMenge();
+        // PdfPCell cellEinheit = createCellEinheit();
+        // PdfPCell cellZutat = createCellZutat();
+        // table.addCell(cellMenge);
+        // table.addCell(cellEinheit);
+        // table.addCell(cellZutat);
 
         addRezeptZutat(rezept_Zutat, table);
         cleanTable(table);
@@ -372,18 +286,20 @@ public class Druckservice {
      */
     private void addRezeptZutat(List<Rezept_Zutat> rezept_Zutat, PdfPTable table) {
         for (Rezept_Zutat rezept_Zutat2 : rezept_Zutat) {
-            PdfPCell cell1 = new PdfPCell(new Paragraph(String.valueOf(rezept_Zutat2.getMengeString()),
+
+            PdfPCell cell1 = new PdfPCell(new Paragraph(rezept_Zutat2.getMengeString(),
                     FONT_TABLE_REZEPTZUTATEN));
-            cell1.setBorder(0);
-            cell1.setBorderWidthTop(0.3f);
+            cell1 = stylingCell(cell1);
+            cell1.setHorizontalAlignment(Element.ALIGN_RIGHT);
+
             PdfPCell cell2 = new PdfPCell(new Paragraph(String.valueOf(rezept_Zutat2.getEinheitFromZutat()),
                     FONT_TABLE_REZEPTZUTATEN));
-            cell2.setBorder(0);
-            cell2.setBorderWidthTop(0.3f);
+            cell2 = stylingCell(cell2);
+
             PdfPCell cell3 = new PdfPCell(new Paragraph(String.valueOf(rezept_Zutat2.getZutat()),
                     FONT_TABLE_REZEPTZUTATEN));
-            cell3.setBorder(0);
-            cell3.setBorderWidthTop(0.3f);
+            cell3 = stylingCell(cell3);
+
             table.addCell(cell1);
             table.addCell(cell2);
             table.addCell(cell3);
@@ -422,6 +338,7 @@ public class Druckservice {
     private PdfPCell createCellMenge() {
         PdfPCell cellMenge = new PdfPCell(new Paragraph("Menge", FONT_TABLE_REZEPTZUTATEN));
         cellMenge.setBorder(0);
+        cellMenge.setHorizontalAlignment(Element.ALIGN_MIDDLE);
         return cellMenge;
     }
 
@@ -433,12 +350,18 @@ public class Druckservice {
      * @return PdfPCell
      */
     private PdfPCell createCaptionTable(int portionen) {
-        PdfPCell captionTable = new PdfPCell(new Paragraph("Zutaten für " + portionen + " Portionen:",
+        String anzahlPortionen = portionen == 1 ? "Portion" : "Portionen";
+        PdfPCell captionTable = new PdfPCell(new Paragraph("Zutaten für " + portionen + " " + anzahlPortionen + ":",
                 FONT_PORTIONEN));
+        stylingCaptionTable(captionTable);
+        return captionTable;
+    }
+
+    private void stylingCaptionTable(PdfPCell captionTable) {
         captionTable.setColspan(3);
         captionTable.setBorder(0);
         captionTable.setHorizontalAlignment(Element.ALIGN_CENTER);
-        return captionTable;
+        captionTable.setPaddingBottom(5f);
     }
 
     /**
@@ -473,8 +396,14 @@ public class Druckservice {
                     System.getProperty("user.dir")
                             + "/src/main/resources/META-INF/resources/images/image-placeholder.png");
         }
-        bild.scaleToFit(200f, 300f);
+        bild.scaleToFit(imageWidt, 350f);
+
         PdfPCell imageCell = new PdfPCell(bild);
+        imageCell = stylingImageCell(imageCell);
+        return imageCell;
+    }
+
+    private PdfPCell stylingImageCell(PdfPCell imageCell) {
         imageCell.setBorder(0);
         imageCell.setPaddingTop(5f);
         imageCell.setPaddingBottom(10f);
@@ -492,8 +421,12 @@ public class Druckservice {
     private PdfPCell getZubereitung(Rezept rezept) {
         PdfPCell cellZubereitung = new PdfPCell(new Paragraph(rezept.getZubereitung(),
                 FONT_ZUBEREITUNG));
-        cellZubereitung.setBorderWidth(0);
+        cellZubereitung = stylingZubereitung(cellZubereitung);
+        return cellZubereitung;
+    }
 
+    private PdfPCell stylingZubereitung(PdfPCell cellZubereitung) {
+        cellZubereitung.setBorderWidth(0);
         cellZubereitung.setRowspan(2);
         cellZubereitung.setPaddingRight(10f);
         cellZubereitung.setSpaceCharRatio(20f);
@@ -508,15 +441,18 @@ public class Druckservice {
      * @return PdfPCell, mit Titel als Inhalt
      */
     private PdfPCell createTitle(Rezept rezept) {
-        Paragraph titel = new Paragraph(rezept.getTitel(),
-                FONT_TITLE);
-        titel.setAlignment(Element.ALIGN_CENTER);
-        PdfPCell titleTable = new PdfPCell(titel);
-        titleTable.setHorizontalAlignment(Element.ALIGN_CENTER);
-        titleTable.setBorder(0);
-        titleTable.setColspan(2);
-        titleTable.setPaddingBottom(15f);
+        PdfPCell titleTable = new PdfPCell(new Paragraph(rezept.getTitel(),
+                FONT_TITLE));
+        titleTable = stylingTitleTable(titleTable);
         return titleTable;
+    }
+
+    private PdfPCell stylingTitleTable(PdfPCell titleTableCell) {
+        titleTableCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        titleTableCell.setBorder(0);
+        titleTableCell.setColspan(2);
+        titleTableCell.setPaddingBottom(15f);
+        return titleTableCell;
     }
 
 }

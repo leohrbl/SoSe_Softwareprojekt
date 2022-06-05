@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Basic;
-import javax.persistence.Cacheable;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,8 +16,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-
-import org.hibernate.annotations.Cache;
 
 import com.example.application.data.repository.RezeptRepository;
 import com.example.application.data.service.RezeptService;

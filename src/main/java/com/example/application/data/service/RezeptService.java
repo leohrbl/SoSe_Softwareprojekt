@@ -16,7 +16,6 @@ import com.example.application.views.rezept.display.RezeptuebersichtView;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.server.StreamResource;
 
-import org.hibernate.annotations.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -121,8 +120,8 @@ public class RezeptService {
      * @return Liste (Java.Util.Collection) von den kombinierten Ergebnislisten
      */
     @Transactional
-    public List<Rezept> getRezeptByFilterAndSearchText(String searchText, List<Rezept> filteredItemsByZutat) {
-        List<Rezept> filteredItemsByText = searchRezeptByFilterText(searchText);
+    public List<Rezept> getRezepteByFilterAndSearchText(String searchText, List<Rezept> filteredItemsByZutat) {
+        List<Rezept> filteredItemsByText = searchRezepteByFilterText(searchText);
         List<Rezept> filteredItemsByTextAndZutat = new LinkedList<>();
         for (Rezept filteredRezeptByZutat : filteredItemsByZutat) {
             for (Rezept filteredRezeptByText : filteredItemsByText) {
@@ -173,7 +172,7 @@ public class RezeptService {
     }
 
     @Transactional
-    public List<Rezept> searchRezeptByFilterText(String filterText) {
+    public List<Rezept> searchRezepteByFilterText(String filterText) {
         if (filterText == null || filterText.isEmpty()) {
             return null;
         } else {

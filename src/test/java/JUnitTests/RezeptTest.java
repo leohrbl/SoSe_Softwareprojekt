@@ -101,7 +101,7 @@ public class RezeptTest {
 		service.updateRezept(rezeptAlt, rezept);
 		assertNotSame(rezeptAlt, service.findByTitel(titel) );
 		
-		List <Rezept> rezepte = service.searchRezeptByFilterText("Vier Käse");
+		List <Rezept> rezepte = service.searchRezepteByFilterText("Vier Käse");
 		Rezept gefunden = rezepte.get(0);
 		assertTrue( gefunden.toStringMitKategorie().equalsIgnoreCase(rezept.toStringMitKategorie()));
 		

@@ -94,7 +94,7 @@ public class RezeptCreateView extends ViewFrame {
 
         configureButtons();
         createViewLayout();
-        bildUploader();
+
 
     }
 
@@ -135,7 +135,7 @@ public class RezeptCreateView extends ViewFrame {
         header.setSpacing(true);
 
         setViewHeader(header);
-        // Content
+
         zubereitung = new TextArea("Zubereitung");
         zubereitung.setWidthFull();
 
@@ -143,6 +143,7 @@ public class RezeptCreateView extends ViewFrame {
         image.setWidth("100%");
         image.setHeight("100%");
         image.addClassName("image");
+
         try {
             initialByteArray = RezeptService
                     .getBytesFromFile("src/main/resources/META-INF/resources/images/image-placeholder.png");
@@ -152,12 +153,14 @@ public class RezeptCreateView extends ViewFrame {
 
         HorizontalLayout btnLayout = new HorizontalLayout(neueZeileButton, neueZutatButton);
 
-        content = new VerticalLayout(this.image, vLayout, zutatenContainer, btnLayout, zubereitung);
+        bildUploader(); // Konfiguration des Bild Uploaders
+
+        content = new VerticalLayout(this.image, uploader, vLayout, btnLayout, zubereitung);
         content.setPadding(true);
+        content.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 
         setViewContent(content);
 
-        // Footer
 
         HorizontalLayout footer = new HorizontalLayout(speichernButton);
         speichernButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -218,7 +221,7 @@ public class RezeptCreateView extends ViewFrame {
      * Löschen-Button der Zeile ebenfalls in
      * dem Layout enthalten ist und auch gelöscht werden soll.
      *
-     * @param delRowButton
+     * @param delRowButton Der Löschen Button der Zutaten-Zeile wird übergeben
      */
     private void deleteZutatRow(Button delRowButton) {
         Component parent = delRowButton.getParent().get();
@@ -477,7 +480,7 @@ public class RezeptCreateView extends ViewFrame {
 
     /**
      * Die Methode prüft, ob die Portionenanzahl valide ist. Die Anzahl darf nicht leer und nicht 0 sein.
-     * @return
+     * @return Gibt den Wahrheitswert zurück, ob die Portioneneingabe Valide ist.
      */
     public boolean portionValid(){
         if(portionenInput.isEmpty() || portionenInput.getValue() <= 0){

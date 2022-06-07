@@ -202,8 +202,6 @@ public class EinkaufslisteView extends VerticalLayout {
      */
     private List<EinkaufslistenEintrag> getNotSelectedItems() {
         if (displayedItems.isEmpty()) {
-            Notification.show("Keine Einkaufslisteneinträge vorhanden")
-                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
             return null;
         }else if(einkaufsGrid.getSelectedItems().isEmpty()){
             return displayedItems;
@@ -230,8 +228,8 @@ public class EinkaufslisteView extends VerticalLayout {
         printEinkaufslisteBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         printEinkaufslisteBtn.addClickListener(e -> {
-            if(displayedItems.isEmpty()){
-                Notification.show("PDF konnte nicht erzeugt werden!").addThemeVariants(NotificationVariant.LUMO_ERROR);
+            if(getNotSelectedItems() == null || getNotSelectedItems().isEmpty()) {
+                Notification.show("Keine Einkaufslisteneinträge zum Drucken vorhanden.").addThemeVariants(NotificationVariant.LUMO_ERROR);
             }else{
                 StreamResource resource = generateEinkaufsliste();
                 final StreamRegistration registration = VaadinSession.getCurrent().getResourceRegistry()

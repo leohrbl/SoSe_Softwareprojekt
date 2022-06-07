@@ -1,13 +1,11 @@
-package com.example.application.data.repository;
+package com.example.application.data.rezeptzutat;
 
 import java.util.List;
 
 import javax.transaction.Transactional;
 
-import com.example.application.data.entity.Rezept;
-import com.example.application.data.entity.Rezept_Zutat;
-import com.example.application.data.entity.Zutat;
-import com.example.application.data.service.RezeptZutatenService;
+import com.example.application.data.zutat.Zutat;
+import com.example.application.data.rezept.Rezept;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

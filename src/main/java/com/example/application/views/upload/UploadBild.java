@@ -21,6 +21,8 @@ import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.dom.DomEventListener;
 import com.vaadin.flow.server.StreamResource;
 
+import elemental.json.Json;
+
 import java.awt.image.BufferedImage;
 
 /**
@@ -37,6 +39,7 @@ public class UploadBild extends Div {
 	private Image image;
 	byte[] bytes;
 	final Paragraph hint = new Paragraph("Maximale Datei Größe: 5 MB");
+	Upload upload;
 
 	/**
 	 * Konstruktor für Rezepteditview
@@ -49,7 +52,7 @@ public class UploadBild extends Div {
 	public UploadBild(RezeptEditView view, Button uploadButton, Image image, byte[] initalbytes) {
 
 		MemoryBuffer buffer = new MemoryBuffer();
-		Upload upload = new Upload(buffer);
+		upload = new Upload(buffer);
 
 		configureUpload(uploadButton, image, upload);
 
@@ -131,7 +134,7 @@ public class UploadBild extends Div {
 	public UploadBild(RezeptCreateView view, Button uploadButton, Image rezeptBild, byte[] initalbytes) {
 
 		MemoryBuffer buffer = new MemoryBuffer();
-		Upload upload = new Upload(buffer);
+		upload = new Upload(buffer);
 		configureUpload(uploadButton, rezeptBild, upload);
 		/**
 		 * SuccededListener
@@ -199,4 +202,14 @@ public class UploadBild extends Div {
 
 	}
 
+	/**
+	 * Methode, die das Bild zurücksetzt und die Liste der hochgeladene Bilder leert
+	 * 
+	 * @param initalbytes Bytes, von dem Bild, welches anfangs zu sehen war
+	 */
+	public void clear(byte[] initalbytes) {
+		image.getElement().setAttribute("src", new StreamResource("",
+				() -> new ByteArrayInputStream(initalbytes)));
+		this.upload.getElement().setPropertyJson("files", Json.createArray());
+	}
 }

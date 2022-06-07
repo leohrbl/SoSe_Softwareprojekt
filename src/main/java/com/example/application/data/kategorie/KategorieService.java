@@ -1,9 +1,6 @@
-package com.example.application.data.service;
+package com.example.application.data.kategorie;
 
 import java.util.List;
-
-import com.example.application.data.entity.Kategorie;
-import com.example.application.data.repository.KategorieRepository;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -48,7 +45,6 @@ public class KategorieService {
         }
     }
 
-
     public String updateKategorie(String newName, long id) {
         if (kategorieRepository.findById(id) == null) {
             return "Kategorie existiert nicht";
@@ -58,7 +54,6 @@ public class KategorieService {
         kategorieRepository.save(kategorie);
         return "success";
     }
-
 
     public void updateSequenceNr(Kategorie kategorie) {
         kategorieRepository.save(kategorie);

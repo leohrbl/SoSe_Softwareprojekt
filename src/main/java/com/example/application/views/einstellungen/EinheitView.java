@@ -1,6 +1,7 @@
 package com.example.application.views.einstellungen;
-import com.example.application.data.entity.Einheit;
-import com.example.application.data.service.EinheitService;
+
+import com.example.application.data.einheit.Einheit;
+import com.example.application.data.einheit.EinheitService;
 import com.example.application.views.components.DeleteDialog;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -24,19 +25,20 @@ public class EinheitView extends VerticalLayout {
     Button removeEinheit = new Button("Löschen");
     DeleteDialog deleteDialogEinheit;
     EinheitService einheitService;
-    
-    public EinheitView(){
+
+    public EinheitView() {
 
     }
 
-    public VerticalLayout einheitView(EinheitService einheitService){
+    public VerticalLayout einheitView(EinheitService einheitService) {
         this.einheitService = einheitService;
         H3 ueberschrift = new H3("Einheitenverwaltung");
         ueberschrift.getStyle().set("margin", "0");
 
         configureButtonsEinheit();
         VerticalLayout verticalLayoutUeberschrift = new VerticalLayout(ueberschrift);
-        VerticalLayout verticalLayoutEinheit = new VerticalLayout(configureGridEinheit(), new HorizontalLayout(addEinheit,removeEinheit));
+        VerticalLayout verticalLayoutEinheit = new VerticalLayout(configureGridEinheit(),
+                new HorizontalLayout(addEinheit, removeEinheit));
         VerticalLayout verticalLayout = new VerticalLayout();
 
         verticalLayout.add(verticalLayoutUeberschrift);
@@ -45,7 +47,7 @@ public class EinheitView extends VerticalLayout {
         return verticalLayout;
     }
 
-    private void configureButtonsEinheit(){
+    private void configureButtonsEinheit() {
         addEinheit.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         addEinheit.addClickListener(e -> addEinheitDialog().open());
 
@@ -53,7 +55,7 @@ public class EinheitView extends VerticalLayout {
         removeEinheit.addClickListener(e -> removeEinheit());
     }
 
-    private Dialog addEinheitDialog(){
+    private Dialog addEinheitDialog() {
         dialogEinheit = new Dialog();
         dialogEinheit.add(new H5("Einheit hinzufügen"));
 
@@ -65,30 +67,32 @@ public class EinheitView extends VerticalLayout {
 
         Button speichern = new Button("Speichern");
         speichern.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        Button abbrechen = new Button("Abbrechen", e-> dialogEinheit.close());
+        Button abbrechen = new Button("Abbrechen", e -> dialogEinheit.close());
         abbrechen.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
-        speichern.addClickListener(e ->{
+        speichern.addClickListener(e -> {
 
-                    if(einheit.getValue() != null){
-                    	if(einheitService.searchEinheitByBezeichnung(einheit.getValue()) != null) {
-                    		Notification.show("Die Einheit '"+ einheit.getValue() + "' existiert bereits.").addThemeVariants(NotificationVariant.LUMO_ERROR);
-                    	}else {
-                        einheitService.createEinheit(einheit.getValue());
-                        dialogEinheit.close();
-                        Notification.show("Einheit hinzugefügt: " + einheit.getValue()).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-                    	}
-                    }else{
-                        Notification.show("Fehler! Gib eine Bezeichnung ein!").addThemeVariants(NotificationVariant.LUMO_ERROR);
-                    }
-                    updateGridEinheit();
-                });
+            if (einheit.getValue() != null) {
+                if (einheitService.searchEinheitByBezeichnung(einheit.getValue()) != null) {
+                    Notification.show("Die Einheit '" + einheit.getValue() + "' existiert bereits.")
+                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                } else {
+                    einheitService.createEinheit(einheit.getValue());
+                    dialogEinheit.close();
+                    Notification.show("Einheit hinzugefügt: " + einheit.getValue())
+                            .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                }
+            } else {
+                Notification.show("Fehler! Gib eine Bezeichnung ein!").addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
+            updateGridEinheit();
+        });
 
         dialogEinheit.add(new HorizontalLayout(speichern, abbrechen));
         return dialogEinheit;
     }
 
-    private Grid configureGridEinheit(){
+    private Grid configureGridEinheit() {
         List<Einheit> einheit = new ArrayList<>(einheitService.getEinheiten());
 
         gridEinheit.addColumn(Einheit::getEinheit).setHeader("Einheit").setSortable(true);
@@ -99,30 +103,33 @@ public class EinheitView extends VerticalLayout {
         return gridEinheit;
     }
 
-    private void updateGridEinheit(){
+    private void updateGridEinheit() {
         gridEinheit.setItems(einheitService.getEinheiten());
     }
 
-    private void removeEinheit(){
-        if(!gridEinheit.getSelectionModel().getSelectedItems().isEmpty()){
+    private void removeEinheit() {
+        if (!gridEinheit.getSelectionModel().getSelectedItems().isEmpty()) {
             Einheit einheit = gridEinheit.getSelectionModel().getFirstSelectedItem().get();
             configuteDeleteDialogEinheit(einheit);
             dialogEinheit.close();
-        }else{
-            Notification.show("Löschen nicht möglich, da keine Einheit ausgewählt wurde.").addThemeVariants(NotificationVariant.LUMO_ERROR);
+        } else {
+            Notification.show("Löschen nicht möglich, da keine Einheit ausgewählt wurde.")
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
         }
     }
 
-    public void configuteDeleteDialogEinheit(Einheit einheit){
-        deleteDialogEinheit = new DeleteDialog("Einheit",einheit.getEinheit(), "Sicher, das die Einheit gelöscht werden soll?" );
+    public void configuteDeleteDialogEinheit(Einheit einheit) {
+        deleteDialogEinheit = new DeleteDialog("Einheit", einheit.getEinheit(),
+                "Sicher, das die Einheit gelöscht werden soll?");
         deleteDialogEinheit.open();
-        deleteDialogEinheit.getDeleteButton().addClickListener( e -> {
+        deleteDialogEinheit.getDeleteButton().addClickListener(e -> {
             einheitService.deleteEinheit(einheit);
-            Notification.show("Einheit gelöscht: " + einheit.getEinheit()).addThemeVariants(NotificationVariant.LUMO_ERROR);
+            Notification.show("Einheit gelöscht: " + einheit.getEinheit())
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
             updateGridEinheit();
             deleteDialogEinheit.close();
         });
-        deleteDialogEinheit.getCancelButton().addClickListener( e -> {
+        deleteDialogEinheit.getCancelButton().addClickListener(e -> {
             deleteDialogEinheit.close();
         });
     }

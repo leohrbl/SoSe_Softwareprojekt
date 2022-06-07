@@ -1,7 +1,7 @@
 package com.example.application.views.einstellungen;
 
-import com.example.application.data.entity.Kategorie;
-import com.example.application.data.service.KategorieService;
+import com.example.application.data.kategorie.Kategorie;
+import com.example.application.data.kategorie.KategorieService;
 import com.example.application.views.components.DeleteDialog;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -24,7 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Die Klasse erzeugt die Kategorien-View. Diese besteht aus der Überschrift, einer Tabelle mit den bestehenden Kategorien
+ * Die Klasse erzeugt die Kategorien-View. Diese besteht aus der Überschrift,
+ * einer Tabelle mit den bestehenden Kategorien
  * und den Hinzufügen- und Löschen-Button.
  *
  * @author Edwin Polle
@@ -40,7 +41,6 @@ public class KategorieView extends VerticalLayout {
     private KategorieService kategorieService;
     private GridListDataView<Kategorie> dataView;
     static List<Kategorie> kategorieList;
-
 
     /**
      * Der Konstruktor initialisiert die benötigten Variablen
@@ -66,7 +66,8 @@ public class KategorieView extends VerticalLayout {
         configureButtonsKategorien();
 
         VerticalLayout verticalLayoutTitle = new VerticalLayout(title);
-        VerticalLayout verticalLayoutKategorie = new VerticalLayout(configureGridKategorie(), new HorizontalLayout(addKategorieButton, removeKategorieButton));
+        VerticalLayout verticalLayoutKategorie = new VerticalLayout(configureGridKategorie(),
+                new HorizontalLayout(addKategorieButton, removeKategorieButton));
         verticalLayoutKategorie.setSizeFull();
         VerticalLayout verticalLayout = new VerticalLayout();
 
@@ -124,23 +125,25 @@ public class KategorieView extends VerticalLayout {
 
         speichern.addClickListener(e -> {
 
-                    if (kategorie.getValue() != null) {
-                        kategorieService.saveKategorie(kategorie.getValue());
-                        dialogKategorie.close();
-                        Notification.show("Kategorie hinzugefügt: " + kategorie.getValue()).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-                    } else {
-                        Notification.show("Die Kategorie '" + kategorie.getValue() + "' existiert bereits.").addThemeVariants(NotificationVariant.LUMO_ERROR);
-                    }
-                    updateGridKategorie();
-                    UI.getCurrent().getPage().reload();
-                }
-        );
+            if (kategorie.getValue() != null) {
+                kategorieService.saveKategorie(kategorie.getValue());
+                dialogKategorie.close();
+                Notification.show("Kategorie hinzugefügt: " + kategorie.getValue())
+                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            } else {
+                Notification.show("Die Kategorie '" + kategorie.getValue() + "' existiert bereits.")
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
+            updateGridKategorie();
+            UI.getCurrent().getPage().reload();
+        });
         dialogKategorie.add(new HorizontalLayout(speichern, abbrechen));
         return dialogKategorie;
     }
 
     /**
-     * Das Grid zum Anzeigen der Kategorien wird erzeugt und konfiguriert. Zudem wird der Drag and Drop Modus aktiviert.
+     * Das Grid zum Anzeigen der Kategorien wird erzeugt und konfiguriert. Zudem
+     * wird der Drag and Drop Modus aktiviert.
      *
      * @return Grid wird zurückgegeben.
      */
@@ -176,7 +179,6 @@ public class KategorieView extends VerticalLayout {
             if (dropLocation == GridDropLocation.BELOW) {
                 dataView.addItemAfter(draggedItem, zielKategorie);
 
-
             } else {
                 dataView.addItemBefore(draggedItem, zielKategorie);
 
@@ -196,12 +198,14 @@ public class KategorieView extends VerticalLayout {
     }
 
     /**
-     * Der DeleteDialog zum Löschen einer Kategorie wird erzeugt. Anschließend wird eine Kategorie zum Löschen übergeben.
+     * Der DeleteDialog zum Löschen einer Kategorie wird erzeugt. Anschließend wird
+     * eine Kategorie zum Löschen übergeben.
      *
      * @param kategorie die zu löschende Kategorie wird übergeben.
      */
     public void configureDeleteDialogKategorie(Kategorie kategorie) {
-        deleteDialogKategorie = new DeleteDialog("Kategorie", kategorie.getName(), "Sicher, das die Kategorie gelöscht werden soll?");
+        deleteDialogKategorie = new DeleteDialog("Kategorie", kategorie.getName(),
+                "Sicher, das die Kategorie gelöscht werden soll?");
         deleteDialogKategorie.open();
 
         deleteDialogKategorie.getDeleteButton().addClickListener(e -> {
@@ -222,7 +226,8 @@ public class KategorieView extends VerticalLayout {
     }
 
     /**
-     * Die Methode reOrder() ordnet den Kategorien nach einem Drag and Drop oder Löschen die neue Reihenfolge Nummer zu.
+     * Die Methode reOrder() ordnet den Kategorien nach einem Drag and Drop oder
+     * Löschen die neue Reihenfolge Nummer zu.
      */
     public void reOrder() {
         kategorieList = kategorieService.getKategorien();
@@ -233,7 +238,8 @@ public class KategorieView extends VerticalLayout {
     }
 
     /**
-     * Die Methode removeKategorien() prüft, ob eine Kategorie ausgewählt wurde und startet anschließend den DeleteDialog.
+     * Die Methode removeKategorien() prüft, ob eine Kategorie ausgewählt wurde und
+     * startet anschließend den DeleteDialog.
      */
 
     private void removeKategorie() {
@@ -242,7 +248,8 @@ public class KategorieView extends VerticalLayout {
             configureDeleteDialogKategorie(kategorie);
             dialogKategorie.close();
         } else {
-            Notification.show("Löschen nicht möglich, da keine Kategorie ausgewählt wurde.").addThemeVariants(NotificationVariant.LUMO_ERROR);
+            Notification.show("Löschen nicht möglich, da keine Kategorie ausgewählt wurde.")
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
         }
     }
 

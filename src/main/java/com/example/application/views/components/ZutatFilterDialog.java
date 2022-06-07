@@ -1,7 +1,7 @@
 package com.example.application.views.components;
 
-import com.example.application.data.entity.Zutat;
-import com.example.application.data.service.ZutatService;
+import com.example.application.data.zutat.Zutat;
+import com.example.application.data.zutat.ZutatService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -21,8 +21,11 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Der ZutatFilterDialog wird genutzt, damit der Nutzer nach einer Zutat filtern kann. Der Dialog wird aus der RezeptuebersichtView gesteuert. Innerhalb des Dialoges kann der Nutzer den Filter entfernen
- * oder eine andere Zutat zum Filtern auswählen. Des Weiteren kann der Nutzer nach bestimmten Zutaten über ein Suchfeld suchen.
+ * Der ZutatFilterDialog wird genutzt, damit der Nutzer nach einer Zutat filtern
+ * kann. Der Dialog wird aus der RezeptuebersichtView gesteuert. Innerhalb des
+ * Dialoges kann der Nutzer den Filter entfernen
+ * oder eine andere Zutat zum Filtern auswählen. Des Weiteren kann der Nutzer
+ * nach bestimmten Zutaten über ein Suchfeld suchen.
  *
  * @author Léo Hérubel
  * @see com.example.application.views.rezept.display.RezeptuebersichtView
@@ -40,7 +43,8 @@ public class ZutatFilterDialog extends Dialog {
     private boolean gridDataLoad;
 
     /**
-     * Der Konstruktor initialisiert die Instanzvariablen der Klasse. Zudem wird der Dialog im Konstruktor konfiguriert.
+     * Der Konstruktor initialisiert die Instanzvariablen der Klasse. Zudem wird der
+     * Dialog im Konstruktor konfiguriert.
      *
      * @param zutatService Datenbankservice der Zutat Entität
      */
@@ -56,7 +60,8 @@ public class ZutatFilterDialog extends Dialog {
     }
 
     /**
-     * Methode zum Konfigurieren des Dialoges. Der Dialog besteht aus einem Footer, dem Content, und einem Header.
+     * Methode zum Konfigurieren des Dialoges. Der Dialog besteht aus einem Footer,
+     * dem Content, und einem Header.
      */
     private void configureDialog() {
         configureFilterButton();
@@ -67,9 +72,11 @@ public class ZutatFilterDialog extends Dialog {
     }
 
     /**
-     * Methode zum Erstellen des Headers des Dialoges. Der Header besteht aus dem Suchfeld und einem Abbrechen Button, welcher den Dialog schließt.
+     * Methode zum Erstellen des Headers des Dialoges. Der Header besteht aus dem
+     * Suchfeld und einem Abbrechen Button, welcher den Dialog schließt.
      *
-     * @return Gibt das HeaderLayout zurück, damit es im Dialog hinzugefügt werden kann.
+     * @return Gibt das HeaderLayout zurück, damit es im Dialog hinzugefügt werden
+     *         kann.
      */
     private HorizontalLayout createHeaderLayout() {
         HorizontalLayout header = new HorizontalLayout(searchField, createAbbrechenButton());
@@ -81,7 +88,8 @@ public class ZutatFilterDialog extends Dialog {
     }
 
     /**
-     * Methode zum Erstellen des Footers, welcher aus dem FilterButton und dem RemoveFilterButton besteht.
+     * Methode zum Erstellen des Footers, welcher aus dem FilterButton und dem
+     * RemoveFilterButton besteht.
      *
      * @return Gibt den Footer als HorizontalLayout zurück.
      */
@@ -93,14 +101,16 @@ public class ZutatFilterDialog extends Dialog {
     }
 
     /**
-     * Methode zum Konfigurieren des FilterButtons. Die Funktionalität wird von der Klasse hinzugefügt, die den Dialog nutzt.
+     * Methode zum Konfigurieren des FilterButtons. Die Funktionalität wird von der
+     * Klasse hinzugefügt, die den Dialog nutzt.
      */
     private void configureFilterButton() {
         filterButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
     }
 
     /**
-     * Methode zum Konfigurieren des RemoveFilterButtons. Die Funktionalität wird von der Klasse hinzugefügt, die den Dialog benutzt.
+     * Methode zum Konfigurieren des RemoveFilterButtons. Die Funktionalität wird
+     * von der Klasse hinzugefügt, die den Dialog benutzt.
      */
     private void configureRemoveFilterButton() {
         removeFilterButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -125,14 +135,15 @@ public class ZutatFilterDialog extends Dialog {
         grid.addColumn(Zutat::getName).setHeader("Bezeichnung");
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setSelectionMode(Grid.SelectionMode.MULTI);
-        MultiSelect<Grid<Zutat>, Zutat> multiSelect =
-                grid.asMultiSelect();
+        MultiSelect<Grid<Zutat>, Zutat> multiSelect = grid.asMultiSelect();
         multiSelect.addSelectionListener(e -> handleSelectionChange(e));
         updateGrid();
     }
 
     /**
-     * Methode, welche (sofern keine neue Ergebnisliste aus dem Backend durch die Textsuche geladen wurde) das Hinzufügen oder Entfernen der selektierten Zutaten delegiert.
+     * Methode, welche (sofern keine neue Ergebnisliste aus dem Backend durch die
+     * Textsuche geladen wurde) das Hinzufügen oder Entfernen der selektierten
+     * Zutaten delegiert.
      *
      * @param e Event, welches die Selection Changes verfolgt
      */
@@ -144,7 +155,8 @@ public class ZutatFilterDialog extends Dialog {
     }
 
     /**
-     * Methode zum Entfernen der deselektierten Zutaten aus der Instanzvariable selectedItems.
+     * Methode zum Entfernen der deselektierten Zutaten aus der Instanzvariable
+     * selectedItems.
      *
      * @param e Event, welches die Selection Changes verfolgt
      */
@@ -165,7 +177,8 @@ public class ZutatFilterDialog extends Dialog {
     /**
      * Methode zum Erstellen des AbbrechenButtons.
      *
-     * @return Gibt den Button zurück, damit dieser in ein Layout hinzugefügt werden kann.
+     * @return Gibt den Button zurück, damit dieser in ein Layout hinzugefügt werden
+     *         kann.
      */
     private Button createAbbrechenButton() {
         Button abbrechenButton = new Button(VaadinIcon.CLOSE.create());
@@ -178,7 +191,8 @@ public class ZutatFilterDialog extends Dialog {
     }
 
     /**
-     * Methode zum Speichern der selektierten Zutaten in der Instanzvariable selectedItems.
+     * Methode zum Speichern der selektierten Zutaten in der Instanzvariable
+     * selectedItems.
      *
      * @param e Event, welches die Selection Changes verfolgt
      */
@@ -214,7 +228,8 @@ public class ZutatFilterDialog extends Dialog {
     }
 
     /**
-     * Methode, welche die Zutaten, welche in der Instanzvariable selectedItems vorhanden sind im Frontend aus der aktuellen Ergebnisliste selektiert.
+     * Methode, welche die Zutaten, welche in der Instanzvariable selectedItems
+     * vorhanden sind im Frontend aus der aktuellen Ergebnisliste selektiert.
      */
     private void selectItemsInGrid() {
         for (Zutat zutat : selectedItems) {
@@ -250,7 +265,8 @@ public class ZutatFilterDialog extends Dialog {
     }
 
     /**
-     * Methode, mit der sich andere Klassen die aktuell selektierten Zutaten aus dem Grid des Dialoges holen können.
+     * Methode, mit der sich andere Klassen die aktuell selektierten Zutaten aus dem
+     * Grid des Dialoges holen können.
      *
      * @return Gibt das Zutaten-Set zurück
      */

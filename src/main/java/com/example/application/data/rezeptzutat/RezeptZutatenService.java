@@ -1,13 +1,12 @@
-package com.example.application.data.service;
+package com.example.application.data.rezeptzutat;
 
 import java.util.*;
 
 import javax.transaction.Transactional;
 
-import com.example.application.data.entity.Rezept;
-import com.example.application.data.entity.Rezept_Zutat;
-import com.example.application.data.entity.Zutat;
-import com.example.application.data.repository.RezeptZutatenRepository;
+import com.example.application.data.zutat.Zutat;
+import com.example.application.data.rezept.Rezept;
+import com.example.application.data.rezept.RezeptService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

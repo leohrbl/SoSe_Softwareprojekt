@@ -1,15 +1,33 @@
 package com.example.application.views.rezept.edit;
 
-import com.example.application.data.entity.*;
-import com.example.application.data.service.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
+import com.example.application.data.einheit.EinheitService;
+import com.example.application.data.kategorie.Kategorie;
+import com.example.application.data.kategorie.KategorieService;
+import com.example.application.data.rezept.Rezept;
+import com.example.application.data.rezept.RezeptService;
+import com.example.application.data.rezeptzutat.RezeptZutatenService;
+import com.example.application.data.rezeptzutat.Rezept_Zutat;
+import com.example.application.data.zutat.Zutat;
+import com.example.application.data.zutat.ZutatService;
+import com.example.application.views.components.AddZutatDialog;
 import com.example.application.views.components.DeleteDialog;
 import com.example.application.views.components.MainLayout;
+import com.example.application.views.components.ViewFrame;
+import com.example.application.views.upload.UploadBild;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -19,18 +37,10 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.router.*;
-
-import javax.swing.JFileChooser;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.ArrayList;
-import com.example.application.views.components.ViewFrame;
-import com.example.application.views.upload.UploadBild;
-import com.example.application.views.components.AddZutatDialog;
-import com.example.application.views.components.DeleteDialog;
+import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.HasUrlParameter;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
 
 /**
  * @author Joscha Cerny
@@ -393,7 +403,7 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
                 Notification.show("Bitte Zutaten auf Doppelung und Korrektheit Überprüfen")
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
-            if(checkAnzahlRezeptZutaten() == false){
+            if (checkAnzahlRezeptZutaten() == false) {
                 Notification.show("Bitte nicht die Maximale RezeptZutatenMenge von 40 überschreiten")
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
@@ -550,7 +560,8 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
     }
 
     /**
-     * Die Methode überprüft ob die maximale anzahl an Rezeptzutaten eingehalten wird
+     * Die Methode überprüft ob die maximale anzahl an Rezeptzutaten eingehalten
+     * wird
      * Falls ja gibt sie ein Entsprechenden Wert True zurück
      */
     public boolean checkAnzahlRezeptZutaten() {
@@ -560,8 +571,7 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
                 newMengenlistForCheck.add(rezeptZutatMengeTextField[i].getValue());
             }
         }
-        if(newMengenlistForCheck.size() >= 40)
-        {
+        if (newMengenlistForCheck.size() >= 40) {
             return false;
         }
         return true;
@@ -622,15 +632,18 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
 
     /**
      * Methode zum Löschen eines Rezepts, öffnet den Delete Dialog von
+     * 
      * @Lennard Rummel und löscht das rezept nach bestätigen
-     * Kann abgebrochen werden, falls nicht wird Notification gezeigt und
-     * zur RezeptCard zurückgekehrt
+     *          Kann abgebrochen werden, falls nicht wird Notification gezeigt und
+     *          zur RezeptCard zurückgekehrt
      */
     public void deleteRezept(Rezept rezept) {
-        DeleteDialog newDeletedialog = new DeleteDialog("Rezept: ",rezept.getTitel(),"Wirklich löschen?");
+        DeleteDialog newDeletedialog = new DeleteDialog("Rezept: ", rezept.getTitel(), "Wirklich löschen?");
         newDeletedialog.open();
-        newDeletedialog.getCancelButton().addClickListener( e -> {newDeletedialog.close();});
-        newDeletedialog.getDeleteButton().addClickListener( e -> {
+        newDeletedialog.getCancelButton().addClickListener(e -> {
+            newDeletedialog.close();
+        });
+        newDeletedialog.getDeleteButton().addClickListener(e -> {
             rezeptService.delete(rezept.getId());
             returnToRezeptAnsicht();
             Notification.show("Rezept wurde gelöscht").addThemeVariants(NotificationVariant.LUMO_SUCCESS);

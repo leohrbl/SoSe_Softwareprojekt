@@ -1,7 +1,7 @@
 package com.example.application.views.einstellungen;
 
-import com.example.application.data.service.EinheitService;
-import com.example.application.data.service.KategorieService;
+import com.example.application.data.einheit.EinheitService;
+import com.example.application.data.kategorie.KategorieService;
 import com.example.application.views.components.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
@@ -14,10 +14,13 @@ import com.vaadin.flow.router.Route;
 import java.util.*;
 
 /**
- * Die Klasse erzeugt die Einstellung-View. Hierbei können die Einheiten und die Kategorien verwaltet werden.
- * Zum Verwalten erhalten die "Einheiten" und "Kategorien" eigenständige Tabs deren Inhalt in einem Container
+ * Die Klasse erzeugt die Einstellung-View. Hierbei können die Einheiten und die
+ * Kategorien verwaltet werden.
+ * Zum Verwalten erhalten die "Einheiten" und "Kategorien" eigenständige Tabs
+ * deren Inhalt in einem Container
  * dargestellt werden.
- * Zudem erhält jeder Tab einen * Hinzufügen- und Löschen-Button mit dem der Nutzer die Entitäten bearbeiten kann.
+ * Zudem erhält jeder Tab einen * Hinzufügen- und Löschen-Button mit dem der
+ * Nutzer die Entitäten bearbeiten kann.
  *
  * @author: Edwin Polle
  */
@@ -34,11 +37,15 @@ public class EinstellungenView extends VerticalLayout {
     private final Tabs tabs;
 
     /**
-     * Konstruktor der EinstellungenView. Hier wird die Konfiguration der EinstellungenView festgelegt. Dabei werden die Service-Klassen
-     * der Einheiten und Kategorien initialisiert. Zudem werden die View-Klassen initialisiert und dem Layout hinzugefügt.
+     * Konstruktor der EinstellungenView. Hier wird die Konfiguration der
+     * EinstellungenView festgelegt. Dabei werden die Service-Klassen
+     * der Einheiten und Kategorien initialisiert. Zudem werden die View-Klassen
+     * initialisiert und dem Layout hinzugefügt.
      *
-     * @param einheitService   der Einheit-Service wird übergeben und initialisiert, um mit dem Backend zu kommunizieren.
-     * @param kategorieService der Kategorie-Service wird übergeben und initialisiert, um mit dem Backend zu kommunizieren.
+     * @param einheitService   der Einheit-Service wird übergeben und initialisiert,
+     *                         um mit dem Backend zu kommunizieren.
+     * @param kategorieService der Kategorie-Service wird übergeben und
+     *                         initialisiert, um mit dem Backend zu kommunizieren.
      */
 
     public EinstellungenView(EinheitService einheitService, KategorieService kategorieService) {
@@ -55,12 +62,13 @@ public class EinstellungenView extends VerticalLayout {
     }
 
     /**
-     * Die Methode createTab() konfiguriert die auswählbaren Tabs, und der clickListener zum Anzeigen der Views wird hinzugefügt.
+     * Die Methode createTab() konfiguriert die auswählbaren Tabs, und der
+     * clickListener zum Anzeigen der Views wird hinzugefügt.
      */
     private void createTab() {
         tabComponentMap.put(new Tab("Kategorien"), kategorieV.createView(kategorieService));
         tabComponentMap.put(new Tab("Einheiten"), einheitV.einheitView(einheitService));
-        tabs.add(tabComponentMap.keySet().toArray(new Tab[]{}));
+        tabs.add(tabComponentMap.keySet().toArray(new Tab[] {}));
         tabs.setSizeFull();
         tabs.addSelectedChangeListener(e -> {
             contentContainer.removeAll();
@@ -69,7 +77,8 @@ public class EinstellungenView extends VerticalLayout {
     }
 
     /**
-     * Die Methode createView wird benötigt um, beim ersten Aufruf der EinstellungenView den ContentContainer zu füllen.
+     * Die Methode createView wird benötigt um, beim ersten Aufruf der
+     * EinstellungenView den ContentContainer zu füllen.
      */
     private void createView() {
         contentContainer.add(tabComponentMap.get(tabs.getSelectedTab()));

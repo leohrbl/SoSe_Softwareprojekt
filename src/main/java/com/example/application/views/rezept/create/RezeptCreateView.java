@@ -1,7 +1,19 @@
 package com.example.application.views.rezept.create;
 
-import com.example.application.data.entity.*;
-import com.example.application.data.service.*;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import com.example.application.data.einheit.EinheitService;
+import com.example.application.data.kategorie.Kategorie;
+import com.example.application.data.kategorie.KategorieService;
+import com.example.application.data.rezept.Rezept;
+import com.example.application.data.rezept.RezeptService;
+import com.example.application.data.rezeptzutat.RezeptZutatenService;
+import com.example.application.data.zutat.ZutatService;
 import com.example.application.views.components.AddZutatDialog;
 import com.example.application.views.components.AddZutatRow;
 import com.example.application.views.components.MainLayout;
@@ -24,10 +36,6 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Die Klasse erzeugt die View für das Hinzufügen eines Rezeptes. Ein Rezept
@@ -57,7 +65,7 @@ public class RezeptCreateView extends ViewFrame {
     private VerticalLayout content;
     private byte[] byteArray;
     private byte[] initialByteArray;
-
+    private UploadBild uploader;
     private final RezeptService rezeptService;
     private final RezeptZutatenService rezeptZutatenService;
     private final ZutatService zutatService;
@@ -399,7 +407,13 @@ public class RezeptCreateView extends ViewFrame {
         zubereitung.clear();
         zutatenRows.clear();
         addZutatZeile();
+        clearUpload();
 
+    }
+
+    private void clearUpload() {
+        uploader.clear(this.initialByteArray);
+        this.byteArray = initialByteArray;
     }
 
     /**
@@ -444,8 +458,8 @@ public class RezeptCreateView extends ViewFrame {
 
     private void bildUploader() {
 
-        UploadBild bild = new UploadBild(this, upload, image, initialByteArray);
-        vLayout.add(bild);
+        uploader = new UploadBild(this, upload, image, initialByteArray);
+        vLayout.add(uploader);
 
     }
 

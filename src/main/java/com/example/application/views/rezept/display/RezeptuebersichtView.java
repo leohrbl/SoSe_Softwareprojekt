@@ -1,14 +1,14 @@
 package com.example.application.views.rezept.display;
 
-import com.example.application.data.entity.Rezept;
-import com.example.application.data.entity.Zutat;
-import com.example.application.data.service.RezeptService;
-import com.example.application.data.service.RezeptZutatenService;
-import com.example.application.data.service.ZutatService;
-import com.example.application.views.DruckserviceRezept;
+import com.example.application.data.zutat.Zutat;
+import com.example.application.data.rezept.Rezept;
+import com.example.application.data.rezept.RezeptService;
+import com.example.application.data.rezeptzutat.RezeptZutatenService;
+import com.example.application.data.zutat.ZutatService;
 import com.example.application.views.components.MainLayout;
 import com.example.application.views.components.RezeptCard;
 import com.example.application.views.components.ZutatFilterDialog;
+import com.example.application.views.drucken.DruckserviceRezept;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -185,7 +185,8 @@ public class RezeptuebersichtView extends VerticalLayout {
     /**
      * Methode zum Erzeugen des Drucken-Buttons
      *
-     * @return gibt den Button zum Hinzufügen ein einem Layout zurück
+     * @return Gibt den PrintButton zurück, damit dieser in ein Layout eingefügt
+     *         werden kann.
      */
     private Button createPrintDisplayedRezepteBtn() {
         Button printDisplayedRezepteBtn = new Button(VaadinIcon.PRINT.create());
@@ -212,10 +213,16 @@ public class RezeptuebersichtView extends VerticalLayout {
         return printDisplayedRezepteBtn;
     }
 
+    /**
+     * Methode, die eine PDF erzeugt und diese als StreamResource zurückgibt
+     * 
+     * @author Philipp Laupichler
+     * @return StreamResource mit PDF
+     */
     private StreamResource generatePDF() {
         byte[] byteArray = druckservice.createRezeptByte(this.displayedItems);
 
-        StreamResource resource = new StreamResource("Rezeptliste", new InputStreamFactory() {
+        StreamResource resource = new StreamResource("Rezeptliste drucken", new InputStreamFactory() {
             @Override
             public InputStream createInputStream() {
 

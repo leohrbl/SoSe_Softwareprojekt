@@ -1,9 +1,6 @@
-package com.example.application.data.service;
+package com.example.application.data.einheit;
 
 import java.util.List;
-
-import com.example.application.data.entity.Einheit;
-import com.example.application.data.repository.EinheitenRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

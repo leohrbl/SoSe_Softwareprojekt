@@ -1,4 +1,4 @@
-package com.example.application.data.entity;
+package com.example.application.data.rezeptzutat;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,8 +7,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.example.application.data.repository.RezeptZutatenRepository;
-import com.example.application.data.service.RezeptZutatenService;
+import com.example.application.data.einheit.Einheit;
+import com.example.application.data.rezept.Rezept;
+import com.example.application.data.zutat.Zutat;
+
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -118,12 +120,14 @@ public class Rezept_Zutat {
     }
 
     /**
-     * Gibt die Menge für das Frontend als Integer oder als Double in einem String zurück
+     * Gibt die Menge für das Frontend als Integer oder als Double in einem String
+     * zurück
+     * 
      * @author Léo Hérubel
      * @return
      */
-    public String getMengeString(){
-        if((this.Menge % (int) this.Menge) == 0){
+    public String getMengeString() {
+        if ((this.Menge % (int) this.Menge) == 0) {
             return String.valueOf((int) this.Menge);
         } else {
             return new DecimalFormat("#.##").format(this.Menge);

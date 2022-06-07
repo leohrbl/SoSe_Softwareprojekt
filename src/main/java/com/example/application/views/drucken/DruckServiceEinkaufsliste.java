@@ -65,7 +65,7 @@ public class DruckServiceEinkaufsliste {
 
         this.list.addAll(liste);
         for (EinkaufslistenEintrag element : this.list) {
-            Paragraph menge = new Paragraph(String.valueOf(element.getMenge()),
+            Paragraph menge = new Paragraph(String.valueOf(element.getMengeString()),
                     FontFactory.getFont(FontFactory.TIMES_ROMAN, 10));
             menge.setAlignment(Element.ALIGN_RIGHT);
             PdfPCell cell1 = new PdfPCell(menge);

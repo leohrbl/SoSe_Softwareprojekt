@@ -185,7 +185,8 @@ public class RezeptuebersichtView extends VerticalLayout {
     /**
      * Methode zum Erzeugen des Drucken-Buttons
      *
-     * @return gibt den Button zum Hinzufügen ein einem Layout zurück
+     * @return Gibt den PrintButton zurück, damit dieser in ein Layout eingefügt
+     *         werden kann.
      */
     private Button createPrintDisplayedRezepteBtn() {
         Button printDisplayedRezepteBtn = new Button(VaadinIcon.PRINT.create());
@@ -212,10 +213,16 @@ public class RezeptuebersichtView extends VerticalLayout {
         return printDisplayedRezepteBtn;
     }
 
+    /**
+     * Methode, die eine PDF erzeugt und diese als StreamResource zurückgibt
+     * 
+     * @author Philipp Laupichler
+     * @return StreamResource mit PDF
+     */
     private StreamResource generatePDF() {
         byte[] byteArray = druckservice.createRezeptByte(this.displayedItems);
 
-        StreamResource resource = new StreamResource("Rezeptliste", new InputStreamFactory() {
+        StreamResource resource = new StreamResource("Rezeptliste drucken", new InputStreamFactory() {
             @Override
             public InputStream createInputStream() {
 

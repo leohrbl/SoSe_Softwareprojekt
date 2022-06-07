@@ -46,7 +46,7 @@ public class DruckserviceRezept {
     /**
      * Variale, die die Schriftart und Größe für die Tabelle Rezeptzutaten enthält
      */
-    private static final Font FONT_TABLE_REZEPTZUTATEN = FontFactory.getFont(FontFactory.TIMES, 14);
+    private static final Font FONT_TABLE_REZEPTZUTATEN = FontFactory.getFont(FontFactory.TIMES, 12);
     //
     // FontFactory.getFont(FontFactory.COURIER, 10);
     // FontFactory.getFont(FontFactory.HELVETICA, 10);

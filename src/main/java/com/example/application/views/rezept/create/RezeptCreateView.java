@@ -57,7 +57,7 @@ public class RezeptCreateView extends ViewFrame {
     private VerticalLayout content;
     private byte[] byteArray;
     private byte[] initialByteArray;
-
+    private UploadBild uploader;
     private final RezeptService rezeptService;
     private final RezeptZutatenService rezeptZutatenService;
     private final ZutatService zutatService;
@@ -399,7 +399,13 @@ public class RezeptCreateView extends ViewFrame {
         zubereitung.clear();
         zutatenRows.clear();
         addZutatZeile();
+        clearUpload();
 
+    }
+
+    private void clearUpload() {
+        uploader.clear(this.initialByteArray);
+        this.byteArray = initialByteArray;
     }
 
     /**
@@ -444,8 +450,8 @@ public class RezeptCreateView extends ViewFrame {
 
     private void bildUploader() {
 
-        UploadBild bild = new UploadBild(this, upload, image, initialByteArray);
-        vLayout.add(bild);
+        uploader = new UploadBild(this, upload, image, initialByteArray);
+        vLayout.add(uploader);
 
     }
 

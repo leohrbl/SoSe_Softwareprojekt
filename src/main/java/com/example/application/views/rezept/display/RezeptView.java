@@ -295,13 +295,13 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
     }
 
     /**
-     * Es wird ein Anchor erzeugt, der in einem Button gemapped wird. Dieser Anchor
-     * verweist auf das Dokument "Rezept.pdf", welches erstellt wird, wenn der
-     * Button gedrückt wird.
+     * Es wird ein Druck-Button erzeugt. Dieser ist mit einem Clicklistener
+     * versehen. Sobald der Button geklickt wird, wird die PDF erzeugt und in einem
+     * neuen Tab geöffnet.
      *
      * @return Gibt den PrintButton zurück, damit dieser in ein Layout eingefügt
      *         werden kann.
-     * @author Phillip Laupichler
+     * @author Philipp Laupichler
      */
     private Button createPrintBtn() {
         Button printDisplayedRezepteBtn = new Button(VaadinIcon.PRINT.create());
@@ -354,12 +354,14 @@ public class RezeptView extends ViewFrame implements HasUrlParameter<String>, Ha
     /**
      * Methode zum Erzeugen der PDF, diese wird als StreamResource zurückgegeben
      * 
+     * @author Philipp Laupichler
+     * @return StreamResource mit PDF
      */
     private StreamResource generateRezept() {
         byte[] byteArray = druckservice.createRezeptByteArray(this.rezeptService.findById(rezeptId), displayedItems,
                 portionenInput.getValue());
 
-        StreamResource resource = new StreamResource("Rezept", new InputStreamFactory() {
+        StreamResource resource = new StreamResource("Rezept drucken", new InputStreamFactory() {
             @Override
             public InputStream createInputStream() {
 

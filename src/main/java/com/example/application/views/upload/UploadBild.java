@@ -41,6 +41,8 @@ public class UploadBild extends Div {
 	final Paragraph hint = new Paragraph("Maximale Datei Größe: 5 MB");
 	Upload upload;
 
+	final int MAX_UPLOAD_SIZE = 1024 * 1024 * 5;
+
 	/**
 	 * Konstruktor für Rezepteditview
 	 * 
@@ -67,8 +69,6 @@ public class UploadBild extends Div {
 			String fileName = event.getFileName();
 
 			try {
-				// The image can be jpg png or gif, but we store it always as jpg file in this
-				// example
 				BufferedImage inputImage = ImageIO.read(buffer.getInputStream());
 				ByteArrayOutputStream pngContent = new ByteArrayOutputStream();
 				ImageIO.write(inputImage, "jpg", pngContent);
@@ -108,10 +108,10 @@ public class UploadBild extends Div {
 
 	/*
 	 * Notification, falls das Bild, welches versucht wurden hochzuladen, zu groß
-	 * ist
+	 * ist oder ein falscher Dateityp hochgeladen wurde
 	 */
 	private void rejectedNotification() {
-		Notification.show("Das Bild konnte nicht hochgeladen werden, bitte Größe prüfen!")
+		Notification.show("Das Bild konnte nicht hochgeladen werden, bitte Größe oder Dateityp prüfen!")
 				.addThemeVariants(NotificationVariant.LUMO_ERROR);
 	}
 
@@ -198,7 +198,7 @@ public class UploadBild extends Div {
 		uploadButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 		upload.setUploadButton(uploadButton);
 		upload.setDropLabel(new Label("Datei einfügen"));
-		upload.setMaxFileSize(5000000);
+		upload.setMaxFileSize(MAX_UPLOAD_SIZE);
 
 	}
 

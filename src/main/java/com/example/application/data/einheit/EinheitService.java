@@ -33,7 +33,7 @@ public class EinheitService {
     /**
      * Diese Methode speichert eine Einheit in der Datenbank
      *
-     * @param name
+     * @param name Name der Einheit
      */
     public String createEinheit(String name) {
         try {
@@ -52,8 +52,8 @@ public class EinheitService {
      * wird das Einheiten Objekt gesucht und der Name Mithilfe der Setter-Methode
      * geändert und gespeichert. "Seccess" wird zurückgegeben.
      *
-     * @param name
-     * @param id
+     * @param name Name, der Einheit
+     * @param id   Id, der Einheit
      */
     public String updateEinheit(String name, Long id) {
         if (!einheitenRepository.existsById(id)) {
@@ -97,7 +97,7 @@ public class EinheitService {
      * 
      * @param name Name, der Einheit, nach der gesucht wird
      * @return Einheit, mit dem entsprechenden Namen
-     * @return
+     * @return Einheit
      */
     public Einheit findByName(String name) {
         return einheitenRepository.findByEinheit(name.trim());

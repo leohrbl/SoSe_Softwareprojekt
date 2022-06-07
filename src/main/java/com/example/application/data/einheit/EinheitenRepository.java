@@ -4,17 +4,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * @author Philipp Laupichler
- * @param
- * @return
- *         EinheitenRepository basiert auf dem JPARepository, welches schon
- *         viele Methoden implementiert hat
+ * @see Einheit
+ * @see EinheitService
  * 
  */
 public interface EinheitenRepository extends JpaRepository<Einheit, Long> {
     /**
      * Sucht nach einer Einheit, anhand des Namens
      * 
-     * @param name
+     * @param name Name der Einheit, nach der gesucht wird
      * @return Einheit
      */
     Einheit findByEinheit(String name);
@@ -22,7 +20,7 @@ public interface EinheitenRepository extends JpaRepository<Einheit, Long> {
     /**
      * Sucht nach einer Einheit, anhand der Id
      * 
-     * @param id
+     * @param id Id der Einheit ,nach der gesucht wird
      * @return Einheit
      */
     Einheit findById(long id);
@@ -30,7 +28,7 @@ public interface EinheitenRepository extends JpaRepository<Einheit, Long> {
     /**
      * Löscht eine Einheit, das Suchkriterium ist der Name
      * 
-     * @param name
+     * @param name Name der Einheit, nach der gesucht wird
      */
     void deleteByEinheit(String name);
 }

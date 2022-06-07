@@ -262,14 +262,4 @@ public class Rezept implements Comparable<Rezept> {
         return (int) this.getKategorie().getSequenceNr() - (int) rezept.getKategorie().getSequenceNr();
     }
 
-    // private byte[] getImageAsByteArray() {
-    // try {
-    // return
-    // IOUtils.toByteArray(this.bild.getClass().getResourceAsStream(this.bild.getSrc()));
-    // } catch (IOException e) {
-    // e.printStackTrace();
-    // return null;
-    // }
-    // }
-
 }

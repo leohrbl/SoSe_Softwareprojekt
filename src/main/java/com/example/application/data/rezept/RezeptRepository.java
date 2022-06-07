@@ -20,16 +20,16 @@ public interface RezeptRepository extends JpaRepository<Rezept, Long> {
     /**
      * Sucht anhand einer id nach dem Rezept und gibt dieses zurück
      *
-     * @param id
-     * @return Gibt ein Rezept zurück
+     * @param id Id des Rezeptes
+     * @return Rezept
      */
     Rezept findById(long id);
 
     /**
      * Sucht anhand des Titels nach dem Rezept und gibt dieses zurück
      *
-     * @param Titel
-     * @return Gibt ein Rezept zurück
+     * @param Titel Titel des Rezeptes
+     * @return Rezept
      */
     Rezept findByTitel(String Titel);
 
@@ -48,7 +48,7 @@ public interface RezeptRepository extends JpaRepository<Rezept, Long> {
     /**
      * Löscht eine Rezept anhand einer id
      * 
-     * @param id
+     * @param id Id, des Rezeptes, dass gelöscht werden soll
      */
     void deleteById(long id);
 

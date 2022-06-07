@@ -216,6 +216,13 @@ public class RezeptService {
         return rezeptRepository.findAllByKategorieSequenceNr();
     }
 
+    /**
+     * Generiert ein Vaadin Image, aus dem Byte Array, welches in der Datenbank
+     * gespeichert ist
+     * 
+     * @param rezept Rezept, von dem das Bild generiert werden soll
+     * @return Image
+     */
     public Image generateImage(Rezept rezept) {
         Long id = rezept.getId();
         StreamResource sr = new StreamResource("rezept", () -> {
@@ -229,13 +236,13 @@ public class RezeptService {
     }
 
     /**
-     * Read file into byte array
+     * Diese Methode liest eine Datei ein und gibt ein Byte Array zurück
      *
      * @param imagePath
-     *                  path to a file
-     * @return byte array out of file
+     *                  Pfad der Datei
+     * @return Byte Array von der eingelesenen Datei
      * @throws IOException
-     *                     File not found or could not be read
+     *                     Datei nicht gefunden
      */
     public static byte[] getBytesFromFile(String imagePath) throws IOException {
         File file = new File(imagePath);

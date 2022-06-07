@@ -41,7 +41,7 @@ public interface RezeptZutatenRepository extends JpaRepository<Rezept_Zutat, Lon
     /**
      * Löscht Rezept_Zutaten Datensätze anhand eines Rezeptes
      * 
-     * @param rezept
+     * @param rezept Rezept, dass gelöscht werden soll
      */
     @Modifying
     @Transactional

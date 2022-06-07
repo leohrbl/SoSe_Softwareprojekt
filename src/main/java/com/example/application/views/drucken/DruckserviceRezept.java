@@ -28,6 +28,15 @@ import com.itextpdf.text.pdf.PdfWriter;
  *         Rezeptz oder eine Menge von Rezepten
  */
 public class DruckserviceRezept {
+
+    // Schriftarten ITEXTPDF
+    // FontFactory.getFont(FontFactory.COURIER, 10);
+    // FontFactory.getFont(FontFactory.HELVETICA, 10);
+    // FontFactory.getFont(FontFactory.SYMBOL, 10);
+    // FontFactory.getFont(FontFactory.TIMES, 10);
+    // FontFactory.getFont(FontFactory.TIMES_ROMAN, 10);
+    // FontFactory.getFont(FontFactory.ZAPFDINGBATS, 10);
+    //
     /**
      * Margin des Dokuments unten und oben
      */
@@ -42,19 +51,12 @@ public class DruckserviceRezept {
      * Breite des Bildes, berechnet über die Breite des Dokuments 595 (A4), davon
      * wird der Margin abgezogen und durch zwei geteilt
      */
-    private static final float imageWidt = (595.0f - MARGIN_SIDES * 2) / 2;
+    private static final float IMAGE_WIDTH = (595.0f - MARGIN_SIDES * 2) / 2;
     /**
      * Variale, die die Schriftart und Größe für die Tabelle Rezeptzutaten enthält
      */
     private static final Font FONT_TABLE_REZEPTZUTATEN = FontFactory.getFont(FontFactory.TIMES, 12);
-    //
-    // FontFactory.getFont(FontFactory.COURIER, 10);
-    // FontFactory.getFont(FontFactory.HELVETICA, 10);
-    // FontFactory.getFont(FontFactory.SYMBOL, 10);
-    // FontFactory.getFont(FontFactory.TIMES, 10);
-    // FontFactory.getFont(FontFactory.TIMES_ROMAN, 10);
-    // FontFactory.getFont(FontFactory.ZAPFDINGBATS, 10);
-    //
+
     /**
      * Variale, die die Schriftart und Größe für die Zubereitung enthält
      */
@@ -103,7 +105,6 @@ public class DruckserviceRezept {
             PdfPTable mainTable = createMainTable();
 
             PdfPCell titleTable = createTitle(rezept);
-
             mainTable.addCell(titleTable);
 
             PdfPCell cellZubereitung = getZubereitung(rezept);
@@ -112,8 +113,9 @@ public class DruckserviceRezept {
             PdfPCell imageCell = getImage(rezept);
             mainTable.addCell(imageCell);
 
-            PdfPCell tableCell = addRezeptZuatenToTable(rezept, rezept_Zutat, portionen);
+            PdfPCell tableCell = addRezeptZuatenToTable(rezept_Zutat, portionen);
             mainTable.addCell(tableCell);
+
             document.add(mainTable);
 
             document.close();
@@ -133,17 +135,14 @@ public class DruckserviceRezept {
 
             PdfWriter writer = PdfWriter.getInstance(document, byteArrayOutputStream);
             document.open();
-            if (rezeptListe.size() == 0) {
-                document.add(new Paragraph("Es sind keine Rezept verhanden"));
-            }
 
             for (int i = 0; i < rezeptListe.size(); i++) {
 
                 Rezept rezept = rezeptListe.get(i);
+
                 PdfPTable mainTable = createMainTable();
 
                 PdfPCell titleTable = createTitle(rezept);
-
                 mainTable.addCell(titleTable);
 
                 PdfPCell cellZubereitung = getZubereitung(rezept);
@@ -154,6 +153,7 @@ public class DruckserviceRezept {
 
                 PdfPCell tableCell = getRezeptZutatenTable(rezept);
                 mainTable.addCell(tableCell);
+
                 document.add(mainTable);
 
                 if (i + 1 != rezeptListe.size()) {
@@ -223,6 +223,13 @@ public class DruckserviceRezept {
         addRezeptZutat(rezept_zutatList, table);
     }
 
+    /**
+     * Formatiert die übergebene Zelle: einer Linie überhalb, einem Padding nach
+     * oben von 5f und einem Padding nach unten von 5f
+     * 
+     * @param cell Zelle, die geändert werden soll
+     * @return Zelle mit entsprechendem Format
+     */
     private PdfPCell stylingCell(PdfPCell cell) {
         cell.setBorder(0);
         cell.setBorderWidthTop(0.3f);
@@ -232,14 +239,17 @@ public class DruckserviceRezept {
     }
 
     /**
+     * Erstellt eine Zelle in dem eine Tabelle liegt, diese enthält die
+     * Rezeptzutaten, mit der Menge und der Einheit. Als Überschrift sind die Anzahl
+     * der Portionen angegeben
      * 
-     * @param rezept
-     * @param rezept_Zutat
-     * @param portionen
-     * @return
+     * 
+     * @param rezept_Zutat Des Rezeptes
+     * @param portionen    Anzahl der Portionen
+     * @return Zelle mit Tabelle
      * @throws DocumentException
      */
-    private PdfPCell addRezeptZuatenToTable(Rezept rezept, List<Rezept_Zutat> rezept_Zutat, int portionen)
+    private PdfPCell addRezeptZuatenToTable(List<Rezept_Zutat> rezept_Zutat, int portionen)
             throws DocumentException {
         PdfPTable table = createTableRezeptZutaten();
 
@@ -262,7 +272,7 @@ public class DruckserviceRezept {
     }
 
     /**
-     * Fügt der Tabelle drei leere Zellen ein
+     * Fügt in die Tabelle drei leere Zellen ein
      * 
      * @param table Tabelle, in die die Zellen eingefügt werden sollen
      */
@@ -357,6 +367,13 @@ public class DruckserviceRezept {
         return captionTable;
     }
 
+    /**
+     * Formatiert die übergebene Zelle: Breite von 3 Spalten, keinen Rahmen, mittig
+     * und einem Padding nach unten von 5f
+     * 
+     * @param titleTableCell Zelle, die geändert werden soll
+     * @return Zelle mit entsprechendem Format
+     */
     private void stylingCaptionTable(PdfPCell captionTable) {
         captionTable.setColspan(3);
         captionTable.setBorder(0);
@@ -396,13 +413,20 @@ public class DruckserviceRezept {
                     System.getProperty("user.dir")
                             + "/src/main/resources/META-INF/resources/images/image-placeholder.png");
         }
-        bild.scaleToFit(imageWidt, 350f);
+        bild.scaleToFit(IMAGE_WIDTH, 350f);
 
         PdfPCell imageCell = new PdfPCell(bild);
         imageCell = stylingImageCell(imageCell);
         return imageCell;
     }
 
+    /**
+     * Formatiert die übergebene Zelle: keinen Rahmen, Padding nach oben von 5f und
+     * einem Padding nach unten von 15f
+     * 
+     * @param titleTableCell Zelle, die geändert werden soll
+     * @return Zelle mit entsprechendem Format
+     */
     private PdfPCell stylingImageCell(PdfPCell imageCell) {
         imageCell.setBorder(0);
         imageCell.setPaddingTop(5f);
@@ -425,6 +449,13 @@ public class DruckserviceRezept {
         return cellZubereitung;
     }
 
+    /**
+     * Formatiert die übergebene Zelle: keinen Rahmen, höhe von zwei
+     * Reihen und einem Padding nach rechts von 10f
+     * 
+     * @param titleTableCell Zelle, die geändert werden soll
+     * @return Zelle mit entsprechendem Format
+     */
     private PdfPCell stylingZubereitung(PdfPCell cellZubereitung) {
         cellZubereitung.setBorderWidth(0);
         cellZubereitung.setRowspan(2);
@@ -447,6 +478,13 @@ public class DruckserviceRezept {
         return titleTable;
     }
 
+    /**
+     * Formatiert die übergebene Zelle: mittig, keinen Rahmen, Breite von zwei
+     * Spalten und einem Padding nach unten von 15f
+     * 
+     * @param titleTableCell Zelle, die geändert werden soll
+     * @return Zelle mit entsprechendem Format
+     */
     private PdfPCell stylingTitleTable(PdfPCell titleTableCell) {
         titleTableCell.setHorizontalAlignment(Element.ALIGN_CENTER);
         titleTableCell.setBorder(0);

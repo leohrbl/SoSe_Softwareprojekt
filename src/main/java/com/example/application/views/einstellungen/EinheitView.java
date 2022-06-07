@@ -61,6 +61,7 @@ public class EinheitView extends VerticalLayout {
 
         TextField einheit = new TextField("Bezeichnung");
         einheit.setRequired(true);
+        einheit.setMaxLength(12);
         einheit.setErrorMessage("Gib eine Bezeichnung ein!");
 
         dialogEinheit.add(new HorizontalLayout(einheit));
@@ -95,7 +96,7 @@ public class EinheitView extends VerticalLayout {
     private Grid configureGridEinheit() {
         List<Einheit> einheit = new ArrayList<>(einheitService.getEinheiten());
 
-        gridEinheit.addColumn(Einheit::getEinheit).setHeader("Einheit").setSortable(true);
+        gridEinheit.addColumn(Einheit::getEinheit).setHeader("Einheiten").setSortable(true);
         updateGridEinheit();
 
         gridEinheit.setWidthFull();

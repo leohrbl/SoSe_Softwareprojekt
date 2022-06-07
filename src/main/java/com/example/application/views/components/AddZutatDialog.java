@@ -100,7 +100,7 @@ public class AddZutatDialog extends Dialog {
      */
     private void saveNewZutat() {
         if (!bezeichnung.isEmpty() && !einheitAuswahl.isEmpty()) {
-            if (zutatService.searchZutatenByFilterText(bezeichnung.getValue()).size() == 0) {
+            if (zutatService.searchZutatenByFilterText(bezeichnung.getValue().trim()).size() == 0) {
                 close();
                 zutatService.saveZutat(bezeichnung.getValue(), einheitAuswahl.getValue());
                 Notification.show("Zutat hinzugefügt: " + bezeichnung.getValue() + " in " + einheitAuswahl.getValue())

@@ -60,9 +60,8 @@ public class EinheitView extends VerticalLayout {
         dialogEinheit.add(new H5("Einheit hinzufügen"));
 
         TextField einheit = new TextField("Bezeichnung");
-        einheit.setRequired(true);
-        einheit.setMaxLength(12);
-        einheit.setErrorMessage("Gib eine Bezeichnung ein!");
+        einheit.setRequiredIndicatorVisible(true);
+        einheit.setMaxLength(8);
 
         dialogEinheit.add(new HorizontalLayout(einheit));
 
@@ -72,21 +71,18 @@ public class EinheitView extends VerticalLayout {
         abbrechen.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
         speichern.addClickListener(e -> {
+            int valueLength = einheit.getValue().replaceAll(" ", "").length();
 
-            if (einheit.getValue() != null) {
-                if (einheitService.searchEinheitByBezeichnung(einheit.getValue()) != null) {
-                    Notification.show("Die Einheit '" + einheit.getValue() + "' existiert bereits.")
-                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
-                } else {
-                    einheitService.createEinheit(einheit.getValue());
-                    dialogEinheit.close();
-                    Notification.show("Einheit hinzugefügt: " + einheit.getValue())
-                            .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-                }
+            if(einheit.isEmpty() || valueLength == 0){
+                Notification.show("Bitte geben Sie eine Einheit ein!").addThemeVariants(NotificationVariant.LUMO_ERROR);
+            } else if(einheitService.searchEinheitByBezeichnung(einheit.getValue()) != null){
+                Notification.show("Die Einheit existiert bereits!").addThemeVariants(NotificationVariant.LUMO_ERROR);
             } else {
-                Notification.show("Fehler! Gib eine Bezeichnung ein!").addThemeVariants(NotificationVariant.LUMO_ERROR);
+                einheitService.createEinheit(einheit.getValue());
+                Notification.show("Einheit hinzugefügt: " + einheit.getValue()).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                dialogEinheit.close();
+                updateGridEinheit();
             }
-            updateGridEinheit();
         });
 
         dialogEinheit.add(new HorizontalLayout(speichern, abbrechen));

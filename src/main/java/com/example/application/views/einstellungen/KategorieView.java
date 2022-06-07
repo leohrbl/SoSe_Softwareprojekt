@@ -19,6 +19,9 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.internal.StringUtil;
+import org.apache.commons.lang3.StringUtils;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,9 +115,8 @@ public class KategorieView extends VerticalLayout {
         dialogKategorie.add(new H5("Kategorie hinzufügen"));
 
         TextField kategorie = new TextField("Bezeichnung");
-        kategorie.setRequired(true);
+        kategorie.setRequiredIndicatorVisible(true);
         kategorie.setMaxLength(12);
-        kategorie.setErrorMessage("Gib eine Bezeichnung ein!");
 
         dialogKategorie.add(new HorizontalLayout(kategorie));
 
@@ -125,18 +127,23 @@ public class KategorieView extends VerticalLayout {
 
         speichern.addClickListener(e -> {
 
-            if (kategorie.getValue() != null) {
+            int valueLength = kategorie.getValue().replaceAll(" ", "").length();
+
+            if (kategorie.isEmpty() || valueLength == 0){
+                Notification.show("Bitte geben Sie eine Kategoriebezeichnung ein!").addThemeVariants(NotificationVariant.LUMO_ERROR);
+            } else if(kategorieService.getKategorieByName(kategorie.getValue()) != null){
+                Notification.show("Die Kategorie existiert bereits").addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
+            else
+            {
                 kategorieService.saveKategorie(kategorie.getValue());
                 dialogKategorie.close();
-                Notification.show("Kategorie hinzugefügt: " + kategorie.getValue())
-                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-            } else {
-                Notification.show("Die Kategorie '" + kategorie.getValue() + "' existiert bereits.")
-                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                updateGridKategorie();
+                UI.getCurrent().getPage().reload();
             }
-            updateGridKategorie();
-            UI.getCurrent().getPage().reload();
         });
+
+
         dialogKategorie.add(new HorizontalLayout(speichern, abbrechen));
         return dialogKategorie;
     }

@@ -1,17 +1,16 @@
-package com.example.application.data.service;
+package com.example.application.data.einkaufslisteneintrag;
 
 import java.util.List;
 
-import com.example.application.data.entity.EinkaufslistenEintrag;
-import com.example.application.data.entity.Rezept_Zutat;
-import com.example.application.data.repository.EinkaufslistenRepository;
-import com.example.application.data.entity.Zutat;
+import com.example.application.data.rezeptzutat.Rezept_Zutat;
+import com.example.application.data.zutat.Zutat;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * Service Klasse für EinkaufslistenEintrag. Kann neuen Eintrag erstellen, bestehende verändern und bestehende löschen.
+ * Service Klasse für EinkaufslistenEintrag. Kann neuen Eintrag erstellen,
+ * bestehende verändern und bestehende löschen.
  *
  * @author Joscha Cerny
  * @see EinkaufslistenEintrag
@@ -67,11 +66,17 @@ public class EinkaufslistenService {
     }
 
     /**
-     * Methode zum Hinzufügen von Rezept_Zutat Objekten aus der RezeptView in die Einkaufsliste. Es wird geprüft, ob die Zutaten der Rezept_Zutat Liste bereits in der Einkaufsliste existieren.
-     * Ansonsten wird pro nicht existierender Zutat ein neuer Einkaufslisteneintrag erstellt. Die Menge der Rezept_Zutat Objekte wird auf die Einträge mit der gleichen Zutat kumuliert.
+     * Methode zum Hinzufügen von Rezept_Zutat Objekten aus der RezeptView in die
+     * Einkaufsliste. Es wird geprüft, ob die Zutaten der Rezept_Zutat Liste bereits
+     * in der Einkaufsliste existieren.
+     * Ansonsten wird pro nicht existierender Zutat ein neuer Einkaufslisteneintrag
+     * erstellt. Die Menge der Rezept_Zutat Objekte wird auf die Einträge mit der
+     * gleichen Zutat kumuliert.
+     * 
      * @param mengenList
      * @see com.example.application.views.einkaufsliste.EinkaufslisteView
-     * @return Gibt die Meldung "success" bei Erfolg oder die Fehlermeldung der Exception zurück
+     * @return Gibt die Meldung "success" bei Erfolg oder die Fehlermeldung der
+     *         Exception zurück
      * @author Léo Hérubel
      */
     public String addEintraege(List<Rezept_Zutat> mengenList) {
@@ -96,7 +101,10 @@ public class EinkaufslistenService {
     }
 
     /**
-     * Prüft, ob eine Zutat bereits in einem Einkaufslisteneintrag existiert. Falls diese nicht existiert wird null zurückgegeben. Ansonsten wird der Eintrag zurückgegeben.
+     * Prüft, ob eine Zutat bereits in einem Einkaufslisteneintrag existiert. Falls
+     * diese nicht existiert wird null zurückgegeben. Ansonsten wird der Eintrag
+     * zurückgegeben.
+     * 
      * @param zutat
      * @return gibt den bereits existierenden Eintrag oder Null zurück
      * @author Léo Hérubel
@@ -112,7 +120,6 @@ public class EinkaufslistenService {
         return null;
     }
 
-
     public String updateEintrag(EinkaufslistenEintrag eintrag) {
         try {
             einkaufslistenRepository.save(eintrag);
@@ -121,7 +128,6 @@ public class EinkaufslistenService {
             return e.getMessage();
         }
     }
-
 
     /**
      * Methode zum Löschen von bestehenden Einträgen

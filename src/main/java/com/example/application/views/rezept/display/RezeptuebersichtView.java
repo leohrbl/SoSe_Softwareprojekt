@@ -1,14 +1,14 @@
 package com.example.application.views.rezept.display;
 
-import com.example.application.data.entity.Rezept;
-import com.example.application.data.entity.Zutat;
-import com.example.application.data.service.RezeptService;
-import com.example.application.data.service.RezeptZutatenService;
-import com.example.application.data.service.ZutatService;
-import com.example.application.views.DruckserviceRezept;
+import com.example.application.data.zutat.Zutat;
+import com.example.application.data.rezept.Rezept;
+import com.example.application.data.rezept.RezeptService;
+import com.example.application.data.rezeptzutat.RezeptZutatenService;
+import com.example.application.data.zutat.ZutatService;
 import com.example.application.views.components.MainLayout;
 import com.example.application.views.components.RezeptCard;
 import com.example.application.views.components.ZutatFilterDialog;
+import com.example.application.views.drucken.DruckserviceRezept;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;

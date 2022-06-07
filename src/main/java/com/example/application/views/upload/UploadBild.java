@@ -202,6 +202,11 @@ public class UploadBild extends Div {
 
 	}
 
+	/**
+	 * Methode, die das Bild zurücksetzt und die Liste der hochgeladene Bilder leert
+	 * 
+	 * @param initalbytes Bytes, von dem Bild, welches anfangs zu sehen war
+	 */
 	public void clear(byte[] initalbytes) {
 		image.getElement().setAttribute("src", new StreamResource("",
 				() -> new ByteArrayInputStream(initalbytes)));

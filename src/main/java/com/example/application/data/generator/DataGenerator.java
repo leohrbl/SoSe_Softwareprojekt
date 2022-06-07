@@ -3,22 +3,21 @@ package com.example.application.data.generator;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.example.application.data.entity.Einheit;
-import com.example.application.data.entity.Rezept;
-import com.example.application.data.entity.Rezept_Zutat;
-import com.example.application.data.entity.Zutat;
-import com.example.application.data.service.EinheitService;
-import com.example.application.data.service.KategorieService;
-import com.example.application.data.service.RezeptService;
-import com.example.application.data.service.RezeptZutatenService;
-import com.example.application.data.service.ZutatService;
-import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.spring.annotation.SpringComponent;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
+
+import com.example.application.data.einheit.Einheit;
+import com.example.application.data.einheit.EinheitService;
+import com.example.application.data.kategorie.KategorieService;
+import com.example.application.data.rezept.Rezept;
+import com.example.application.data.rezept.RezeptService;
+import com.example.application.data.rezeptzutat.RezeptZutatenService;
+import com.example.application.data.rezeptzutat.Rezept_Zutat;
+import com.example.application.data.zutat.Zutat;
+import com.example.application.data.zutat.ZutatService;
+import com.vaadin.flow.spring.annotation.SpringComponent;
 
 @SpringComponent
 public class DataGenerator {
@@ -78,7 +77,7 @@ public class DataGenerator {
      * @author Léo Hérubel
      * @author Léo Hérubel
      * @see ZutatService
-     * @see com.example.application.data.repository.ZutatRepository
+     * @see com.example.application.data.zutat.ZutatRepository
      */
     @Bean
     public CommandLineRunner loadZutaten(ZutatService zutatService, EinheitService einheitService) {

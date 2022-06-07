@@ -1,4 +1,4 @@
-package com.example.application.data.entity;
+package com.example.application.data.rezept;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,8 +17,9 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import com.example.application.data.repository.RezeptRepository;
-import com.example.application.data.service.RezeptService;
+import com.example.application.data.rezeptzutat.Rezept_Zutat;
+import com.example.application.data.zutat.Zutat;
+import com.example.application.data.kategorie.Kategorie;
 
 /**
  * Rezept Entität mit einer OneToMany Beziehung zu der Repzept_Zutaten Entität.

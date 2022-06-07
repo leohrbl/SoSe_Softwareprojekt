@@ -1,4 +1,4 @@
-package com.example.application.data.service;
+package com.example.application.data.rezept;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -9,9 +9,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import com.example.application.data.entity.Kategorie;
-import com.example.application.data.entity.Rezept;
-import com.example.application.data.repository.RezeptRepository;
+import com.example.application.data.kategorie.Kategorie;
 import com.example.application.views.rezept.display.RezeptuebersichtView;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.server.StreamResource;

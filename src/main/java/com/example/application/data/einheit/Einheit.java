@@ -1,13 +1,10 @@
-package com.example.application.data.entity;
+package com.example.application.data.einheit;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.validation.constraints.NotBlank;
-
-import com.example.application.data.repository.EinheitenRepository;
-import com.example.application.data.service.EinheitService;
 
 /**
  * @author Philipp Laupichler

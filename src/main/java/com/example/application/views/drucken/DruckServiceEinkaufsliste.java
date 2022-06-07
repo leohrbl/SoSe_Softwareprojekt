@@ -1,6 +1,6 @@
-package com.example.application.views.components;
+package com.example.application.views.drucken;
 
-import com.example.application.data.entity.EinkaufslistenEintrag;
+import com.example.application.data.einkaufslisteneintrag.EinkaufslistenEintrag;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
@@ -30,7 +30,8 @@ public class DruckServiceEinkaufsliste {
     }
 
     /**
-     * Die Methode getInstance() erzeugt über den Konsturktor die Instanz des DruckServices.
+     * Die Methode getInstance() erzeugt über den Konsturktor die Instanz des
+     * DruckServices.
      *
      * @return gibt die Instanz des Druckservices zurück.
      */
@@ -42,7 +43,8 @@ public class DruckServiceEinkaufsliste {
     }
 
     /**
-     * Der Methode getEinkaufslistenEintrag() wird die Liste mit den Einträgen übergeben erzeugt die Tabelle für die PDF.
+     * Der Methode getEinkaufslistenEintrag() wird die Liste mit den Einträgen
+     * übergeben erzeugt die Tabelle für die PDF.
      *
      * @param liste
      * @return Tabelle mit den Einträgen der Einkaufliste.
@@ -63,7 +65,8 @@ public class DruckServiceEinkaufsliste {
 
         this.list.addAll(liste);
         for (EinkaufslistenEintrag element : this.list) {
-            Paragraph menge = new Paragraph(String.valueOf(element.getMenge()), FontFactory.getFont(FontFactory.TIMES_ROMAN, 10));
+            Paragraph menge = new Paragraph(String.valueOf(element.getMenge()),
+                    FontFactory.getFont(FontFactory.TIMES_ROMAN, 10));
             menge.setAlignment(Element.ALIGN_RIGHT);
             PdfPCell cell1 = new PdfPCell(menge);
             cell1.setPadding(5);
@@ -117,7 +120,8 @@ public class DruckServiceEinkaufsliste {
     }
 
     /**
-     * Die Methode createPDF() erzeugt aus der übergebenen Liste mit den Einkuafslisten-Einträgen die PDF.
+     * Die Methode createPDF() erzeugt aus der übergebenen Liste mit den
+     * Einkuafslisten-Einträgen die PDF.
      *
      * @param eintragsliste mit den Einträgen zum drucken.
      * @throws DocumentException
@@ -150,7 +154,8 @@ public class DruckServiceEinkaufsliste {
     }
 
     /**
-     * Die Methode clearList() bereinigt die Liste nachdem, die PDF erfolgreich erstellt wurde.
+     * Die Methode clearList() bereinigt die Liste nachdem, die PDF erfolgreich
+     * erstellt wurde.
      */
 
     public void clearList() {

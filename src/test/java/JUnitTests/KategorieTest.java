@@ -13,26 +13,30 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.example.application.Application;
-import com.example.application.data.entity.Kategorie;
-import com.example.application.data.repository.KategorieRepository;
-import com.example.application.data.service.KategorieService;
+import com.example.application.data.kategorie.Kategorie;
+import com.example.application.data.kategorie.KategorieRepository;
+import com.example.application.data.kategorie.KategorieService;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
 /**
- * JUnitTest-Klasse, die Klassen Kategorie, KategorieRepository, KategorieService testet
+ * JUnitTest-Klasse, die Klassen Kategorie, KategorieRepository,
+ * KategorieService testet
+ * 
  * @author Anna Karle
- * @see com.example.application.data.entity.Kategorie
- * @see com.example.application.data.repository.KategorieRepository
- * @see com.example.application.data.service.KategorieService
+ * @see com.example.application.data.kategorie.Kategorie
+ * @see com.example.application.data.kategorie.KategorieRepository
+ * @see com.example.application.data.kategorie.KategorieService
  *
  */
 public class KategorieTest {
-	
+
 	@Autowired
 	private KategorieRepository kategorieRepository;
 	private KategorieService service;
-	
-	/** In der Methode setUp wird ein KategorieService erstellt
+
+	/**
+	 * In der Methode setUp wird ein KategorieService erstellt
 	 * 
 	 * @throws Exception
 	 */
@@ -45,8 +49,10 @@ public class KategorieTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-	
-	/** Methode testSaveKategorie() testet die Methode saveKategori aud der Klasse KategorieService
+
+	/**
+	 * Methode testSaveKategorie() testet die Methode saveKategori aud der Klasse
+	 * KategorieService
 	 * 
 	 */
 
@@ -54,12 +60,14 @@ public class KategorieTest {
 	public void testSaveKategorie() {
 		String name = "Salate";
 		service.saveKategorie(name);
-		
+
 		assertNotNull("Kategorie wurde gespeichert", service.getKategorieByName(name));
 	}
-	
-	/** Methode testKategorieSaveUpdateDelete() testet die Methoden saveKategorie, getKategorieByName, updateKategorie 
-	 *  und deleteKategorie aus der Klasse KategorieService
+
+	/**
+	 * Methode testKategorieSaveUpdateDelete() testet die Methoden saveKategorie,
+	 * getKategorieByName, updateKategorie
+	 * und deleteKategorie aus der Klasse KategorieService
 	 * 
 	 */
 	@Test
@@ -73,12 +81,15 @@ public class KategorieTest {
 		assertNotNull("Der Name der gespeicherten Kategorie wurde geändert", kategorie);
 		service.deleteKategorie(kategorie);
 		assertNull("Die Kategorie wurde gelöscht.", service.getKategorieByName(newName));
-		
+
 	}
-	
-	/** Methode testKategorienliste testet die Methoden saveKategorie, updateKategorie und getKategorien() aus der Klasse KategorieService
-	 *  Eine SequenceNr der letzt hinzugefügten Kategorie wird mit  Länge der Liste von gespeicherten in Datenbank Kategorien vergliechen und dadurch wird
-	 *  die Methode getKategorien() getestet
+
+	/**
+	 * Methode testKategorienliste testet die Methoden saveKategorie,
+	 * updateKategorie und getKategorien() aus der Klasse KategorieService
+	 * Eine SequenceNr der letzt hinzugefügten Kategorie wird mit Länge der Liste
+	 * von gespeicherten in Datenbank Kategorien vergliechen und dadurch wird
+	 * die Methode getKategorien() getestet
 	 */
 	@Test
 	public void testKategorienliste() {
@@ -88,16 +99,14 @@ public class KategorieTest {
 		String newName = "Nudelngerichte";
 		service.updateName(kategorie, newName);
 		assertNotNull("Der Name der gespeicherten Kategorie wurde geändert", service.getKategorieByName(newName));
-		
+
 		List kategorien = service.getKategorien();
-		assertNotNull ("Die Liste mit Kategorien ist nicht leer", kategorien);
-		
-		int soll = (int)service.getKategorieByName(newName).getSequenceNr() ;
+		assertNotNull("Die Liste mit Kategorien ist nicht leer", kategorien);
+
+		int soll = (int) service.getKategorieByName(newName).getSequenceNr();
 		int ist = kategorien.size();
-		assertEquals("Die Liste mit Kategorien wird komplett ausgegeben",soll, ist);
-		
+		assertEquals("Die Liste mit Kategorien wird komplett ausgegeben", soll, ist);
+
 	}
-	
-	
 
 }

@@ -14,30 +14,32 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.example.application.Application;
-import com.example.application.data.entity.Kategorie;
-import com.example.application.data.entity.Rezept;
-import com.example.application.data.entity.Rezept_Zutat;
-import com.example.application.data.entity.Zutat;
-import com.example.application.data.repository.KategorieRepository;
-import com.example.application.data.repository.RezeptRepository;
-import com.example.application.data.repository.RezeptZutatenRepository;
-import com.example.application.data.repository.ZutatRepository;
-import com.example.application.data.service.KategorieService;
-import com.example.application.data.service.RezeptService;
-import com.example.application.data.service.RezeptZutatenService;
-import com.example.application.data.service.ZutatService;
+import com.example.application.data.zutat.Zutat;
+import com.example.application.data.kategorie.Kategorie;
+import com.example.application.data.kategorie.KategorieRepository;
+import com.example.application.data.kategorie.KategorieService;
+import com.example.application.data.rezept.Rezept;
+import com.example.application.data.rezept.RezeptRepository;
+import com.example.application.data.rezept.RezeptService;
+import com.example.application.data.rezeptzutat.RezeptZutatenRepository;
+import com.example.application.data.rezeptzutat.RezeptZutatenService;
+import com.example.application.data.zutat.ZutatRepository;
+import com.example.application.data.zutat.ZutatService;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
-/** JUnit-Test-Klasse testet die Methoden aus den Klassen RezeptService,Rezept und RezeptRepository 
+/**
+ * JUnit-Test-Klasse testet die Methoden aus den Klassen RezeptService,Rezept
+ * und RezeptRepository
  * 
  * @author Anna Karle
- * @see com.example.application.data.service.RezeptService
- * @see com.example.application.data.entity.Rezept
- * @see com.example.application.data.repository.RezeptRepository
+ * @see com.example.application.data.rezept.RezeptService
+ * @see com.example.application.data.rezept.Rezept
+ * @see com.example.application.data.rezept.RezeptRepository
  *
  */
 public class RezeptTest {
-	
+
 	@Autowired
 	private RezeptRepository repository;
 	private RezeptService service;
@@ -50,14 +52,15 @@ public class RezeptTest {
 	@Autowired
 	private ZutatRepository zutatRepository;
 	private ZutatService zutatService;
-    byte[] bild;
-	
-    /** In der Methode setUp() werden Instanzvariablen service, kategorieService, rzService und zutatService
-     *  initialisiert
-     * 
-     * @throws Exception
-     */
-	
+	byte[] bild;
+
+	/**
+	 * In der Methode setUp() werden Instanzvariablen service, kategorieService,
+	 * rzService und zutatService
+	 * initialisiert
+	 * 
+	 * @throws Exception
+	 */
 
 	@Before
 	public void setUp() throws Exception {
@@ -70,9 +73,12 @@ public class RezeptTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-	
-	/** Methode testCreateRezept() erstellt ein Rezept mit allen Parameter, hinzufügt zum erstellten Rezept Zutaten,
-	 * sucht ersteltes Rezept in Datenbank und löscht dieses. Dadurch werden die Methoden createRezept,findByTitel,
+
+	/**
+	 * Methode testCreateRezept() erstellt ein Rezept mit allen Parameter, hinzufügt
+	 * zum erstellten Rezept Zutaten,
+	 * sucht ersteltes Rezept in Datenbank und löscht dieses. Dadurch werden die
+	 * Methoden createRezept,findByTitel,
 	 * updateRezept, searchRezeptByFilterText und deleteRezept getestet
 	 * 
 	 */
@@ -83,30 +89,31 @@ public class RezeptTest {
 		Kategorie kategorie = kategorieService.getKategorieByName("Pizza");
 		String titel = "Pizza Vier Käse";
 		try {
-			this.bild = RezeptService.getBytesFromFile("src/main/resources/META-INF/resources/images//SoSe_Softwareprojekt/src/main/resources/META-INF/resources/images/empty-plant.png");
+			this.bild = RezeptService.getBytesFromFile(
+					"src/main/resources/META-INF/resources/images//SoSe_Softwareprojekt/src/main/resources/META-INF/resources/images/empty-plant.png");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		service.createRezept( bild, titel, "Zubereitung", 4, kategorie);
+		service.createRezept(bild, titel, "Zubereitung", 4, kategorie);
 		Zutat zutat = zutatService.getZutatenByName("Käse");
 		Zutat zutat2 = zutatService.getZutatenByName("Milch");
-			
+
 		Rezept rezept = service.findByTitel(titel);
 		assertNotNull("Rezept wurde erstellt", rezept);
 		rzService.createRezeptZutatenAndAddToSet(rezept, zutat, 4);
-		rzService.createRezeptZutatenAndAddToSet(rezept, zutat2,200);
-	
+		rzService.createRezeptZutatenAndAddToSet(rezept, zutat2, 200);
+
 		Rezept rezeptAlt = service.findByTitel(titel);
 		service.updateRezept(rezeptAlt, rezept);
-		assertNotSame(rezeptAlt, service.findByTitel(titel) );
-		
-		List <Rezept> rezepte = service.searchRezepteByFilterText("Vier Käse");
+		assertNotSame(rezeptAlt, service.findByTitel(titel));
+
+		List<Rezept> rezepte = service.searchRezepteByFilterText("Vier Käse");
 		Rezept gefunden = rezepte.get(0);
-		assertTrue( gefunden.toStringMitKategorie().equalsIgnoreCase(rezept.toStringMitKategorie()));
-		
+		assertTrue(gefunden.toStringMitKategorie().equalsIgnoreCase(rezept.toStringMitKategorie()));
+
 		service.deleteRezept(gefunden);
-		assertNull("Das Rezept wurde gelöscht",service.findByTitel(titel));
+		assertNull("Das Rezept wurde gelöscht", service.findByTitel(titel));
 	}
 
 }

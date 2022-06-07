@@ -1,6 +1,4 @@
-package com.example.application.data.repository;
-
-import com.example.application.data.entity.Einheit;
+package com.example.application.data.einheit;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

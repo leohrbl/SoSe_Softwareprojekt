@@ -6,14 +6,14 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.example.application.data.entity.Rezept;
-import com.example.application.data.entity.Rezept_Zutat;
-import com.example.application.data.service.EinkaufslistenService;
-import com.example.application.data.service.RezeptService;
-import com.example.application.data.service.RezeptZutatenService;
-import com.example.application.views.DruckserviceRezept;
+import com.example.application.data.einkaufslisteneintrag.EinkaufslistenService;
+import com.example.application.data.rezeptzutat.Rezept_Zutat;
+import com.example.application.data.rezept.Rezept;
+import com.example.application.data.rezept.RezeptService;
+import com.example.application.data.rezeptzutat.RezeptZutatenService;
 import com.example.application.views.components.MainLayout;
 import com.example.application.views.components.ViewFrame;
+import com.example.application.views.drucken.DruckserviceRezept;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;

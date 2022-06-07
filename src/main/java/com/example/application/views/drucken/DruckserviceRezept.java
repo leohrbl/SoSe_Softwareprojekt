@@ -1,4 +1,4 @@
-package com.example.application.views;
+package com.example.application.views.drucken;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -7,8 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import com.example.application.data.entity.Rezept;
-import com.example.application.data.entity.Rezept_Zutat;
+import com.example.application.data.rezeptzutat.Rezept_Zutat;
+import com.example.application.data.rezept.Rezept;
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;

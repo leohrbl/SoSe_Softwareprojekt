@@ -147,15 +147,11 @@ public class RezeptCreateView extends ViewFrame {
             initialByteArray = RezeptService
                     .getBytesFromFile("src/main/resources/META-INF/resources/images/image-placeholder.png");
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        //
 
         HorizontalLayout btnLayout = new HorizontalLayout(neueZeileButton, neueZutatButton);
 
-        // hier dann auch noch das grid mit den Zutaten/Mengen Objekten zu dem Rezept
-        // lul
         content = new VerticalLayout(this.image, vLayout, zutatenContainer, btnLayout, zubereitung);
         content.setPadding(true);
 
@@ -314,9 +310,8 @@ public class RezeptCreateView extends ViewFrame {
      *         vorliegen,
      *         dass diese gespeichert werden können.
      */
-    // TODO: Individuelle Fehlermeldungen
     private boolean isValuesValid() {
-        if (kategorie.isEmpty() || !titleValid() || portionenInput.isEmpty() || zubereitung.isEmpty()
+        if (kategorie.isEmpty() || !titleValid() || !portionValid() || zubereitung.isEmpty()
                 || !isZutatRowsValid() || checkDuplicateZutaten()) {
             Notification.show(getErrorString()).addThemeVariants(NotificationVariant.LUMO_ERROR);
             return false;
@@ -335,7 +330,7 @@ public class RezeptCreateView extends ViewFrame {
             if (!row.isFilled()) {
                 return false;
             }
-            if (row.getMenge() < 0) {
+            if (row.getMenge() <= 0) {
                 return false;
             }
         }
@@ -411,6 +406,9 @@ public class RezeptCreateView extends ViewFrame {
 
     }
 
+    /**
+     * Das Bild wird zurückgesetzt
+     */
     private void clearUpload() {
         uploader.clear(this.initialByteArray);
         this.byteArray = initialByteArray;
@@ -434,7 +432,7 @@ public class RezeptCreateView extends ViewFrame {
         if (!titleValid()) {
             error += " [Titel]";
         }
-        if (portionenInput.isEmpty()) {
+        if (!portionValid()) {
             error += " [Portionen]";
         }
         if (zubereitung.isEmpty()) {
@@ -471,6 +469,18 @@ public class RezeptCreateView extends ViewFrame {
      */
     public boolean titleValid() {
         if (title.isEmpty() || title.getValue().trim().length() == 0) {
+            return false;
+        }
+        return true;
+    }
+
+
+    /**
+     * Die Methode prüft, ob die Portionenanzahl valide ist. Die Anzahl darf nicht leer und nicht 0 sein.
+     * @return
+     */
+    public boolean portionValid(){
+        if(portionenInput.isEmpty() || portionenInput.getValue() <= 0){
             return false;
         }
         return true;

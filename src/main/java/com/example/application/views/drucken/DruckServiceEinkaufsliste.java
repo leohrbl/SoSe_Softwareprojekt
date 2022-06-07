@@ -120,19 +120,16 @@ public class DruckServiceEinkaufsliste {
     }
 
     /**
-     * Die Methode createPDF() erzeugt aus der übergebenen Liste mit den
-     * Einkuafslisten-Einträgen die PDF.
+     * Die Methode createPDF() erzeugt aus der übergebenen Liste mit den Einkuafslisten-Einträgen die PDF.
      *
      * @param eintragsliste mit den Einträgen zum drucken.
-     * @throws DocumentException
-     * @throws FileNotFoundException
      */
-    public void createPDF(List eintragsliste) throws DocumentException, FileNotFoundException {
-        FileOutputStream file = null;
+    public byte[] createPDF(List eintragsliste){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try {
             Document document = new Document();
 
-            PdfWriter.getInstance(document, new FileOutputStream("Einkaufsliste.pdf"));
+            PdfWriter.getInstance(document, byteArrayOutputStream);
             document.open();
 
             PdfPTable maintable = createMainTable();
@@ -148,8 +145,10 @@ public class DruckServiceEinkaufsliste {
 
             document.close();
             clearList();
+            return byteArrayOutputStream.toByteArray();
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
     }
 

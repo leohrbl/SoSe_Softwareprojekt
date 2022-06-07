@@ -6,6 +6,7 @@ import com.example.application.views.components.DeleteDialog;
 import com.example.application.views.components.MainLayout;
 import com.example.application.views.drucken.DruckServiceEinkaufsliste;
 import com.itextpdf.text.DocumentException;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -18,15 +19,16 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.InputStreamFactory;
+import com.vaadin.flow.server.StreamRegistration;
 import com.vaadin.flow.server.StreamResource;
+import com.vaadin.flow.server.VaadinSession;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -94,7 +96,7 @@ public class EinkaufslisteView extends VerticalLayout {
      */
     private VerticalLayout createView() {
         return new VerticalLayout(createHeading(), einkaufsGrid,
-                new HorizontalLayout(printButton(), createDeleteEinkaufslisteBtn()));
+                new HorizontalLayout(createPrintBtn(), createDeleteEinkaufslisteBtn()));
     }
 
     /**
@@ -184,17 +186,9 @@ public class EinkaufslisteView extends VerticalLayout {
     /**
      * Methode zum Drucken der aktuellen Daten in der EinkaufslisteView.
      */
-    private void printEinkaufsliste() throws DocumentException, FileNotFoundException {
+    private List printEinkaufsliste(){
         List<EinkaufslistenEintrag> printList = getNotSelectedItems();
-        if (displayedItems.isEmpty()) {
-            Notification.show("Keine Einkaufslisteneinträge vorhanden")
-                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
-            return;
-        } else if (printList.size() == 0) {
-            druckservice.createPDF(displayedItems);
-        } else {
-            druckservice.createPDF(printList);
-        }
+        return printList;
     }
 
     /**
@@ -211,58 +205,62 @@ public class EinkaufslisteView extends VerticalLayout {
             Notification.show("Keine Einkaufslisteneinträge vorhanden")
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
             return null;
-        }
+        }else if(einkaufsGrid.getSelectedItems().isEmpty()){
+            return displayedItems;
+        }else {
+            List<EinkaufslistenEintrag> printList = new ArrayList<>(displayedItems);
+            List<EinkaufslistenEintrag> gridSelectedItems = new ArrayList<>(einkaufsGrid.getSelectedItems());
 
-        List<EinkaufslistenEintrag> printList = new LinkedList<>();
-        Set<EinkaufslistenEintrag> gridSelectedItems = einkaufsGrid.getSelectedItems();
-
-        for (EinkaufslistenEintrag eintrag : gridSelectedItems) {
-            for (EinkaufslistenEintrag displayedEintrag : displayedItems) {
-                if (eintrag.getId() != displayedEintrag.getId()) {
-                    printList.add(displayedEintrag);
-                }
+            for (EinkaufslistenEintrag eintrag : gridSelectedItems){
+                printList.remove(eintrag);
             }
+
+            return printList;
         }
-        return printList;
     }
 
     /**
-     * Die Methode printButton() erzeugt einen Anchor mit einem Button um die
-     * Einkaufsliste als PDF zu generieren.
+     * Die Methode createPrintBtn() erzeugt einen Button um die Einkaufsliste als PDF zu generieren.
      * Der ClickListener verweist direkt auf die erzeugte PDF.
-     * 
      * @author Edwin Polle
      */
 
-    private Anchor printButton() {
+    private Button createPrintBtn() {
+        Button printEinkaufslisteBtn = new Button(VaadinIcon.PRINT.create());
+        printEinkaufslisteBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-        Anchor anchor = new Anchor(new StreamResource("Einkaufsliste.pdf", new InputStreamFactory() {
-            @Override
-            public InputStream createInputStream() {
-                File file = new File("Einkaufsliste.pdf");
+        printEinkaufslisteBtn.addClickListener(e -> {
+            if(displayedItems.isEmpty()){
+                Notification.show("PDF konnte nicht erzeugt werden!").addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }else{
+                StreamResource resource = generateEinkaufsliste();
+                final StreamRegistration registration = VaadinSession.getCurrent().getResourceRegistry()
+                        .registerResource(resource);
+                UI.getCurrent().getPage().open(registration.getResourceUri().toString(), "Einkaufsliste drucken");
 
-                try {
-                    return new FileInputStream(file);
-                } catch (FileNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }), "");
-
-        Button printButton = new Button("Drucken", VaadinIcon.PRINT.create());
-        printButton.addClickListener(e -> {
-            try {
-                printEinkaufsliste();
-            } catch (DocumentException ex) {
-                throw new RuntimeException(ex);
-            } catch (FileNotFoundException ex) {
-                throw new RuntimeException(ex);
             }
         });
-        anchor.setTarget("_blank");
-        anchor.add(printButton);
+        return printEinkaufslisteBtn;
 
-        return anchor;
+    }
+
+    /**
+     * Die Methode generateEinkaufsliste() erzeugt ein ByteArray um die PDF zu erzeugen und gibt diese wieder.
+     * @author Edwin Polle
+     * @return resource
+     */
+
+    private StreamResource generateEinkaufsliste() {
+        byte[] byteArray = druckservice.createPDF(getNotSelectedItems());
+
+        StreamResource resource = new StreamResource("Einkaufsliste drucken", new InputStreamFactory() {
+            @Override
+            public InputStream createInputStream() {
+                return new ByteArrayInputStream(byteArray);
+            }
+        });
+        resource.setContentType("application/pdf");
+        return resource;
     }
 
 }

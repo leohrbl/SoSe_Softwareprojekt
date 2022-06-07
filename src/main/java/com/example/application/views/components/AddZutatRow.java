@@ -80,7 +80,7 @@ public class AddZutatRow extends HorizontalLayout {
      * Maximum festgelegt.
      */
     private void configureMengeField() {
-        mengeField.setMin(1);
+        mengeField.setMin(0.1);
         mengeField.setMax(1000000);
         add(mengeField);
     }
@@ -92,7 +92,7 @@ public class AddZutatRow extends HorizontalLayout {
      *         sind.
      */
     public boolean isFilled() {
-        if (mengeField.isEmpty() && zutatAuswahl.isEmpty()) {
+        if (mengeField.isEmpty() || zutatAuswahl.isEmpty()) {
             return false;
         } else {
             return true;

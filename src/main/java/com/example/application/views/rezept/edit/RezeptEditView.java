@@ -659,7 +659,8 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
         UI.getCurrent().navigate("display");
     }
 
-    /**
+    /**Die Methode estellt und fügt einen BildUploader ins Layout hinzu, der das Bild-Hochladen ermöglicht
+     * Das bild wird auch ins byteArray umgewandelt
      * @author Anna Karle
      */
     private void fileUpload() {

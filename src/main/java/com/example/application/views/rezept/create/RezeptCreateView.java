@@ -450,7 +450,7 @@ public class RezeptCreateView extends ViewFrame {
         return error;
     }
 
-    /**
+    /**Die Methode estellt und fügt einen BildUploader ins Layout hinzu, der das Bild-Hochladen ermöglicht
      * @author Anna Karle
      */
 

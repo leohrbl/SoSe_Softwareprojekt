@@ -142,7 +142,7 @@ public class ZutatenView extends VerticalLayout {
      */
     private void configureDeleteDialog(Zutat zutat) {
         DeleteDialog deleteDialog = new DeleteDialog("Zutat ", zutat.getName(),
-                "Sicher, dass du die Zutat wirklich löschen willst? Sie wird aus allen Rezepten entfernt!");
+                "Sicher, dass die Zutat gelöscht werden soll? Sie wird aus allen Rezepten entfernt!");
         deleteDialog.open();
         deleteDialog.getDeleteButton().addClickListener(e -> {
             zutatService.deleteZutat(zutat);

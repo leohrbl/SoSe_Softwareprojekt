@@ -117,7 +117,7 @@ public class EinheitView extends VerticalLayout {
 
     public void configuteDeleteDialogEinheit(Einheit einheit) {
         deleteDialogEinheit = new DeleteDialog("Einheit", einheit.getEinheit(),
-                "Sicher, das die Einheit gelöscht werden soll?");
+                "Sicher, dass die Einheit gelöscht werden soll? Es werden alle Zutaten zu dieser Einheit gelöscht.");
         deleteDialogEinheit.open();
         deleteDialogEinheit.getDeleteButton().addClickListener(e -> {
             einheitService.deleteEinheit(einheit);

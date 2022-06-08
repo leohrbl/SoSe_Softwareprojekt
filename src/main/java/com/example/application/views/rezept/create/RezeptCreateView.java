@@ -188,12 +188,14 @@ public class RezeptCreateView extends ViewFrame {
      * @see AddZutatRow
      */
     public void addZutatZeile() {
-        HorizontalLayout rowLayout = new HorizontalLayout();
-        AddZutatRow row = new AddZutatRow(zutatService);
-        zutatenRows.add(row);
-        rowLayout.add(row, createDeleteRowButton());
-        rowLayout.setAlignItems(Alignment.BASELINE);
-        zutatenContainer.add(rowLayout);
+        if(isNotMaxRow()) {
+            HorizontalLayout rowLayout = new HorizontalLayout();
+            AddZutatRow row = new AddZutatRow(zutatService);
+            zutatenRows.add(row);
+            rowLayout.add(row, createDeleteRowButton());
+            rowLayout.setAlignItems(Alignment.BASELINE);
+            zutatenContainer.add(rowLayout);
+        }
     }
 
     /**
@@ -227,7 +229,7 @@ public class RezeptCreateView extends ViewFrame {
         Component parent = delRowButton.getParent().get();
         List<Component> componentList = parent.getChildren().collect(Collectors.toList());
         // Löschen der AddZutatRow Instanz in der Liste zutatenRows
-        if (isNotLastRow() && isNotMaxRow()) {
+        if (isNotLastRow()) {
             for (Component component : componentList) {
                 if (component instanceof AddZutatRow) {
                     AddZutatRow rowToDelete = null;
@@ -370,7 +372,7 @@ public class RezeptCreateView extends ViewFrame {
         if (zutatenRows.size() <= 30) {
             return true;
         } else {
-            Notification.show("Sie können nicht mehr als 100 Zutaten zu einem Rezept speichern")
+            Notification.show("Sie können nicht mehr als 30 Zutaten zu einem Rezept speichern")
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
             return false;
         }

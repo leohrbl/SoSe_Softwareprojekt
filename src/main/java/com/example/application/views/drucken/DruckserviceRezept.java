@@ -233,8 +233,8 @@ public class DruckserviceRezept {
     private PdfPCell stylingCell(PdfPCell cell) {
         cell.setBorder(0);
         cell.setBorderWidthTop(0.3f);
-        cell.setPaddingTop(5f);
-        cell.setPaddingBottom(5f);
+        cell.setPaddingTop(2.5f);
+        cell.setPaddingBottom(2.5f);
         return cell;
     }
 

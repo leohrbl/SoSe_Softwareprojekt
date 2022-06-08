@@ -389,7 +389,7 @@ public class DruckserviceRezept {
      */
     private PdfPTable createTableRezeptZutaten() throws DocumentException {
         PdfPTable table = new PdfPTable(3);
-        float[] columnsWidths = { 0.3f, 0.3f, 1f };
+        float[] columnsWidths = { 0.3f, 0.4f, 1f };
         table.setWidths(columnsWidths);
         return table;
     }
@@ -413,7 +413,7 @@ public class DruckserviceRezept {
                     System.getProperty("user.dir")
                             + "/src/main/resources/META-INF/resources/images/image-placeholder.png");
         }
-        bild.scaleToFit(IMAGE_WIDTH, 350f);
+        bild.scaleToFit(IMAGE_WIDTH, 280f);
 
         PdfPCell imageCell = new PdfPCell(bild);
         imageCell = stylingImageCell(imageCell);

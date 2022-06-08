@@ -68,10 +68,10 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
     TextArea zubereitungTextArea;
     IntegerField inputPortionenIntegerField;
     Image rezeptBild;
-    TextField[] rezeptZutatMengeTextField = new TextField[40];
-    TextField[] rezeptZutatEinheitTextField = new TextField[40];
-    ComboBox[] rezeptZutatNameComboBox = new ComboBox[40];
-    Button[] deleteButton = new Button[40];
+    TextField[] rezeptZutatMengeTextField = new TextField[30];
+    TextField[] rezeptZutatEinheitTextField = new TextField[30];
+    ComboBox[] rezeptZutatNameComboBox = new ComboBox[30];
+    Button[] deleteButton = new Button[30];
     Integer identifierTextFieldCounter = 0;
     List<String> remainingMengenWhenSavedList = new ArrayList<String>(); // Sobald gespeichert wird werden alle
                                                                          // verbleibenden Mengen der Zutaten in dieser
@@ -404,7 +404,7 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
             if (checkAnzahlRezeptZutaten() == false) {
-                Notification.show("Bitte nicht die Maximale RezeptZutatenMenge von 40 überschreiten")
+                Notification.show("Bitte nicht die Maximale RezeptZutatenMenge von 30 überschreiten")
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
 
@@ -571,7 +571,7 @@ public class RezeptEditView extends ViewFrame implements HasUrlParameter<String>
                 newMengenlistForCheck.add(rezeptZutatMengeTextField[i].getValue());
             }
         }
-        if (newMengenlistForCheck.size() >= 40) {
+        if (newMengenlistForCheck.size() >= 30) {
             return false;
         }
         return true;
